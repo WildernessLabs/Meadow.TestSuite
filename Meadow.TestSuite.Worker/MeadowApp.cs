@@ -28,10 +28,10 @@ namespace MeadowApp
 
 //            var serializer = new CommandCustomSerializer();
             var serializer = new CommandJsonSerializer();
-            serializer.UseLibrary = JsonLibrary.JsonDotNet;
+            serializer.UseLibrary = JsonLibrary.SystemTextJson;
 
             var listener = new SerialListener(port, serializer);
-
+            listener.CommandReceived += Listener_CommandReceived;
             listener.StartListening();
 
             Thread.Sleep(Timeout.Infinite);
@@ -39,6 +39,54 @@ namespace MeadowApp
             Console.WriteLine("- MeadowApp");
         }
 
+        private void Listener_CommandReceived(TestCommand command)
+        {
+            // TODO: push the processing to the actual command instance or move this to some form of "processor" class
+            if (command is UplinkFileCommand)
+            {
+                var ufc = command as UplinkFileCommand;
+
+                if (ufc == null)
+                {
+                    Console.WriteLine($" Deserializer returned null.");
+                }
+                else
+                {
+                    Console.WriteLine($" Data: {ufc.FileData.Length} Base64 chars");
+                    Console.WriteLine($" Destination: {ufc.Destination}");
+
+                    if (string.IsNullOrEmpty(ufc.Destination))
+                    {
+                        Console.WriteLine($" Invalid/missing file destination");
+                    }
+                    else
+                    {
+                        var di = new DirectoryInfo(Path.GetDirectoryName(ufc.Destination));
+                        if (!di.Exists)
+                        {
+                            Console.WriteLine($" Creating directory {di.FullName}");
+                            di.Create();
+                        }
+                        var data = Convert.FromBase64String(ufc.FileData);
+                        var fi = new FileInfo(ufc.Destination);
+                        if (fi.Exists)
+                        {
+                            Console.WriteLine("Destination file exists.  Overwriting.");
+                        }
+
+                        File.WriteAllBytes(ufc.Destination, data);
+
+                        fi.Refresh();
+
+                        Console.WriteLine($"Destination file verified to be {fi.Length} bytes.");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Don't know how to process {command.GetType().Name}");
+            }
+        }
 
         private void LoadAndRun()
         {

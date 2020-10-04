@@ -3,6 +3,7 @@ using Meadow.TestsSuite;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel;
+using System.IO;
 using System.Text;
 using System.Threading;
 
@@ -75,8 +76,6 @@ namespace MeadowApp
 
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-//            Console.WriteLine($"RX {Port.BytesToRead} bytes");
-
             if (Port.BytesToRead <= 0) return;
 
             var b = new byte[Port.BytesToRead];
@@ -330,6 +329,7 @@ namespace MeadowApp
             {
                 Console.WriteLine($"Failed to deserialize: {ex.Message}");
             }
+
             if (c != null)
             {
                 CommandReceived?.Invoke(c);

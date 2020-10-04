@@ -51,6 +51,18 @@ Currently the only tested mechanism of data transport has been on the COM4 USB s
 
 Currently there are several candidate command serialization schemes, all of which are different states of implementation and test.  Below is a list of each and notes on state of development and requirements known.
 
+**Deserialization Speed Results**
+Testing a single command to uplink a 28-byte file.
+
+| Serialization | First Run Deserialization | Second Run Seserialization |
+| *-- | *-- | *-- |
+| protobuf-net | untested | untested |
+| JSON.NET | 24062ms | 13ms |
+| System.Text.Json | 8317ms | 214ms |
+| SimpleJson | 3234ms | 33ms|
+
+
+
 #### Protocol Buffers (`protobuf-net`)
 This is stubbed out, but has not been tested beyond getting Missing Assembly exceptions when run.  Needs further testing and documentation on what BCL libraries are required to make it run.
 
@@ -58,15 +70,11 @@ BCL assemblies required to run:
 - TBD
 
 #### JSON (Newtonsoft `JSON.NET`)
-This is stubbed out, but has not been tested at all.
+Basic testing of transferring a a small file has been confirmed.
 
-When run we get the following:
+JSON.NET is very slow on the first call while all of the infrastucture is interpreted
 
-```
-TypeRef ResolutionScope not yet handled (16) for .JsonLibrary inApp:  image /meadow0/App.exe
-```
-
-Even with the following files deployed, we get the above error:
+The following files were deployed, but is likely far more than necessary.  This list needs to be trimmed to those actually needed.
 
 ```
 /meadow0/Meadow.dll
@@ -99,15 +107,11 @@ Even with the following files deployed, we get the above error:
 
 
 #### JSON (`System.Text.Json`)
-This is stubbed out, but has not been tested at all.
+Basic testing of transferring a a small file has been confirmed.
 
-When run we get the following:
+System.Text.Json is slow on the first call while all of the infrastucture is interpreted, but significantly better than JSON.NET.
 
-```
-TypeRef ResolutionScope not yet handled (16) for .JsonLibrary inApp:  image /meadow0/App.exe
-```
-
-Even with the following files deployed, we get the above error:
+The following files were deployed, but is likely far more than necessary.  This list needs to be trimmed to those actually needed.
 
 ```
 /meadow0/Meadow.dll
@@ -141,6 +145,10 @@ Even with the following files deployed, we get the above error:
 
 #### JSON (`SimpleJson`)
 This has been tested the most.  Currently small files (100 bytes) transfer just fine.  Transferring a 6k file transferred all bytes successfully, but it was unable to deserialize to object.  It may be that the library is limited in its capacity to handle large strings (the file is Base64-encoded into a field).  Specific limits have not been narrowed.
+
+Basic testing of transferring a a small file has been confirmed.
+
+SimpleJson, not surprisingly, is the fastest deserializer tested so far.
 
 BCL assemblies required to run:
 - `System.Memory.dll`

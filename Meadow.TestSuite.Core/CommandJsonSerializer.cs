@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -19,14 +20,25 @@ namespace Meadow.TestsSuite
         {
             Console.WriteLine($" {this.GetType().Name} Deserializing with {this.UseLibrary}...");
 
-            switch (UseLibrary)
+            var sw = new Stopwatch();
+
+            try
             {
-                case JsonLibrary.SimpleJson:
-                    return DeserializeSimpleJson(commandPayload);
-                case JsonLibrary.JsonDotNet:
-                    return DeserializeNewtonsoft(commandPayload);
-                default:
-                    return DeserializeSystemTextJson(commandPayload);
+                sw.Start();
+                switch (UseLibrary)
+                {
+                    case JsonLibrary.SimpleJson:
+                        return DeserializeSimpleJson(commandPayload);
+                    case JsonLibrary.JsonDotNet:
+                        return DeserializeNewtonsoft(commandPayload);
+                    default:
+                        return DeserializeSystemTextJson(commandPayload);
+                }
+            }
+            finally
+            {
+                sw.Stop();
+                Console.WriteLine($" Deserilization took {sw.ElapsedMilliseconds}ms");
             }
         }
 
@@ -42,9 +54,7 @@ namespace Meadow.TestsSuite
                     case CommandType.UplinkFile:
                         Console.WriteLine($" Uplink File received.  Extracting payload...");
 
-                        var ufc = System.Text.Json.JsonSerializer.Deserialize<UplinkFileCommand>(json);
-                        ProcessCommand(ufc);
-                        break;
+                        return System.Text.Json.JsonSerializer.Deserialize<UplinkFileCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -71,9 +81,7 @@ namespace Meadow.TestsSuite
                 {
                     case CommandType.UplinkFile:
                         Console.WriteLine($" Uplink File received.  Extracting payload...");
-                        var ufc = SimpleJson.SimpleJson.DeserializeObject<UplinkFileCommand>(json);
-                        ProcessCommand(ufc);
-                    break;
+                        return SimpleJson.SimpleJson.DeserializeObject<UplinkFileCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -89,52 +97,6 @@ namespace Meadow.TestsSuite
             return null;
         }
 
-        private void ProcessCommand(TestCommand command)
-        {
-            // TODO: push the processing to the actual command instance
-            if(command is UplinkFileCommand)
-            {
-                var ufc = command as UplinkFileCommand;
-
-                if (ufc == null)
-                {
-                    Console.WriteLine($" Deserializer returned null.");
-                }
-                else
-                {
-                    Console.WriteLine($" Data: {ufc.FileData.Length} Base64 chars");
-                    Console.WriteLine($" Destination: {ufc.Destination}");
-
-                    if (string.IsNullOrEmpty(ufc.Destination))
-                    {
-                        Console.WriteLine($" Invalid/missing file destination");
-                    }
-                    else
-                    {
-                        var di = new DirectoryInfo(Path.GetDirectoryName(ufc.Destination));
-                        if (!di.Exists)
-                        {
-                            Console.WriteLine($" Creating directory {di.FullName}");
-                            di.Create();
-                        }
-                        var data = Convert.FromBase64String(ufc.FileData);
-                        var fi = new FileInfo(ufc.Destination); 
-                        if(fi.Exists)
-                        {
-                            Console.WriteLine("Destination file exists.  Overwriting.");
-                        }
-
-                        File.WriteAllBytes(ufc.Destination, data);
-
-                        fi.Refresh();
-
-                        Console.WriteLine($"Destination file verified to be {fi.Length} bytes.");
-                    }
-                }
-            }
-        }
-
-
         private TestCommand DeserializeNewtonsoft(ReadOnlySpan<byte> commandPayload)
         {
             try
@@ -146,9 +108,7 @@ namespace Meadow.TestsSuite
                 {
                     case CommandType.UplinkFile:
                         Console.WriteLine($" Uplink File received.  Extracting payload...");
-                        var ufc = Newtonsoft.Json.JsonConvert.DeserializeObject<UplinkFileCommand>(json);
-                        ProcessCommand(ufc);
-                        break;
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<UplinkFileCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
