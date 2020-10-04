@@ -53,12 +53,22 @@ namespace Meadow.TestSuite
 
                 progress += steps;
                 Debug.WriteLine($"{progress}%");
-//                Thread.Sleep(10);
+                
+                // oddly sometimes (on first run since power?) this delay is required, but once it's worked once, it can be ignored.
+                // no idea yet WTF is going on there.
+//                Thread.Sleep(100);
             }
             Debug.WriteLine($"100%");
             var et = Environment.TickCount - start;
-            var throughput = data.Length * 1000 / et;
-            Debug.WriteLine($"Effective throughput: {throughput}B/sec");
+            if (et <= 0)
+            {
+                Debug.WriteLine($"Transfer too fast to measure");
+            }
+            else
+            {
+                var throughput = data.Length * 1000 / et;
+                Debug.WriteLine($"Effective throughput: {throughput}B/sec");
+            }
             SerialPort.Close();
 
         }

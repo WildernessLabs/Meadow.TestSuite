@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SampleAssets\test_text.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SampleAssets\test_text.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.IO.Ports" Version="4.7.0" />
   </ItemGroup>
 

@@ -56,7 +56,9 @@ namespace Meadow.TestSuite
             var p = new Program();
             
             p.Start();
-            p.UplinkAssembly(@"C:\Repos\WildernessLabs\Meadow.TestSuite\Tests.Meadow.Core\bin\Debug\net472\Tests.Meadow.Core.dll");            
+
+            //p.UplinkAssembly(@"C:\Repos\WildernessLabs\Meadow.TestSuite\Tests.Meadow.Core\bin\Debug\net472\Tests.Meadow.Core.dll");
+            p.UplinkAssembly(@".\\SampleAssets\\test_text.txt");
         }
 
         public TestDirector Director { get; private set; }
@@ -66,7 +68,7 @@ namespace Meadow.TestSuite
             Console.WriteLine("Hello Test!");
 
             Director = new TestDirector(
-                new WorkerSerialTransport<CommandJsonSerializer>("COM12"));
+                new WorkerSerialTransport<CommandJsonSerializer>("COM12", 9600));
         }
 
         public void UplinkAssembly(string assemblyPath)
