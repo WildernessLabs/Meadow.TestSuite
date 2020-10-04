@@ -27,7 +27,7 @@ namespace MeadowApp
         {
             Port = port;
 
-            Serializer = serializer;
+            Serializer = serializer;            
 
             m_rxTimeoutTimer = new Timer(ReceiveTimeoutTimerProc, null, Timeout.Infinite, Timeout.Infinite);
         }

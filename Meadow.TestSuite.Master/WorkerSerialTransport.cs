@@ -17,6 +17,8 @@ namespace Meadow.TestSuite
         public WorkerSerialTransport(string serialPort, int baudRate = 9600)
         {
             SerialPort = new SerialPort(serialPort, baudRate);
+
+            (Serializer as CommandJsonSerializer).UseLibrary = CommandJsonSerializer.JsonLibrary.SystemTextJson;
         }
 
         public override void DeliverCommand(TestCommand command)

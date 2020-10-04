@@ -148,6 +148,19 @@ namespace Meadow.TestsSuite
 
         public byte[] Serialize(TestCommand command)
         {
+            switch (UseLibrary)
+            {
+                case JsonLibrary.SimpleJson:
+                    return SerializeSimpleJson(command);
+                case JsonLibrary.JsonDotNet:
+                    return SerializeNewtonsoft(command);
+                default:
+                    return SerializeSystemTextJson(command);
+            }
+        }
+
+        private byte[] SerializeSimpleJson(TestCommand command)
+        {
             Console.WriteLine($" {this.GetType().Name} Deserializing...");
 
             try
@@ -155,6 +168,46 @@ namespace Meadow.TestsSuite
                 using (var stream = new MemoryStream())
                 {
                     var json = SimpleJson.SimpleJson.SerializeObject(command);
+                    return Encoding.ASCII.GetBytes(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($" Failed to serialize command: {ex.Message}");
+            }
+
+            return null;
+        }
+
+        private byte[] SerializeNewtonsoft(TestCommand command)
+        {
+            Console.WriteLine($" {this.GetType().Name} Deserializing...");
+
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    var json = Newtonsoft.Json.JsonConvert.SerializeObject(command);
+                    return Encoding.ASCII.GetBytes(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($" Failed to serialize command: {ex.Message}");
+            }
+
+            return null;
+        }
+
+        private byte[] SerializeSystemTextJson(TestCommand command)
+        {
+            Console.WriteLine($" {this.GetType().Name} Deserializing...");
+
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    var json = System.Text.Json.JsonSerializer.Serialize(command);
                     return Encoding.ASCII.GetBytes(json);
                 }
             }

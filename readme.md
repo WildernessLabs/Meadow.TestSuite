@@ -54,11 +54,94 @@ Currently there are several candidate command serialization schemes, all of whic
 #### Protocol Buffers (`protobuf-net`)
 This is stubbed out, but has not been tested beyond getting Missing Assembly exceptions when run.  Needs further testing and documentation on what BCL libraries are required to make it run.
 
-#### JSON (`JSON.NET`)
+BCL assemblies required to run:
+- TBD
+
+#### JSON (Newtonsoft `JSON.NET`)
 This is stubbed out, but has not been tested at all.
+
+When run we get the following:
+
+```
+TypeRef ResolutionScope not yet handled (16) for .JsonLibrary inApp:  image /meadow0/App.exe
+```
+
+Even with the following files deployed, we get the above error:
+
+```
+/meadow0/Meadow.dll
+/meadow0/mscorlib.dll
+/meadow0/System.dll
+/meadow0/App.exe
+/meadow0/Meadow.TestSuite.Core.dll
+/meadow0/System.Core.dll
+/meadow0/System.Memory.dll
+/meadow0/System.Runtime.CompilerServices.Unsafe.dll
+/meadow0/Microsoft.Bcl.AsyncInterfaces.dll
+/meadow0/System.Buffers.dll
+/meadow0/System.Text.Encodings.Web.dll
+/meadow0/System.Threading.Tasks.Extensions.dll
+/meadow0/System.ValueTuple.dll
+/meadow0/System.Text.Json.dll
+/meadow0/System.Numerics.Vectors.dll
+/meadow0/Mono.Security.dll
+/meadow0/System.Runtime.Serialization.dll
+/meadow0/System.ServiceModel.Internals.dll
+/meadow0/System.Numerics.dll
+/meadow0/System.Transactions.dll
+/meadow0/System.EnterpriseServices.dll
+/meadow0/System.Data.dll
+/meadow0/System.Configuration.dll
+/meadow0/System.Security.dll
+/meadow0/System.Xml.Linq.dll
+/meadow0/System.Xml.dll
+```
+
 
 #### JSON (`System.Text.Json`)
 This is stubbed out, but has not been tested at all.
 
+When run we get the following:
+
+```
+TypeRef ResolutionScope not yet handled (16) for .JsonLibrary inApp:  image /meadow0/App.exe
+```
+
+Even with the following files deployed, we get the above error:
+
+```
+/meadow0/Meadow.dll
+/meadow0/mscorlib.dll
+/meadow0/System.dll
+/meadow0/App.exe
+/meadow0/Meadow.TestSuite.Core.dll
+/meadow0/System.Core.dll
+/meadow0/System.Memory.dll
+/meadow0/System.Runtime.CompilerServices.Unsafe.dll
+/meadow0/Microsoft.Bcl.AsyncInterfaces.dll
+/meadow0/System.Buffers.dll
+/meadow0/System.Text.Encodings.Web.dll
+/meadow0/System.Threading.Tasks.Extensions.dll
+/meadow0/System.ValueTuple.dll
+/meadow0/System.Text.Json.dll
+/meadow0/System.Numerics.Vectors.dll
+/meadow0/Mono.Security.dll
+/meadow0/System.Runtime.Serialization.dll
+/meadow0/System.ServiceModel.Internals.dll
+/meadow0/System.Numerics.dll
+/meadow0/System.Transactions.dll
+/meadow0/System.EnterpriseServices.dll
+/meadow0/System.Data.dll
+/meadow0/System.Configuration.dll
+/meadow0/System.Security.dll
+/meadow0/System.Xml.Linq.dll
+/meadow0/System.Xml.dll
+```
+
+
 #### JSON (`SimpleJson`)
 This has been tested the most.  Currently small files (100 bytes) transfer just fine.  Transferring a 6k file transferred all bytes successfully, but it was unable to deserialize to object.  It may be that the library is limited in its capacity to handle large strings (the file is Base64-encoded into a field).  Specific limits have not been narrowed.
+
+BCL assemblies required to run:
+- `System.Memory.dll`
+- `System.Runtime.CompilerServices.Unsafe.dll`
