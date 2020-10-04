@@ -46,7 +46,7 @@ namespace Meadow.TestsSuite
         {
             try
             {                
-                var json = Encoding.ASCII.GetString(commandPayload.ToArray());
+                var json = Encoding.UTF8.GetString(commandPayload.ToArray());
                 var command = System.Text.Json.JsonSerializer.Deserialize<TestCommand>(json);
 
                 switch (command.CommandType)
@@ -74,7 +74,7 @@ namespace Meadow.TestsSuite
         {
             try
             {
-                var json = Encoding.ASCII.GetString(commandPayload.ToArray());
+                var json = Encoding.UTF8.GetString(commandPayload.ToArray());
                 var command = SimpleJson.SimpleJson.DeserializeObject<TestCommand>(json);
 
                 switch(command.CommandType)
@@ -101,7 +101,7 @@ namespace Meadow.TestsSuite
         {
             try
             {
-                var json = Encoding.ASCII.GetString(commandPayload.ToArray());
+                var json = Encoding.UTF8.GetString(commandPayload.ToArray());
                 var command = Newtonsoft.Json.JsonConvert.DeserializeObject<TestCommand>(json);
 
                 switch (command.CommandType)
@@ -146,7 +146,7 @@ namespace Meadow.TestsSuite
                 using (var stream = new MemoryStream())
                 {
                     var json = SimpleJson.SimpleJson.SerializeObject(command);
-                    return Encoding.ASCII.GetBytes(json);
+                    return Encoding.UTF8.GetBytes(json);
                 }
             }
             catch (Exception ex)
@@ -166,7 +166,7 @@ namespace Meadow.TestsSuite
                 using (var stream = new MemoryStream())
                 {
                     var json = Newtonsoft.Json.JsonConvert.SerializeObject(command);
-                    return Encoding.ASCII.GetBytes(json);
+                    return Encoding.UTF8.GetBytes(json);
                 }
             }
             catch (Exception ex)
@@ -186,7 +186,7 @@ namespace Meadow.TestsSuite
                 using (var stream = new MemoryStream())
                 {
                     var json = System.Text.Json.JsonSerializer.Serialize(command, command.GetType());
-                    return Encoding.ASCII.GetBytes(json);
+                    return Encoding.UTF8.GetBytes(json);
                 }
             }
             catch (Exception ex)

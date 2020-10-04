@@ -14,8 +14,8 @@ namespace Meadow.TestSuite
             
             p.Start();
 
-            //p.UplinkAssembly(@"C:\Repos\WildernessLabs\Meadow.TestSuite\Tests.Meadow.Core\bin\Debug\net472\Tests.Meadow.Core.dll");
-            p.UplinkAssembly(@".\\SampleAssets\\test_text.txt");
+            //p.UplinkAssembly(@".\\SampleAssets\\test_text.txt");
+            p.UplinkAssembly(@"..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Meadow.Core.dll");
         }
 
         public TestDirector Director { get; private set; }

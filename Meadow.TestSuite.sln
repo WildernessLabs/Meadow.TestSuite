@@ -8,8 +8,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSuite.Unit.Tests", "Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.TestSuite.Core", "Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj", "{F77A2AA8-DDC5-4238-B8F4-E191D7B98F7C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.TestSuite.Director", "Meadow.TestSuite.Master\Meadow.TestSuite.Director.csproj", "{31AABDA3-1A03-4B43-B21E-BFEFC0DA449E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Meadow.Core", "Tests.Meadow.Core\Tests.Meadow.Core.csproj", "{62AF01CF-769B-454F-85BC-4CDD571ADD8F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Core", "..\Meadow.Core\source\Meadow.Core\Meadow.Core.csproj", "{14185571-1BE0-4BE8-B9CA-E598E4737544}"
@@ -18,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{085FCF8D-5
 	ProjectSection(SolutionItems) = preProject
 		readme.md = readme.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.TestSuite.Director", "Meadow.TestSuite.Director\Meadow.TestSuite.Director.csproj", "{88D83E30-8507-4007-9F60-69A57D0A6636}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +37,6 @@ Global
 		{F77A2AA8-DDC5-4238-B8F4-E191D7B98F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F77A2AA8-DDC5-4238-B8F4-E191D7B98F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F77A2AA8-DDC5-4238-B8F4-E191D7B98F7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31AABDA3-1A03-4B43-B21E-BFEFC0DA449E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31AABDA3-1A03-4B43-B21E-BFEFC0DA449E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31AABDA3-1A03-4B43-B21E-BFEFC0DA449E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31AABDA3-1A03-4B43-B21E-BFEFC0DA449E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{62AF01CF-769B-454F-85BC-4CDD571ADD8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62AF01CF-769B-454F-85BC-4CDD571ADD8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62AF01CF-769B-454F-85BC-4CDD571ADD8F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
@@ -53,6 +49,10 @@ Global
 		{14185571-1BE0-4BE8-B9CA-E598E4737544}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14185571-1BE0-4BE8-B9CA-E598E4737544}.Release|Any CPU.Build.0 = Release|Any CPU
 		{14185571-1BE0-4BE8-B9CA-E598E4737544}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{88D83E30-8507-4007-9F60-69A57D0A6636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88D83E30-8507-4007-9F60-69A57D0A6636}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88D83E30-8507-4007-9F60-69A57D0A6636}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88D83E30-8507-4007-9F60-69A57D0A6636}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

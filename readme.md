@@ -74,6 +74,8 @@ Basic testing of transferring a a small file has been confirmed.
 
 JSON.NET is very slow on the first call while all of the infrastucture is interpreted
 
+With a file of 6247 bytes, deserialization fails with the application giving no output.  The application completely stops, apparently indefinitely (5 minutes isn't enough time for it to recover).
+
 The following files were deployed, but is likely far more than necessary.  This list needs to be trimmed to those actually needed.
 
 ```
@@ -111,6 +113,15 @@ Basic testing of transferring a a small file has been confirmed.
 
 System.Text.Json is slow on the first call while all of the infrastucture is interpreted, but significantly better than JSON.NET.
 
+With a file of 6247 bytes, deserialization fails with:
+
+```
+App: Command received!
+App:  CommandJsonSerializer Deserializing with SystemTextJson...
+App:  Failed to deserialize command: 'D' is invalid after a value. Expected either ',', '}', or ']'. Path: $ | LineNumber: 0 | BytePositionInLine: 257.
+App:  Deserilization took 11146ms
+```
+
 The following files were deployed, but is likely far more than necessary.  This list needs to be trimmed to those actually needed.
 
 ```
@@ -146,9 +157,18 @@ The following files were deployed, but is likely far more than necessary.  This 
 #### JSON (`SimpleJson`)
 This has been tested the most.  Currently small files (100 bytes) transfer just fine.  Transferring a 6k file transferred all bytes successfully, but it was unable to deserialize to object.  It may be that the library is limited in its capacity to handle large strings (the file is Base64-encoded into a field).  Specific limits have not been narrowed.
 
+SimpleJson, not surprisingly, is the fastest deserializer tested so far.
+
 Basic testing of transferring a a small file has been confirmed.
 
-SimpleJson, not surprisingly, is the fastest deserializer tested so far.
+With a file of 6247 bytes, deserialization fails with:
+
+```
+App: Command received!
+App:  CommandJsonSerializer Deserializing with SimpleJson...
+App:  Failed to deserialize command: Invalid JSON string
+App:  Deserilization took 25ms
+```
 
 BCL assemblies required to run:
 - `System.Memory.dll`
