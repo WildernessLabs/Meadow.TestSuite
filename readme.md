@@ -55,7 +55,7 @@ Currently there are several candidate command serialization schemes, all of whic
 Testing a single command to uplink a 28-byte file.
 
 | Serialization | First Run Deserialization | Second Run Seserialization |
-| *-- | *-- | *-- |
+| --- | --- | --- |
 | protobuf-net | untested | untested |
 | JSON.NET | 24062ms | 13ms |
 | System.Text.Json | 8317ms | 214ms |
