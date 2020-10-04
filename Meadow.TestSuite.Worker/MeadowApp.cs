@@ -28,7 +28,7 @@ namespace MeadowApp
 
 //            var serializer = new CommandCustomSerializer();
             var serializer = new CommandJsonSerializer();
-//            serializer.UseLibrary = CommandJsonSerializer.JsonLibrary.JsonDotNet;
+            serializer.UseLibrary = JsonLibrary.JsonDotNet;
 
             var listener = new SerialListener(port, serializer);
 

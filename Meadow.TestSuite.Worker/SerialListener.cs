@@ -44,7 +44,8 @@ namespace MeadowApp
                 Console.WriteLine($" Failed to open serial port: {ex.Message}");
                 return;
             }
-            
+
+            Thread.Sleep(100); // give enough time to pull any driver data from the UART before clearing it
             Port.ClearReceiveBuffer();
             Port.DataReceived += Port_DataReceived;
             Port.BufferOverrun += (s, e) =>
@@ -272,7 +273,7 @@ namespace MeadowApp
                         m_buffer = new byte[BitConverter.ToInt32(m_header.ToArray(), 4)];
                         Console.WriteLine($"Allocated.");
 
-                        //                    m_rxTimeoutTimer.Change(CommandTimeoutSeconds * 1000, Timeout.Infinite);
+                        m_rxTimeoutTimer.Change(CommandTimeoutSeconds * 1000, Timeout.Infinite);
 
                         // any remaining data copy to the buffer
                         var count = length - index;
@@ -281,6 +282,11 @@ namespace MeadowApp
                             Array.Copy(data, index, m_buffer, 0, count);
                         }
                         m_remaining = m_buffer.Length - count;
+
+                        if (m_remaining == 0)
+                        {
+                            ProcessMessageInBuffer();
+                        }
                     }
                 }
                 else
@@ -291,19 +297,11 @@ namespace MeadowApp
 
                     if (m_remaining == 0)
                     {
-                        // stop the timer
-                        m_rxTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
-
-                        // we've finished the packet
-                        Console.WriteLine("Command received!");
-                        var c = Serializer?.Deserialize(m_buffer);
-                        CommandReceived?.Invoke(c);
-                        m_buffer = null;
-                        m_header.Clear();
+                        ProcessMessageInBuffer();
                     }
                     else
                     {
-                        //rest the timer
+                        //reset the timer
                         m_rxTimeoutTimer.Change(CommandTimeoutSeconds * 1000, Timeout.Infinite);
                     }
 
@@ -316,9 +314,34 @@ namespace MeadowApp
             }
         }
 
+        private void ProcessMessageInBuffer()
+        {
+            // stop the timer
+            m_rxTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+            // we've finished the packet
+            Console.WriteLine("Command received!");
+            TestCommand c = null;
+            try
+            {
+                c = Serializer?.Deserialize(m_buffer);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to deserialize: {ex.Message}");
+            }
+            if (c != null)
+            {
+                CommandReceived?.Invoke(c);
+            }
+
+            m_buffer = null;
+            m_header.Clear();
+        }
+
         private void ReceiveTimeoutTimerProc(object o)
         {
-            Console.WriteLine("Timeout waiting for command data!");
+            Console.WriteLine($"Timeout waiting for command data.  Still waiting on {m_remaining} bytes.");
             m_remaining = 0;
             m_header.Clear();
             m_buffer = null;

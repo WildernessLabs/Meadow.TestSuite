@@ -18,7 +18,7 @@ namespace Meadow.TestSuite
         {
             SerialPort = new SerialPort(serialPort, baudRate);
 
-            (Serializer as CommandJsonSerializer).UseLibrary = CommandJsonSerializer.JsonLibrary.SystemTextJson;
+            (Serializer as CommandJsonSerializer).UseLibrary = JsonLibrary.SystemTextJson;
         }
 
         public override void DeliverCommand(TestCommand command)
