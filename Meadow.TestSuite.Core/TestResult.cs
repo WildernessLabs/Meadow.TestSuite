@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Meadow.TestsSuite
+namespace Meadow.TestSuite
 {
     public class TestResult
     {

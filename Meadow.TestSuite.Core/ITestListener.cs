@@ -1,4 +1,4 @@
-﻿namespace Meadow.TestsSuite
+﻿namespace Meadow.TestSuite
 {
     public delegate void CommandReceivedHandler(TestCommand command);
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using Meadow.TestsSuite;
+using Meadow.TestSuite;
 using Munit;
 
 namespace MeadowLibary

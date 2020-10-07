@@ -1,7 +1,7 @@
 ﻿using Meadow.Devices;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("TestSuite.Unit.tests")]
+[assembly: InternalsVisibleTo("TestSuite.Unit.Tests")]
 
 namespace MeadowApp
 {

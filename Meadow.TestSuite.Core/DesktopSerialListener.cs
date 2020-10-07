@@ -1,16 +1,19 @@
-﻿using Meadow.Hardware;
-using Meadow.TestSuite;
-using System;
+﻿using System;
+using System.Diagnostics;
+using System.IO.Ports;
 using System.Text;
 using System.Threading;
 
-namespace MeadowApp
+namespace Meadow.TestSuite
 {
-    public class MeadowSerialListener : ByteArrayListener
+    /// <summary>
+    /// A class intended for tests only
+    /// </summary>
+    public class DesktopSerialListener : ByteArrayListener
     {
-        private ISerialPort Port { get; }
+        private SerialPort Port { get; }
 
-        public MeadowSerialListener(ISerialPort port, ICommandSerializer serializer)
+        public DesktopSerialListener(SerialPort port, ICommandSerializer serializer)
             : base(serializer)
         {
             Port = port;
@@ -18,33 +21,36 @@ namespace MeadowApp
 
         public override void StartListening()
         {
-            Console.WriteLine(" Opening serial port...");
+            Debug.WriteLine(" Opening serial port...");
             try
             {
-                Port.Open();
+                if (!Port.IsOpen)
+                {
+                    Port.Open();
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($" Failed to open serial port: {ex.Message}");
+                Debug.WriteLine($" Failed to open serial port: {ex.Message}");
                 return;
             }
 
             Thread.Sleep(100); // give enough time to pull any driver data from the UART before clearing it
-            Port.ClearReceiveBuffer();
+            Port.DiscardInBuffer();
             Port.DataReceived += Port_DataReceived;
-            Port.BufferOverrun += (s, e) =>
-            {
-                Console.WriteLine($" Port buffer overrun");
-            };
 
-
-            Console.WriteLine(" Listening for serial commands...");
-            var t = Encoding.ASCII.GetBytes(".");
+            Debug.WriteLine(" Listening for serial commands...");
             while (true)
             {
                 Thread.Sleep(1000);
-                Port.Write(t);
-                Console.WriteLine(".");
+
+                Debug.WriteLine(".");
+
+                if (!Port.IsOpen)
+                {
+                    Console.WriteLine($"Serial port closed");
+                    break;
+                }
 
                 if (Port.BytesToRead > 0)
                 {
@@ -65,5 +71,6 @@ namespace MeadowApp
             Port.Read(b, 0, b.Length);
             HandleData(b, 0, b.Length);
         }
+
     }
 }

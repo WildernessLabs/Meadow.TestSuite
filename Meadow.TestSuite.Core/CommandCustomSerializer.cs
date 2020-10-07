@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Meadow.TestsSuite
+namespace Meadow.TestSuite
 {
     public class CommandCustomSerializer : ICommandSerializer
     {

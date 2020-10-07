@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Meadow.TestsSuite
+namespace Meadow.TestSuite
 {
     public interface ICommandSerializer
     {

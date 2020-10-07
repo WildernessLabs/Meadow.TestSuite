@@ -1,6 +1,6 @@
 ﻿using Meadow;
 using Meadow.Devices;
-using Meadow.TestsSuite;
+using Meadow.TestSuite;
 using SimpleJson;
 using System;
 using System.IO;
@@ -28,9 +28,9 @@ namespace MeadowApp
 
 //            var serializer = new CommandCustomSerializer();
             var serializer = new CommandJsonSerializer();
-            serializer.UseLibrary = JsonLibrary.JsonDotNet;
+            serializer.UseLibrary = JsonLibrary.SystemTextJson;
 
-            var listener = new SerialListener(port, serializer);
+            var listener = new MeadowSerialListener(port, serializer);
             listener.CommandReceived += Listener_CommandReceived;
             listener.StartListening();
 

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Meadow.TestsSuite;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("TestSuite.Unit.Tests")]
 
 namespace Meadow.TestSuite
 {

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Meadow.TestsSuite
+namespace Meadow.TestSuite
 {
     public class TestRegistry : IEnumerable<WorkerTestDescriptor>
     {

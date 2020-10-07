@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace Meadow.TestsSuite
+namespace Meadow.TestSuite
 {
     public class TestDirector
     {

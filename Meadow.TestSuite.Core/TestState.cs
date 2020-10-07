@@ -1,4 +1,4 @@
-﻿namespace Meadow.TestsSuite
+﻿namespace Meadow.TestSuite
 {
     public enum TestState
     {

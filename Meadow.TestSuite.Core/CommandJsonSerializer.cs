@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Meadow.TestsSuite
+namespace Meadow.TestSuite
 {
     public enum JsonLibrary
     {

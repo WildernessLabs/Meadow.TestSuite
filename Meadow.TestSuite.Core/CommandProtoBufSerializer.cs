@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Meadow.TestsSuite
+namespace Meadow.TestSuite
 {
     public class CommandProtoBufSerializer : ICommandSerializer
     {

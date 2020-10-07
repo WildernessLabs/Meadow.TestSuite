@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Threading;
-using Meadow.TestsSuite;
+using Meadow.TestSuite;
 
 namespace Meadow.TestSuite
 {
@@ -14,10 +15,21 @@ namespace Meadow.TestSuite
     {
         private SerialPort SerialPort { get; }
 
+        internal bool ExternalManageSerialPort { get; set; } = false;
+        
+        public WorkerSerialTransport(SerialPort serialPort)
+        {
+            SerialPort = serialPort;
+
+            // TODO: improve/fix this ugliness
+            (Serializer as CommandJsonSerializer).UseLibrary = JsonLibrary.SystemTextJson;
+        }
+
         public WorkerSerialTransport(string serialPort, int baudRate = 9600)
         {
             SerialPort = new SerialPort(serialPort, baudRate);
 
+            // TODO: improve/fix this ugliness
             (Serializer as CommandJsonSerializer).UseLibrary = JsonLibrary.SystemTextJson;
         }
 
@@ -25,7 +37,10 @@ namespace Meadow.TestSuite
         {
             var data = Serializer.Serialize(command).ToArray();
 
-            SerialPort.Open();
+            if (!SerialPort.IsOpen)
+            {
+                SerialPort.Open();
+            }
 
             // chunk the send since meadow has limited resources
 
@@ -51,6 +66,7 @@ namespace Meadow.TestSuite
                 var c = toWrite > bufferSize ? bufferSize : toWrite;
 
                 SerialPort.Write(data , index, c);
+                index += c;
                 toWrite -= c;
 
                 progress += steps;
@@ -71,7 +87,11 @@ namespace Meadow.TestSuite
                 var throughput = data.Length * 1000 / et;
                 Debug.WriteLine($"Effective throughput: {throughput}B/sec");
             }
-            SerialPort.Close();
+
+            if (!ExternalManageSerialPort)
+            {
+                SerialPort.Close();
+            }
 
         }
     }

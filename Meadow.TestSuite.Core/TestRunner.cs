@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Meadow.TestsSuite
+namespace Meadow.TestSuite
 {
     public class TestRunner
     {
