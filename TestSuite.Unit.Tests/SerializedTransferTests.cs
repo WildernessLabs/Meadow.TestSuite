@@ -7,6 +7,23 @@ using Xunit;
 
 namespace TestSuite.Unit.Tests
 {
+    // NOTE: These tests require a serial port connected to a Meadow with the Worker running
+    // They are intended to test the Director only
+    public class DirectorUplinkTests
+    {
+        [Fact]
+        public void UplinkAssemblyAndGetTests()
+        {
+            // inspect the assembly locally
+
+            // uplink the assembly
+
+            // ask the Worker what tests it found
+
+            // make sure the lists match
+        }
+    }
+
     // NOTE: These tests require a serial port and that the TX and RX are tied together on that port
     public class SerializedTransferTests
     {
@@ -24,7 +41,7 @@ namespace TestSuite.Unit.Tests
 
             UplinkFileCommand rxCmd = null;
 
-            listener.CommandReceived += (command) =>
+            listener.CommandReceived += (l, command) =>
             {
                 rxCmd = command as UplinkFileCommand;
             };
@@ -65,7 +82,7 @@ namespace TestSuite.Unit.Tests
 
             UplinkFileCommand rxCmd = null;
 
-            listener.CommandReceived += (command) =>
+            listener.CommandReceived += (l, command) =>
             {
                 rxCmd = command as UplinkFileCommand;
             };

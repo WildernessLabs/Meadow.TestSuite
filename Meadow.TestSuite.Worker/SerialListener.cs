@@ -43,8 +43,6 @@ namespace MeadowApp
             while (true)
             {
                 Thread.Sleep(1000);
-                Port.Write(t);
-                Console.WriteLine(".");
 
                 if (Port.BytesToRead > 0)
                 {
@@ -57,6 +55,30 @@ namespace MeadowApp
             }
         }
 
+        public override void SendResult(object result)
+        {
+            if(result == null)
+            {
+                result = "ok.";
+            }
+
+            Console.WriteLine($"Result is {result}. Serializing...");
+
+            var buffer = Serializer.SerializeResult(result);
+
+            // send length
+            Console.WriteLine($"Sending length of {buffer.Length}");
+            var lengthBytes = BitConverter.GetBytes(buffer.Length);
+            Console.WriteLine(BitConverter.ToString(lengthBytes));
+            Port.Write(lengthBytes);
+
+            Thread.Sleep(1000); // TEST CODE
+
+            // send result
+            Console.WriteLine($"Sending {buffer.Length} bytes");
+            Port.Write(buffer);
+        }
+        
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             if (Port.BytesToRead <= 0) return;

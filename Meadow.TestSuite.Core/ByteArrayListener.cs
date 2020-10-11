@@ -1,5 +1,4 @@
-﻿using Meadow.TestSuite;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -11,6 +10,7 @@ namespace Meadow.TestSuite
     public abstract class ByteArrayListener : ITestListener
     {
         public abstract void StartListening();
+        public abstract void SendResult(object result);
 
         public event CommandReceivedHandler CommandReceived;
 
@@ -280,7 +280,7 @@ namespace Meadow.TestSuite
 
             if (c != null)
             {
-                CommandReceived?.Invoke(c);
+                CommandReceived?.Invoke(this, c);
             }
 
             m_buffer = null;

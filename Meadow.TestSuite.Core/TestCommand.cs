@@ -1,4 +1,5 @@
-﻿using ProtoBuf;
+﻿using System;
+using System.IO;
 
 namespace Meadow.TestSuite
 {
@@ -11,10 +12,57 @@ namespace Meadow.TestSuite
 
         public string Destination { get; set; }
         public string FileData { get; set; }
+
+        public override void Execute()
+        {
+            Console.WriteLine($" Data: {FileData.Length} Base64 chars");
+            Console.WriteLine($" Destination: {Destination}");
+
+            if (string.IsNullOrEmpty(Destination))
+            {
+                Console.WriteLine($" Invalid/missing file destination");
+            }
+            else
+            {
+                var di = new DirectoryInfo(Path.GetDirectoryName(Destination));
+                if (!di.Exists)
+                {
+                    Console.WriteLine($" Creating directory {di.FullName}");
+                    di.Create();
+                }
+                var data = Convert.FromBase64String(FileData);
+                var fi = new FileInfo(Destination);
+                if (fi.Exists)
+                {
+                    Console.WriteLine("Destination file exists.  Overwriting.");
+                }
+
+                File.WriteAllBytes(Destination, data);
+
+                fi.Refresh();
+
+                Console.WriteLine($"Destination file verified to be {fi.Length} bytes.");
+
+                Result = "File written.";
+            }
+        }
     }
 
     public class TestCommand
     {
         public CommandType CommandType { get; set; }
+        public string Result { get; set; }
+
+        public virtual void BeforeExecute()
+        {
+        }
+        
+        public virtual void Execute()
+        {
+        }
+
+        public virtual void AfterExecute()
+        {
+        }
     }
 }

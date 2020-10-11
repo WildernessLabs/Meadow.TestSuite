@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Meadow.TestSuite.Director": {
+      "commandName": "Project",
+      "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Tests.Meadow.Core\\bin\\Debug\\net472\\Tests.Meadow.Core.dll\""
+    }
+  }
+}

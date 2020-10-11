@@ -72,5 +72,9 @@ namespace Meadow.TestSuite
             HandleData(b, 0, b.Length);
         }
 
+        public override void SendResult(object result)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

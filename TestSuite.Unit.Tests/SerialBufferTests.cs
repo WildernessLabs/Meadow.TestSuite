@@ -68,7 +68,7 @@ namespace TestSuite.Unit.Tests
             var buffer = new byte[r.Next(10, 1024)];
             r.NextBytes(buffer);
 
-            this.CommandReceived += (c) =>
+            this.CommandReceived += (l, c) =>
             {
                 commandReceived = true;
             };
@@ -90,6 +90,11 @@ namespace TestSuite.Unit.Tests
             Assert.Null(this.m_buffer);
         }
 
+        public override void SendResult(object result)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void StartListening()
         {
             throw new NotImplementedException();
@@ -106,7 +111,12 @@ namespace TestSuite.Unit.Tests
                 return null;
             }
 
-            public byte[] Serialize(TestCommand command)
+            public byte[] SerializeCommand(TestCommand command)
+            {
+                throw new NotImplementedException();
+            }
+
+            public byte[] SerializeResult(object result)
             {
                 throw new NotImplementedException();
             }

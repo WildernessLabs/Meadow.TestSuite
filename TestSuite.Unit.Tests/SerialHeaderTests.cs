@@ -174,6 +174,11 @@ namespace TestSuite.Unit.Tests
             Assert.True(this.m_buffer.Length == 0x12345678);
         }
 
+        public override void SendResult(object result)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void StartListening()
         {
             throw new System.NotImplementedException();

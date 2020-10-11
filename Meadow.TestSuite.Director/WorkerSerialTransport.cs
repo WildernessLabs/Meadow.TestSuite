@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using Meadow.TestSuite;
@@ -35,7 +36,7 @@ namespace Meadow.TestSuite
 
         public override void DeliverCommand(TestCommand command)
         {
-            var data = Serializer.Serialize(command).ToArray();
+            var data = Serializer.SerializeCommand(command).ToArray();
 
             if (!SerialPort.IsOpen)
             {
@@ -86,6 +87,57 @@ namespace Meadow.TestSuite
             {
                 var throughput = data.Length * 1000 / et;
                 Debug.WriteLine($"Effective throughput: {throughput}B/sec");
+            }
+
+            // TODO: start a timeout - make this configurable
+            SerialPort.ReadTimeout = 30000;
+
+            // receive any result
+            // get length
+            var error = false;
+            Array.Clear(length, 0, 4);
+
+            var read = 0;
+            while (read < 4)
+            {
+                try
+                {
+                    read += SerialPort.Read(length, read, 4 - read);
+                }
+                catch (TimeoutException)
+                {
+                    Console.WriteLine("ERR: Timeout waiting on response");
+                    error = true;
+                    break;
+                }
+            }
+
+            if (!error)
+            {
+                read = 0;
+                var result = new byte[BitConverter.ToInt32(length)];
+
+                while (read < result.Length)
+                {
+                    //get data
+
+                    try
+                    {
+                        read += SerialPort.Read(result, read, result.Length - read);
+                    }
+                    catch (TimeoutException)
+                    {
+                        Console.WriteLine("ERR: Timeout waiting on response");
+                        error = true;
+                        break;
+                    }
+                }
+
+                if (!error)
+                {
+                    // TODO: pass the result back to the command
+                    Console.WriteLine(Encoding.UTF8.GetString(result));
+                }
             }
 
             if (!ExternalManageSerialPort)

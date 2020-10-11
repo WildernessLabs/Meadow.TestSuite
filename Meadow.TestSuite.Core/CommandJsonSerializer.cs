@@ -124,7 +124,7 @@ namespace Meadow.TestSuite
             return null;
         }
 
-        public byte[] Serialize(TestCommand command)
+        public byte[] SerializeCommand(TestCommand command)
         {
             switch (UseLibrary)
             {
@@ -137,7 +137,20 @@ namespace Meadow.TestSuite
             }
         }
 
-        private byte[] SerializeSimpleJson(TestCommand command)
+        public byte[] SerializeResult(object result)
+        {
+            switch (UseLibrary)
+            {
+                case JsonLibrary.SimpleJson:
+                    return SerializeSimpleJson(result);
+                case JsonLibrary.JsonDotNet:
+                    return SerializeNewtonsoft(result);
+                default:
+                    return SerializeSystemTextJson(result);
+            }
+        }
+
+        private byte[] SerializeSimpleJson(object payload)
         {
             Console.WriteLine($" {this.GetType().Name} Deserializing...");
 
@@ -145,7 +158,7 @@ namespace Meadow.TestSuite
             {
                 using (var stream = new MemoryStream())
                 {
-                    var json = SimpleJson.SimpleJson.SerializeObject(command);
+                    var json = SimpleJson.SimpleJson.SerializeObject(payload);
                     return Encoding.UTF8.GetBytes(json);
                 }
             }
@@ -157,7 +170,7 @@ namespace Meadow.TestSuite
             return null;
         }
 
-        private byte[] SerializeNewtonsoft(TestCommand command)
+        private byte[] SerializeNewtonsoft(object payload)
         {
             Console.WriteLine($" {this.GetType().Name} Deserializing...");
 
@@ -165,7 +178,7 @@ namespace Meadow.TestSuite
             {
                 using (var stream = new MemoryStream())
                 {
-                    var json = Newtonsoft.Json.JsonConvert.SerializeObject(command);
+                    var json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
                     return Encoding.UTF8.GetBytes(json);
                 }
             }
@@ -177,16 +190,18 @@ namespace Meadow.TestSuite
             return null;
         }
 
-        private byte[] SerializeSystemTextJson(TestCommand command)
+        private byte[] SerializeSystemTextJson(object payload)
         {
-            Console.WriteLine($" {this.GetType().Name} Deserializing...");
+            Console.WriteLine($" {this.GetType().Name} serializing...");
 
             try
             {
                 using (var stream = new MemoryStream())
                 {
-                    var json = System.Text.Json.JsonSerializer.Serialize(command, command.GetType());
-                    return Encoding.UTF8.GetBytes(json);
+                    var json = System.Text.Json.JsonSerializer.Serialize(payload, payload.GetType());
+                    var bytes = Encoding.UTF8.GetBytes(json);
+                    Console.WriteLine($" Serialized {bytes.Length} bytes");
+                    return bytes;
                 }
             }
             catch (Exception ex)

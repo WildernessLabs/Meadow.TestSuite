@@ -23,7 +23,7 @@ namespace Meadow.TestSuite
             return null;
         }
 
-        public byte[] Serialize(TestCommand command)
+        public byte[] SerializeCommand(TestCommand command)
         {
             Console.WriteLine(" Serializing...");
 
@@ -41,6 +41,11 @@ namespace Meadow.TestSuite
             }
 
             return null;
+        }
+
+        public byte[] SerializeResult(object result)
+        {
+            throw new NotImplementedException();
         }
     }
 }

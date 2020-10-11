@@ -5,6 +5,7 @@ namespace Meadow.TestSuite
     public interface ICommandSerializer
     {
         TestCommand Deserialize(ReadOnlySpan<byte> commandPayload);
-        byte[] Serialize(TestCommand command);
+        byte[] SerializeCommand(TestCommand command);
+        byte[] SerializeResult(object result);
     }
 }
