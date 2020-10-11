@@ -1,66 +1,25 @@
 ﻿using CommandLine;
 using System;
-using System.IO.Ports;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("TestSuite.Unit.Tests")]
 
 namespace Meadow.TestSuite
 {
-    public interface IOptions
-    {
-        string Port { get; }
-        int BaudRate { get; }
-    }
-
-    public class BaseOptions : IOptions
-    {
-        [Option('p', "port", Required = true, HelpText = "Serial Port (e.g. COM12)")]
-        public string Port { get; set; }
-        [Option('b', "baud-rate", Required = false, HelpText = "Baud rate.  Must match the Worker.")]
-        public int BaudRate { get; set; } = 9600;
-    }
-
-    [Verb("uplink", HelpText = "Uplink a file to the Meadow worker.")]
-    public class UplinkOptions : BaseOptions
-    {
-        [Option('s', "source", Required = true, HelpText = "Source file to uplink")]
-        public string Source { get; set; }
-        [Option('d', "destination", Required = false, HelpText = "Destination file name")]
-        public string Destination { get; set; }
-    }
-
-    [Verb("assembly", HelpText = "Assembly commands")]
-    public class AssemblyOptions : BaseOptions
-    {
-        [Option('l', "list", Required = false, HelpText = "List All Known Assemlies")]
-        public bool List { get; set; }
-    }
-
-    [Verb("test", HelpText = "Test Commands")]
-    public class TestOptions : BaseOptions
-    {
-        [Option('l', "list", Required = false, HelpText = "List All Known Tests")]
-        public bool List { get; set; }
-        [Option('e', "execute", Required = false, HelpText = "Execute the specified test")]
-        public string Execute { get; set; }
-    }
-
-    [Verb("result", HelpText = "Result Commands")]
-    public class ResultOptions : BaseOptions
-    {
-        [Option('l', "list", Required = false, HelpText = "List All Known Test Results")]
-        public bool List { get; set; }
-    }
+    // TEST command lines
+    //
+    // uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Meadow.Core.dll"
+    // assembly -l -p COM12
 
     class Program
     {
         static void Main(string[] args)
         {
             var r = CommandLine.Parser.Default
-            .ParseArguments<UplinkOptions>(args)
+            .ParseArguments<UplinkOptions, AssemblyOptions>(args)
             .MapResult(
                 (UplinkOptions o) => Launch(o),
+                (AssemblyOptions o) => Launch(o),
                 fail => -1
                 );
         }
@@ -81,7 +40,10 @@ namespace Meadow.TestSuite
             {
                 p.Uplink(director, options as UplinkOptions);
             }
-
+            else if (options is AssemblyOptions)
+            {
+                p.ProcessAssemblyCommand(director, options as AssemblyOptions);
+            }
             return 0;
         }
 
@@ -90,6 +52,13 @@ namespace Meadow.TestSuite
             Console.WriteLine($"Uplink {options.Source}");
 
             director.UplinkTestAssembly(options.Source);
+        }
+
+        private void ProcessAssemblyCommand(TestDirector director, AssemblyOptions options)
+        {
+            Console.WriteLine($"Assembly command");
+
+            director.GetAssemblies();
         }
     }
 }

@@ -52,9 +52,9 @@ namespace Meadow.TestSuite
                 switch (command.CommandType)
                 {
                     case CommandType.UplinkFile:
-                        Console.WriteLine($" Uplink File received.  Extracting payload...");
-
                         return System.Text.Json.JsonSerializer.Deserialize<UplinkFileCommand>(json);
+                    case CommandType.EnumerateAssemblies:
+                        return System.Text.Json.JsonSerializer.Deserialize<GetAssembliesCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -80,8 +80,9 @@ namespace Meadow.TestSuite
                 switch(command.CommandType)
                 {
                     case CommandType.UplinkFile:
-                        Console.WriteLine($" Uplink File received.  Extracting payload...");
                         return SimpleJson.SimpleJson.DeserializeObject<UplinkFileCommand>(json);
+                    case CommandType.EnumerateAssemblies:
+                        return SimpleJson.SimpleJson.DeserializeObject<GetAssembliesCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -107,8 +108,9 @@ namespace Meadow.TestSuite
                 switch (command.CommandType)
                 {
                     case CommandType.UplinkFile:
-                        Console.WriteLine($" Uplink File received.  Extracting payload...");
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<UplinkFileCommand>(json);
+                    case CommandType.EnumerateAssemblies:
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<GetAssembliesCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;

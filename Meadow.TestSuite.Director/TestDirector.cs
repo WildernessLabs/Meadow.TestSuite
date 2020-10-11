@@ -44,6 +44,16 @@ namespace Meadow.TestSuite
             ProcessResults(result);
         }
 
+        public void GetAssemblies()
+        {
+            var cmd = new GetAssembliesCommand
+            {
+                Folder = MeadowTestFolder
+            };
+            var result = Transport.DeliverCommand(cmd);
+            ProcessResults(result);
+        }
+
         public void ProcessResults(byte[] result)
         {
             // TODO: run through the serializer to get the result

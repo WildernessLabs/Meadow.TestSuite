@@ -3,6 +3,7 @@
     public enum CommandType : long
     {
         UplinkFile,
+        EnumerateAssemblies,
         EnumerateTests,
         ExecuteTests,
     }

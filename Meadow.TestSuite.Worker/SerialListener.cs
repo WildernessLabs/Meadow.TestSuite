@@ -37,9 +37,7 @@ namespace MeadowApp
                 Console.WriteLine($" Port buffer overrun");
             };
 
-
             Console.WriteLine(" Listening for serial commands...");
-            var t = Encoding.ASCII.GetBytes(".");
             while (true)
             {
                 Thread.Sleep(1000);
