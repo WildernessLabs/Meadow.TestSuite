@@ -3,16 +3,15 @@ using Meadow.TestSuite;
 
 namespace Meadow.TestSuite
 {
-    public abstract class TestTransportBase<TSerializer> : ITestTransport
-        where TSerializer : ICommandSerializer
+    public abstract class TestTransportBase : ITestTransport
     {
-        protected TSerializer Serializer { get; }
+        protected ICommandSerializer Serializer { get; }
 
-        public abstract void DeliverCommand(TestCommand command);
+        public abstract byte[] DeliverCommand(TestCommand command);
 
-        public TestTransportBase()
+        public TestTransportBase(ICommandSerializer serializer)
         {
-            Serializer = Activator.CreateInstance<TSerializer>();
+            Serializer = serializer;
         }
 
     }

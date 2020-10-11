@@ -46,7 +46,7 @@ namespace TestSuite.Unit.Tests
                 rxCmd = command as UplinkFileCommand;
             };
 
-            var transport = new WorkerSerialTransport<CommandJsonSerializer>(port);
+            var transport = new WorkerSerialTransport(serializer, port);
             transport.ExternalManageSerialPort = true; // prevent the transport from closing the port
             var payload = new StringBuilder();
             for(int i = 0; i < 100; i++)
@@ -87,7 +87,7 @@ namespace TestSuite.Unit.Tests
                 rxCmd = command as UplinkFileCommand;
             };
 
-            var transport = new WorkerSerialTransport<CommandJsonSerializer>(port);
+            var transport = new WorkerSerialTransport(serializer, port);
             transport.ExternalManageSerialPort = true; // prevent the transport from closing the port
             var txCmd = new UplinkFileCommand
             {

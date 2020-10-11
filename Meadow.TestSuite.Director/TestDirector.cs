@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace Meadow.TestSuite
 {
@@ -8,12 +9,15 @@ namespace Meadow.TestSuite
     {
         private TestRegistry Registry { get; }
         private ITestTransport Transport { get; }
+        private ICommandSerializer Serializer { get; }
 
         public string MeadowTestFolder { get; } = "/meadow0/test";
 
-        public TestDirector(ITestTransport transport)
+        public TestDirector(ICommandSerializer serializer, ITestTransport transport)
         {
             Transport = transport;
+            Serializer = serializer;
+
             Registry = new TestRegistry();
         }
 
@@ -36,7 +40,15 @@ namespace Meadow.TestSuite
                 FileData = payload
             };
 
-            Transport.DeliverCommand(cmd);
+            var result = Transport.DeliverCommand(cmd);
+            ProcessResults(result);
+        }
+
+        public void ProcessResults(byte[] result)
+        {
+            // TODO: run through the serializer to get the result
+
+            Console.WriteLine(Encoding.UTF8.GetString(result));
         }
 
         public void DiscoverTests()

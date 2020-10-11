@@ -5,7 +5,7 @@ namespace Meadow.TestSuite
 {
     public interface ITestTransport
     {
-        void DeliverCommand(TestCommand command);
+        byte[] DeliverCommand(TestCommand command);
 
         /*
         IEnumerable<string> GetTestAreas();
@@ -17,60 +17,5 @@ namespace Meadow.TestSuite
 
         void EnqueueTest(Guid testID);
         */
-    }
-
-    public class WorkerLocalTransport : ITestTransport
-    {
-        private TestRegistry Registry { get; }
-
-        public WorkerLocalTransport(TestRegistry registry)
-        {
-            Registry = registry;
-        }
-
-        public void EnqueueTest(Guid testID)
-        {
-            var test = Registry.GetTest(testID);
-        }
-
-        public IEnumerable<TestResult> GetResults()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TestResult> GetResults(string area)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TestResult> GetResults(Guid testID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetTestAreas()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TestDescriptor> GetTestList()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TestDescriptor> GetTestList(string area)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeliverCommand(TestCommand command)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public interface ITestReporter
-    {
-
     }
 }

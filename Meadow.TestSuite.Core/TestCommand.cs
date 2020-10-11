@@ -64,5 +64,10 @@ namespace Meadow.TestSuite
         public virtual void AfterExecute()
         {
         }
+
+        public virtual void ProcessResult(ICommandSerializer serializer, byte[] resultData)
+        {
+
+        }
     }
 }

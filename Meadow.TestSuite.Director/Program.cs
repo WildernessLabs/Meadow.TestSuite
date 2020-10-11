@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using System;
+using System.IO.Ports;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("TestSuite.Unit.Tests")]
@@ -68,8 +69,13 @@ namespace Meadow.TestSuite
         {
             var p = new Program();
 
+            var serializer = new CommandJsonSerializer();
+            serializer.UseLibrary = JsonLibrary.SystemTextJson;
+
             var director = new TestDirector(
-                new WorkerSerialTransport<CommandJsonSerializer>(options.Port, options.BaudRate));
+                serializer,
+                new WorkerSerialTransport(serializer, options.Port, options.BaudRate)
+                );
 
             if (options is UplinkOptions)
             {

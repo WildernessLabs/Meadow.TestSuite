@@ -11,30 +11,25 @@ using Meadow.TestSuite;
 
 namespace Meadow.TestSuite
 {
-    public class WorkerSerialTransport<TSerializer> : TestTransportBase<TSerializer>
-        where TSerializer : ICommandSerializer
+    public class WorkerSerialTransport : TestTransportBase
     {
         private SerialPort SerialPort { get; }
 
         internal bool ExternalManageSerialPort { get; set; } = false;
         
-        public WorkerSerialTransport(SerialPort serialPort)
+        public WorkerSerialTransport(ICommandSerializer serializer, SerialPort serialPort)
+            : base(serializer)
         {
             SerialPort = serialPort;
-
-            // TODO: improve/fix this ugliness
-            (Serializer as CommandJsonSerializer).UseLibrary = JsonLibrary.SystemTextJson;
         }
 
-        public WorkerSerialTransport(string serialPort, int baudRate = 9600)
+        public WorkerSerialTransport(ICommandSerializer serializer, string serialPort, int baudRate = 9600)
+            : base(serializer)
         {
             SerialPort = new SerialPort(serialPort, baudRate);
-
-            // TODO: improve/fix this ugliness
-            (Serializer as CommandJsonSerializer).UseLibrary = JsonLibrary.SystemTextJson;
         }
 
-        public override void DeliverCommand(TestCommand command)
+        public override byte[] DeliverCommand(TestCommand command)
         {
             var data = Serializer.SerializeCommand(command).ToArray();
 
@@ -135,8 +130,7 @@ namespace Meadow.TestSuite
 
                 if (!error)
                 {
-                    // TODO: pass the result back to the command
-                    Console.WriteLine(Encoding.UTF8.GetString(result));
+                    return result;
                 }
             }
 
@@ -145,6 +139,7 @@ namespace Meadow.TestSuite
                 SerialPort.Close();
             }
 
+            return null;
         }
     }
 }
