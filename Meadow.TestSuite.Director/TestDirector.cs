@@ -46,10 +46,14 @@ namespace Meadow.TestSuite
 
         public void GetAssemblies()
         {
-            var cmd = new GetAssembliesCommand
-            {
-                Folder = MeadowTestFolder
-            };
+            var cmd = new GetAssembliesCommand();
+            var result = Transport.DeliverCommand(cmd);
+            ProcessResults(result);
+        }
+
+        public void GetTestNames()
+        {
+            var cmd = new GetTestNamesCommand();
             var result = Transport.DeliverCommand(cmd);
             ProcessResults(result);
         }

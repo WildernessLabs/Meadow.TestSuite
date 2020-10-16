@@ -13,7 +13,7 @@ namespace Meadow.TestSuite
         public string Destination { get; set; }
         public string FileData { get; set; }
 
-        public override void Execute()
+        public override void Execute(IWorker worker)
         {
             Console.WriteLine($" Data: {FileData.Length} Base64 chars");
             Console.WriteLine($" Destination: {Destination}");
@@ -40,6 +40,19 @@ namespace Meadow.TestSuite
                 File.WriteAllBytes(Destination, data);
 
                 fi.Refresh();
+
+                if (worker == null)
+                {
+                    Console.WriteLine($"Worker is null");
+                }
+                else if (worker.Registry == null)
+                {
+                    Console.WriteLine($"Worker Registry is null");
+                }
+                else
+                {
+                    worker.Registry.RegisterAssembly(Destination);
+                }
 
                 Console.WriteLine($"Destination file verified to be {fi.Length} bytes.");
 

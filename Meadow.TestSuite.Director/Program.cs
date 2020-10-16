@@ -10,16 +10,18 @@ namespace Meadow.TestSuite
     //
     // uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Meadow.Core.dll"
     // assembly -l -p COM12
+    // test -l -p COM12
 
     class Program
     {
         static void Main(string[] args)
         {
             var r = CommandLine.Parser.Default
-            .ParseArguments<UplinkOptions, AssemblyOptions>(args)
+            .ParseArguments<UplinkOptions, AssemblyOptions, TestOptions>(args)
             .MapResult(
                 (UplinkOptions o) => Launch(o),
                 (AssemblyOptions o) => Launch(o),
+                (TestOptions o) => Launch(o),
                 fail => -1
                 );
         }
@@ -44,6 +46,10 @@ namespace Meadow.TestSuite
             {
                 p.ProcessAssemblyCommand(director, options as AssemblyOptions);
             }
+            else if (options is TestOptions)
+            {
+                p.ProcessTestCommand(director, options as AssemblyOptions);
+            }
             return 0;
         }
 
@@ -59,6 +65,13 @@ namespace Meadow.TestSuite
             Console.WriteLine($"Assembly command");
 
             director.GetAssemblies();
+        }
+
+        private void ProcessTestCommand(TestDirector director, AssemblyOptions options)
+        {
+            Console.WriteLine($"Test command");
+
+            director.GetTestNames();
         }
     }
 }

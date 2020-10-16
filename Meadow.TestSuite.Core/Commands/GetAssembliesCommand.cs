@@ -11,32 +11,9 @@ namespace Meadow.TestSuite
             CommandType = CommandType.EnumerateAssemblies;
         }
 
-        public string Folder { get; set; }
-
-        public override void Execute()
+        public override void Execute(IWorker worker)
         {
-            Console.WriteLine($"Getting assemblies in {Folder}");
-
-            if (string.IsNullOrEmpty(Folder))
-            {
-                Result = "Empty";
-            }
-            else
-            {
-                var di = new DirectoryInfo(Path.GetDirectoryName(Folder));
-                if (!di.Exists)
-                {
-                    Result = "Directory Not Found";
-                }
-                else
-                {
-                    var files = Directory
-                        .GetFiles(Folder)
-                        .Select(f => Path.GetFileName(f));
-
-                    Result = string.Join("|", files);
-                }
-            }
+            Result = worker.Registry.GetAssemblies();
         }
     }
 }

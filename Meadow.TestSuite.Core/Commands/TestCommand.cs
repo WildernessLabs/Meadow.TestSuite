@@ -3,13 +3,13 @@
     public class TestCommand
     {
         public CommandType CommandType { get; set; }
-        public string Result { get; set; }
+        public object Result { get; set; }
 
         public virtual void BeforeExecute()
         {
         }
         
-        public virtual void Execute()
+        public virtual void Execute(IWorker worker)
         {
         }
 

@@ -55,6 +55,8 @@ namespace Meadow.TestSuite
                         return System.Text.Json.JsonSerializer.Deserialize<UplinkFileCommand>(json);
                     case CommandType.EnumerateAssemblies:
                         return System.Text.Json.JsonSerializer.Deserialize<GetAssembliesCommand>(json);
+                    case CommandType.EnumerateTests:
+                        return System.Text.Json.JsonSerializer.Deserialize<GetTestNamesCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -83,6 +85,8 @@ namespace Meadow.TestSuite
                         return SimpleJson.SimpleJson.DeserializeObject<UplinkFileCommand>(json);
                     case CommandType.EnumerateAssemblies:
                         return SimpleJson.SimpleJson.DeserializeObject<GetAssembliesCommand>(json);
+                    case CommandType.EnumerateTests:
+                        return SimpleJson.SimpleJson.DeserializeObject<GetTestNamesCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -111,6 +115,8 @@ namespace Meadow.TestSuite
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<UplinkFileCommand>(json);
                     case CommandType.EnumerateAssemblies:
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<GetAssembliesCommand>(json);
+                    case CommandType.EnumerateTests:
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<GetTestNamesCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
