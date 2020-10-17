@@ -44,10 +44,5 @@ namespace Munit
                 Console.WriteLine($"FAILED: Expected {expected}, Actual {actual}");
             }
         }
-
-        public static void Fail()
-        {
-            Console.WriteLine($"FAILED: Forced failure");
-        }
     }
 }

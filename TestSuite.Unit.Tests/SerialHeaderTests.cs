@@ -21,7 +21,6 @@ namespace TestSuite.Unit.Tests
                 0xaa, 0x55, 0xaa, 0x55,
                 0x78, 0x56, 0x34, 0x12
             };
-
             this.HandleData(input, 0, input.Length);
             Assert.True(this.m_buffer != null);
             Assert.True(this.m_buffer.Length == 0x12345678);
