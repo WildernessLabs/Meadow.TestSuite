@@ -1,4 +1,5 @@
-﻿using Munit;
+﻿using Meadow.Hardware;
+using Munit;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,12 +8,20 @@ using System.Reflection;
 
 namespace Meadow.TestSuite
 {
+    internal interface ITestProvider : ITestRegistry
+    {
+        TestInfo GetTest(string id);
+    }
+
     internal class TestInfo
     {
         public string AssemblyName { get; set; }
         public string TypeName { get; set; }
         public string TestName { get; set; }
         public MethodInfo TestMethod { get; set; }
+        public ConstructorInfo TestConstructor { get; set; }
+        public PropertyInfo DeviceProperty { get; set; }
+
         public string ID
         {
             get => $"{AssemblyName}.{TypeName}.{TestName}";
@@ -20,15 +29,51 @@ namespace Meadow.TestSuite
     }
 
     // TODO: coalesce with Director registry type and pull out an interface?
-    internal class WorkerRegistry : ITestRegistry
+    internal class WorkerRegistry : ITestProvider
     {
         // tests are [assembly].[class].[method]
         // they are divined by looking for public methods with a [Fact] attribute and nothing else
 
-        private Dictionary<string, TestInfo> m_cache = new Dictionary<string, TestInfo>(); 
+        private Dictionary<string, TestInfo> m_cache = new Dictionary<string, TestInfo>();
 
         public WorkerRegistry()
         {
+
+        }
+
+        public WorkerRegistry(string testDirectory)
+        {
+            RegisterAssembliesInFolder(testDirectory);
+        }
+
+        public TestInfo GetTest(string id)
+        {
+            lock (m_cache)
+            {
+                if (m_cache.ContainsKey(id))
+                {
+                    return m_cache[id];
+                }
+                return null;
+            }
+        }
+
+        private void RegisterAssembliesInFolder(string assemblyPath)
+        {
+            var di = new DirectoryInfo(assemblyPath);
+            if (!di.Exists) return;
+
+            foreach(var file in di.GetFiles("*.dll"))
+            {
+                try
+                {
+                    RegisterAssembly(file.FullName);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"Unable to register '{file.Name}': {ex.Message}");
+                }
+            }
         }
 
         public void RegisterAssembly(string assemblyPath)
@@ -75,6 +120,14 @@ namespace Meadow.TestSuite
 
                         if (count > 0)
                         {
+                            var props = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                            foreach(var p in props)
+                            {
+                                Console.WriteLine($" prop {p.Name}: {p.PropertyType.Name}");
+                            }
+                            var device = props.FirstOrDefault(p => p.PropertyType == typeof(IIODevice));
+                            Console.WriteLine($" device = {device}");
+
                             var name = asm.GetName().Name;
 
                             foreach(var method in methods)
@@ -84,11 +137,15 @@ namespace Meadow.TestSuite
                                     AssemblyName = name,
                                     TypeName = t.Name,
                                     TestName = method.Name,
-                                    TestMethod = method
+                                    TestMethod = method,
+                                    TestConstructor = ctor,
+                                    DeviceProperty = device
                                 };
                                 if(m_cache.ContainsKey(info.ID))
                                 {
-                                    Console.WriteLine($" Test {info.ID} already known. Ignoring.");
+                                    Console.WriteLine($" Test {info.ID} already known. Replacing.");
+                                    m_cache[info.ID] = info;
+                                    added++;
                                 }
                                 else
                                 {

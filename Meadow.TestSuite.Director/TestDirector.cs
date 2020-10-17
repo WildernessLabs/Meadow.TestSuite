@@ -58,11 +58,24 @@ namespace Meadow.TestSuite
             ProcessResults(result);
         }
 
+        public void ExecuteTests(params string[] testNames)
+        {
+            var cmd = new ExecuteTestsCommand(testNames);
+            var result = Transport.DeliverCommand(cmd);
+            ProcessResults(result);
+        }
+
         public void ProcessResults(byte[] result)
         {
             // TODO: run through the serializer to get the result
-
-            Console.WriteLine(Encoding.UTF8.GetString(result));
+            if (result == null)
+            {
+                Console.WriteLine("Null result");
+            }
+            else
+            {
+                Console.WriteLine(Encoding.UTF8.GetString(result));
+            }
         }
 
         public void DiscoverTests()

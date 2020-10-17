@@ -11,6 +11,7 @@ namespace Meadow.TestSuite
     // uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Meadow.Core.dll"
     // assembly -l -p COM12
     // test -l -p COM12
+    // test -p COM12 -e Tests.Meadow.Core.GpioTests.LedTest
 
     class Program
     {
@@ -48,7 +49,7 @@ namespace Meadow.TestSuite
             }
             else if (options is TestOptions)
             {
-                p.ProcessTestCommand(director, options as AssemblyOptions);
+                p.ProcessTestCommand(director, options as TestOptions);
             }
             return 0;
         }
@@ -67,11 +68,20 @@ namespace Meadow.TestSuite
             director.GetAssemblies();
         }
 
-        private void ProcessTestCommand(TestDirector director, AssemblyOptions options)
+        private void ProcessTestCommand(TestDirector director, TestOptions options)
         {
             Console.WriteLine($"Test command");
 
-            director.GetTestNames();
+            if (options.List)
+            {
+                director.GetTestNames();
+            }
+            else if(!string.IsNullOrEmpty(options.Execute))
+            {
+                // allow a few delimiters
+                var names = options.Execute.Split(new char[] { ';', ',', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                director.ExecuteTests(names);
+            }
         }
     }
 }

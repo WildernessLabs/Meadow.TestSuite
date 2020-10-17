@@ -14,7 +14,12 @@ namespace Meadow.TestSuite
 
     public class CommandJsonSerializer : ICommandSerializer
     {
-        public JsonLibrary UseLibrary { get; set; } = JsonLibrary.JsonDotNet;
+        public JsonLibrary UseLibrary { get; set; }
+
+        public CommandJsonSerializer(JsonLibrary library = JsonLibrary.SystemTextJson)
+        {
+            UseLibrary = library;
+        }
 
         public TestCommand Deserialize(ReadOnlySpan<byte> commandPayload)
         {
@@ -57,6 +62,8 @@ namespace Meadow.TestSuite
                         return System.Text.Json.JsonSerializer.Deserialize<GetAssembliesCommand>(json);
                     case CommandType.EnumerateTests:
                         return System.Text.Json.JsonSerializer.Deserialize<GetTestNamesCommand>(json);
+                    case CommandType.ExecuteTests:
+                        return System.Text.Json.JsonSerializer.Deserialize<ExecuteTestsCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -87,6 +94,8 @@ namespace Meadow.TestSuite
                         return SimpleJson.SimpleJson.DeserializeObject<GetAssembliesCommand>(json);
                     case CommandType.EnumerateTests:
                         return SimpleJson.SimpleJson.DeserializeObject<GetTestNamesCommand>(json);
+                    case CommandType.ExecuteTests:
+                        return SimpleJson.SimpleJson.DeserializeObject<ExecuteTestsCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -117,6 +126,8 @@ namespace Meadow.TestSuite
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<GetAssembliesCommand>(json);
                     case CommandType.EnumerateTests:
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<GetTestNamesCommand>(json);
+                    case CommandType.ExecuteTests:
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<ExecuteTestsCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;

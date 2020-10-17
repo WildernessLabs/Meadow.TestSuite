@@ -19,50 +19,13 @@ namespace MeadowApp
         {
             Console.WriteLine("+ MeadowApp");
 
-
-            // TODO: push this all to the Worker
-
-            Console.WriteLine(" Creating serial port...");
-            var port = Device.CreateSerialPort(
-                Device.SerialPortNames.Com4, 
-                9600, 
-                8, 
-                Meadow.Hardware.
-                Parity.None, 
-                Meadow.Hardware.StopBits.One);
-
             Worker = new Worker(Device);
-
-            //            var serializer = new CommandCustomSerializer();
-            var serializer = new CommandJsonSerializer();
-            serializer.UseLibrary = JsonLibrary.SystemTextJson;
-
-            var listener = new MeadowSerialListener(port, serializer);
-            listener.CommandReceived += Listener_CommandReceived;
-            listener.StartListening();
-
+            Worker.Start();
             // the above blocks, so we never actually get here
 
             Thread.Sleep(Timeout.Infinite);
 
             Console.WriteLine("- MeadowApp");
-        }
-
-        private void Listener_CommandReceived(ITestListener listener, TestCommand command)
-        {
-            if (command == null)
-            {
-                Console.WriteLine(" ** NULL COMMAND** ");
-            }
-            else
-            {
-                command.BeforeExecute();
-                command.Execute(Worker);
-                command.AfterExecute();
-
-
-                listener.SendResult(command.Result);
-            }
         }
 
         private void LoadAndRun()

@@ -4,6 +4,6 @@
     {
         void RegisterAssembly(string assemblyPath);
         string[] GetAssemblies();
-        string[] GetTestsNames();
+        string[] GetTestsNames();        
     }
 }

@@ -35,8 +35,9 @@ namespace Meadow.TestSuite
                 if (fi.Exists)
                 {
                     Console.WriteLine("Destination file exists.  Overwriting.");
+                    fi.Delete();
                 }
-
+                
                 File.WriteAllBytes(Destination, data);
 
                 fi.Refresh();
