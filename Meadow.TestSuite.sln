@@ -14,7 +14,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Core", "..\Meadow.Co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{085FCF8D-543A-465C-B239-BCEFC3B75537}"
 	ProjectSection(SolutionItems) = preProject
+		authoring-tests.md = authoring-tests.md
+		implementation.md = implementation.md
 		readme.md = readme.md
+		setup.md = setup.md
+		usage.md = usage.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.TestSuite.Director", "Meadow.TestSuite.Director\Meadow.TestSuite.Director.csproj", "{88D83E30-8507-4007-9F60-69A57D0A6636}"

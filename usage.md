@@ -6,6 +6,8 @@ TestSuite supports two usage models, via CLI or API, both through the Director.
 
 The Meadow TestSuite Director compiles to an executable named `mtd.exe` which accepts command-line parameters as follows:
 
+Currently, `mtd` only supports the serial transport from the test PC to the Meadow. See the [Setup Readme](setup.md) for more details.
+
 ### Basic Commands
 
 - [uplink](#uplink)
@@ -89,6 +91,10 @@ mtd uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Mea
 
 [Not yet implemented]
 
-### API
+## API
 
 [TBD]
+
+## Known Issues
+
+1. Currently the Worker must interpret a fair bit of deserialization code on the first call. If your first call is to upload an assembly, the interpreter starves the processor and the serial port will overflow, causing the assemly upload to fail.  The Worker detects this condition and the corrupted assembly will not be written to the device but it means that the uplink must be done a second time.
