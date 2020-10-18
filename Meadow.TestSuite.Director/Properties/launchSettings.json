@@ -2,7 +2,7 @@
   "profiles": {
     "Meadow.TestSuite.Director": {
       "commandName": "Project",
-      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.GpioTests.LedTest"
+      "commandLineArgs": "test -l -p COM12"
     }
   }
 }

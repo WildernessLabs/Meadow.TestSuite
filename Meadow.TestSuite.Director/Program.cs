@@ -58,23 +58,48 @@ namespace Meadow.TestSuite
         {
             Console.WriteLine($"Uplink {options.Source}");
 
-            director.UplinkTestAssembly(options.Source);
+            var result = director.UplinkTestAssembly(options.Source);
+            Console.WriteLine($"  {result}");
         }
 
         private void ProcessAssemblyCommand(TestDirector director, AssemblyOptions options)
         {
-            Console.WriteLine($"Assembly command");
+            // we only have one assembly command right now
+            Console.WriteLine($"List of Assemblies:");
 
-            director.GetAssemblies();
+            var result = director.GetAssemblies();
+            if((result == null) || (result.Length == 0))
+            {
+                Console.WriteLine($"  <none>");
+            }
+            else
+            {
+                foreach(var a in result)
+                {
+                    Console.WriteLine($"  {a}");
+                }
+            }
         }
 
         private void ProcessTestCommand(TestDirector director, TestOptions options)
         {
-            Console.WriteLine($"Test command");
-
             if (options.List)
             {
-                director.GetTestNames();
+                Console.WriteLine($"List of Tests:");
+
+                var result = director.GetTestNames();
+
+                if ((result == null) || (result.Length == 0))
+                {
+                    Console.WriteLine($"  <none>");
+                }
+                else
+                {
+                    foreach (var t in result)
+                    {
+                        Console.WriteLine($"  {t}");
+                    }
+                }
             }
             else if(!string.IsNullOrEmpty(options.Execute))
             {

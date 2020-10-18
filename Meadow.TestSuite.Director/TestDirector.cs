@@ -21,7 +21,7 @@ namespace Meadow.TestSuite
             Registry = new TestRegistry();
         }
 
-        public void UplinkTestAssembly(string assemblyPath)
+        public string UplinkTestAssembly(string assemblyPath)
         {
             var fi = new FileInfo(assemblyPath);
             if(!fi.Exists)
@@ -41,40 +41,42 @@ namespace Meadow.TestSuite
             };
 
             var result = Transport.DeliverCommand(cmd);
-            ProcessResults(result);
+            return ProcessResults<string>(result);
         }
 
-        public void GetAssemblies()
+        public string[] GetAssemblies()
         {
             var cmd = new GetAssembliesCommand();
             var result = Transport.DeliverCommand(cmd);
-            ProcessResults(result);
+            var assemblies = ProcessResults<string[]>(result);
+            return assemblies;
         }
 
-        public void GetTestNames()
+        public string[] GetTestNames()
         {
             var cmd = new GetTestNamesCommand();
             var result = Transport.DeliverCommand(cmd);
-            ProcessResults(result);
+            return ProcessResults<string[]>(result);
         }
 
         public void ExecuteTests(params string[] testNames)
         {
             var cmd = new ExecuteTestsCommand(testNames);
             var result = Transport.DeliverCommand(cmd);
-            ProcessResults(result);
+            ProcessResults<string>(result);
         }
 
-        public void ProcessResults(byte[] result)
+        public TResult ProcessResults<TResult>(byte[] result)
         {
             // TODO: run through the serializer to get the result
             if (result == null)
             {
                 Console.WriteLine("Null result");
+                return default(TResult);
             }
             else
             {
-                Console.WriteLine(Encoding.UTF8.GetString(result));
+                return Serializer.Deserialize<TResult>(result);
             }
         }
 

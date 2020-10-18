@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Meadow.TestSuite
@@ -15,15 +16,47 @@ namespace Meadow.TestSuite
     public class CommandJsonSerializer : ICommandSerializer
     {
         public JsonLibrary UseLibrary { get; set; }
+        public bool ShowDebug { get; set; } = false;
 
         public CommandJsonSerializer(JsonLibrary library = JsonLibrary.SystemTextJson)
         {
             UseLibrary = library;
         }
 
+        public T Deserialize<T>(ReadOnlySpan<byte> commandPayload)
+        {
+            Output.WriteLineIf(ShowDebug, $" {this.GetType().Name} Deserializing with {this.UseLibrary}...");
+            var sw = new Stopwatch();
+
+            try
+            {
+                var json = Encoding.UTF8.GetString(commandPayload.ToArray());
+
+                switch (UseLibrary)
+                {
+                    case JsonLibrary.SimpleJson:
+                        return SimpleJson.SimpleJson.DeserializeObject<T>(json);
+                    case JsonLibrary.JsonDotNet:
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+                    default:
+                        return System.Text.Json.JsonSerializer.Deserialize<T>(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($" Failed to deserialize command: {ex.Message}");
+                return default;
+            }
+            finally
+            {
+                sw.Stop();
+                Output.WriteLineIf(ShowDebug, $" Deserilization took {sw.ElapsedMilliseconds}ms");
+            }
+        }
+
         public TestCommand Deserialize(ReadOnlySpan<byte> commandPayload)
         {
-            Console.WriteLine($" {this.GetType().Name} Deserializing with {this.UseLibrary}...");
+            Output.WriteLineIf(ShowDebug, $" {this.GetType().Name} Deserializing with {this.UseLibrary}...");
 
             var sw = new Stopwatch();
 
@@ -43,7 +76,7 @@ namespace Meadow.TestSuite
             finally
             {
                 sw.Stop();
-                Console.WriteLine($" Deserilization took {sw.ElapsedMilliseconds}ms");
+                Output.WriteLineIf(ShowDebug, $" Deserilization took {sw.ElapsedMilliseconds}ms");
             }
         }
 
@@ -191,7 +224,7 @@ namespace Meadow.TestSuite
 
         private byte[] SerializeNewtonsoft(object payload)
         {
-            Console.WriteLine($" {this.GetType().Name} Deserializing...");
+            Output.WriteLineIf(ShowDebug, $" {this.GetType().Name} Deserializing...");
 
             try
             {
@@ -203,7 +236,7 @@ namespace Meadow.TestSuite
             }
             catch (Exception ex)
             {
-                Console.WriteLine($" Failed to serialize command: {ex.Message}");
+                Output.WriteLineIf(ShowDebug, $" Failed to serialize command: {ex.Message}");
             }
 
             return null;
@@ -211,15 +244,13 @@ namespace Meadow.TestSuite
 
         private byte[] SerializeSystemTextJson(object payload)
         {
-            Console.WriteLine($" {this.GetType().Name} serializing...");
-
             try
             {
                 using (var stream = new MemoryStream())
                 {
                     var json = System.Text.Json.JsonSerializer.Serialize(payload, payload.GetType());
                     var bytes = Encoding.UTF8.GetBytes(json);
-                    Console.WriteLine($" Serialized {bytes.Length} bytes");
+                    Output.WriteLineIf(ShowDebug, $" Serialized {bytes.Length} bytes");
                     return bytes;
                 }
             }

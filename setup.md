@@ -6,6 +6,8 @@ Currently TestSuite only supports a serial transport between the test PC and the
 
 This also requires signal conditioning for a typical PC.  A UBS Serial to TTL Converter is typically required.  Only the TX and RX pins fromt he converter need to be connected.
 
+An [example converter can be found here](https://www.amazon.com/gp/product/B019DY77GI), though there are many available from many sources.
+
 | TTL Converter | Meadow |
 | --- | --- |
 | TXD | D00 |
