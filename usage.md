@@ -89,7 +89,33 @@ mtd uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Mea
 
 #### `result`<a name="result"></a>
 
-[Not yet implemented]
+```
+> mtd result [-a|--all] [-r|--result-id] [-t|--test-id]
+```
+
+- `-p|--port <SERIAL_PORT>`
+
+    Required. Serial port used to communicate with the Meadow.
+
+- `-a|--all`
+
+    Optional. Retrieves a list of all known test results on the Meadow
+
+- `-r|--result-id`
+
+    Optional. Retrieves the result with the provided result ID (GUID)
+
+- `-t|--test-id`
+
+    Optional. Retrieves a list of all results for the specified Test ID/name
+
+*Examples*
+
+```
+> mtd result -p COM12 --all
+> mtd result -p COM12 -t Tests.Meadow.Core.GpioTests.LedTest
+> mtd result -p COM12 -r 69383647-df22-4c84-bbd9-677a1b6c19a9
+```
 
 ## API
 

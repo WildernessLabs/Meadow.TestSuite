@@ -8,42 +8,18 @@ using System.Reflection;
 
 namespace Meadow.TestSuite
 {
-    internal interface ITestProvider : ITestRegistry
-    {
-        TestInfo GetTest(string id);
-    }
-
-    internal class TestInfo
-    {
-        public string AssemblyName { get; set; }
-        public string TypeName { get; set; }
-        public string TestName { get; set; }
-        public MethodInfo TestMethod { get; set; }
-        public ConstructorInfo TestConstructor { get; set; }
-        public PropertyInfo DeviceProperty { get; set; }
-
-        public string ID
-        {
-            get => $"{AssemblyName}.{TypeName}.{TestName}";
-        }
-    }
-
     // TODO: coalesce with Director registry type and pull out an interface?
     internal class WorkerRegistry : ITestProvider
     {
         // tests are [assembly].[class].[method]
         // they are divined by looking for public methods with a [Fact] attribute and nothing else
-
+        public IIODevice Device { get; }
         private Dictionary<string, TestInfo> m_cache = new Dictionary<string, TestInfo>();
 
-        public WorkerRegistry()
-        {
-
-        }
-
-        public WorkerRegistry(string testDirectory)
+        public WorkerRegistry(string testDirectory, IIODevice device)
         {
             RegisterAssembliesInFolder(testDirectory);
+            Device = device;
         }
 
         public TestInfo GetTest(string id)

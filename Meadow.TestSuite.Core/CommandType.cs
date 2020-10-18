@@ -6,5 +6,6 @@
         EnumerateAssemblies,
         EnumerateTests,
         ExecuteTests,
+        GetTestResults,
     }
 }

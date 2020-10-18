@@ -97,6 +97,8 @@ namespace Meadow.TestSuite
                         return System.Text.Json.JsonSerializer.Deserialize<GetTestNamesCommand>(json);
                     case CommandType.ExecuteTests:
                         return System.Text.Json.JsonSerializer.Deserialize<ExecuteTestsCommand>(json);
+                    case CommandType.GetTestResults:
+                        return System.Text.Json.JsonSerializer.Deserialize<GetResultsCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -129,6 +131,8 @@ namespace Meadow.TestSuite
                         return SimpleJson.SimpleJson.DeserializeObject<GetTestNamesCommand>(json);
                     case CommandType.ExecuteTests:
                         return SimpleJson.SimpleJson.DeserializeObject<ExecuteTestsCommand>(json);
+                    case CommandType.GetTestResults:
+                        return SimpleJson.SimpleJson.DeserializeObject<GetResultsCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -161,6 +165,8 @@ namespace Meadow.TestSuite
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<GetTestNamesCommand>(json);
                     case CommandType.ExecuteTests:
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<ExecuteTestsCommand>(json);
+                    case CommandType.GetTestResults:
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<GetResultsCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;

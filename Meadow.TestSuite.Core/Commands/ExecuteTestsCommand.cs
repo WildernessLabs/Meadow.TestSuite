@@ -31,16 +31,15 @@ namespace Meadow.TestSuite
             }
             else
             {
-                var list = new List<string>();
+                var list = new List<TestResult>();
 
                 foreach (var t in TestNames)
                 {
                     Console.WriteLine($"Running {t}");
-                    list.Add($"Running {t}");
-                    worker.ExecuteTest(t);
+                    list.Add(worker.ExecuteTest(t));
                 }
 
-                Result = list.ToArray();
+                Result = list;
             }
         }
     }

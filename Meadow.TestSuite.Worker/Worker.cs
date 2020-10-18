@@ -9,22 +9,24 @@ namespace MeadowApp
 {
     public class Worker : IWorker
     {
-        public F7Micro Device { get; set; }
+        private ResultsStore m_resultsStore;
+
         public ITestRegistry Registry { get; }
         internal ITestProvider Provider { get; }
         public ICommandSerializer Serializer { get; }
         public ITestListener Listener { get; }
 
+        public IResultsStore Results => m_resultsStore;
+
         public Worker(F7Micro device)
         {
             // TODO: make this all configurable
-            Registry = Provider = new WorkerRegistry("/meadow0/test");
-
-            Device = device;
+            m_resultsStore = new ResultsStore();
+            Registry = Provider = new WorkerRegistry("/meadow0/test", device);
 
             Console.WriteLine(" Creating serial port...");
-            var port = Device.CreateSerialPort(
-                Device.SerialPortNames.Com4,
+            var port = device.CreateSerialPort(
+                device.SerialPortNames.Com4,
                 9600,
                 8,
                 Meadow.Hardware.
@@ -37,35 +39,22 @@ namespace MeadowApp
             Listener.CommandReceived += Listener_CommandReceived;
         }
 
-        public void ExecuteTest(string testID)
+        public TestResult ExecuteTest(string testID)
         {
-            // TODO: record and return some result
             try
             {
-                var test = Provider.GetTest(testID);
-                if (test == null)
-                {
-                    Console.WriteLine(" Unknown Test ");
-                    return;
-                }
+                var runner = new TestRunner(Provider, testID);
+                var result = runner.Begin();
 
-                Console.WriteLine($" Creating test instance");
-                var instance = test.TestConstructor.Invoke(null);
+                // store the result
+                m_resultsStore.Add(result);
 
-                // inject Device
-                Console.WriteLine($" Checking Device");
-                if (test.DeviceProperty != null)
-                {
-                    Console.WriteLine($" Setting Device");
-                    test.DeviceProperty.SetValue(instance, this.Device);
-                }
-
-                Console.WriteLine($" Invoking {test?.TestMethod.Name}");
-                test.TestMethod.Invoke(instance, null);
+                return result;
             }
             catch(Exception ex)
             {
                 Console.WriteLine($" Failure: {ex.Message}");
+                return null;
             }
         }
 

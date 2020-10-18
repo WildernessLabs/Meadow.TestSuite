@@ -3,6 +3,8 @@
     public interface IWorker
     {
         ITestRegistry Registry { get; }
-        void ExecuteTest(string testID);
+        IResultsStore Results { get; }
+
+        TestResult ExecuteTest(string testID);
     }
 }

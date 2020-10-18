@@ -1,0 +1,74 @@
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+
+namespace Meadow.TestSuite
+{
+    public class TestRunner
+    {
+        public bool ShowDebug { get; set; } = false;
+        public TestResult Result { get; private set; }
+
+        private ITestProvider Provider { get; }
+
+        internal TestRunner(ITestProvider provider, string testID)
+        {
+            Provider = provider;
+            Result = new TestResult(testID);
+            Result.ResultID = Guid.NewGuid();
+        }
+
+        public TestResult Begin()
+        {
+            var test = Provider.GetTest(Result.TestID);
+            if (test == null)
+            {
+                Result.State = TestState.Failed;
+                Result.Output.Add($"Unknown test ID");
+                return Result;
+            }
+
+            Result.State = TestState.Running;
+
+            Task.Run(() =>
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+
+                try
+                {
+                    Output.WriteLineIf(ShowDebug, $" Creating test instance");
+                    var instance = test.TestConstructor.Invoke(null);
+
+                    // inject Device
+                    Output.WriteLineIf(ShowDebug, $" Checking Device");
+                    if (test.DeviceProperty != null)
+                    {
+                        Output.WriteLineIf(ShowDebug, $" Setting Device");
+                        test.DeviceProperty.SetValue(instance, this.Provider.Device);
+                    }
+
+                    Output.WriteLineIf(ShowDebug, $" Invoking {test?.TestMethod.Name}");
+                    test.TestMethod.Invoke(instance, null);
+
+                    //TODO: figure out the actual state
+                    
+                    Result.State = TestState.Success;
+                }
+                catch(Exception ex)
+                {
+                    Result.State = TestState.Failed;
+                    Result.Output.Add(ex.Message);
+                }
+                finally
+                {
+                    sw.Stop();
+                    Result.RunTimeSeconds = sw.Elapsed.TotalSeconds;
+                    Result.CompletionDate = DateTime.Now.ToUniversalTime();
+                }
+            });
+
+            return Result;
+        }
+    }
+}

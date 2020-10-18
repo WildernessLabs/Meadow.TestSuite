@@ -2,7 +2,7 @@
   "profiles": {
     "Meadow.TestSuite.Director": {
       "commandName": "Project",
-      "commandLineArgs": "test -l -p COM12"
+      "commandLineArgs": "result -p COM12 -r bad41fd9-2115-4425-9af8-df28f9973d20"
     }
   }
 }

@@ -44,6 +44,33 @@ namespace Meadow.TestSuite
             return ProcessResults<string>(result);
         }
 
+        public TestResult[] GetTestResults()
+        {
+            var cmd = new GetResultsCommand();
+            var result = Transport.DeliverCommand(cmd);
+            return ProcessResults<TestResult[]>(result);
+        }
+
+        public TestResult[] GetTestResults(string testID)
+        {
+            var cmd = new GetResultsCommand()
+            {
+                TestID = testID
+            };
+            var result = Transport.DeliverCommand(cmd);
+            return ProcessResults<TestResult[]>(result);
+        }
+
+        public TestResult[] GetTestResults(Guid resultID)
+        {
+            var cmd = new GetResultsCommand()
+            {
+                ResultID = resultID
+            };
+            var result = Transport.DeliverCommand(cmd);
+            return ProcessResults<TestResult[]>(result);
+        }
+
         public string[] GetAssemblies()
         {
             var cmd = new GetAssembliesCommand();
@@ -59,11 +86,11 @@ namespace Meadow.TestSuite
             return ProcessResults<string[]>(result);
         }
 
-        public void ExecuteTests(params string[] testNames)
+        public TestResult[] ExecuteTests(params string[] testNames)
         {
             var cmd = new ExecuteTestsCommand(testNames);
             var result = Transport.DeliverCommand(cmd);
-            ProcessResults<string>(result);
+            return ProcessResults<TestResult[]>(result);
         }
 
         public TResult ProcessResults<TResult>(byte[] result)

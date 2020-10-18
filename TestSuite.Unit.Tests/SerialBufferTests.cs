@@ -110,6 +110,11 @@ namespace TestSuite.Unit.Tests
                 return null;
             }
 
+            public T Deserialize<T>(ReadOnlySpan<byte> commandPayload)
+            {
+                throw new NotImplementedException();
+            }
+
             public byte[] SerializeCommand(TestCommand command)
             {
                 throw new NotImplementedException();

@@ -9,7 +9,7 @@ namespace TestSuite.Unit.Tests
         [Fact]
         public void WorkerRegistryTest()
         {
-            var r = new WorkerRegistry();
+            var r = new WorkerRegistry(null, null);
 
             var names = r.GetTestsNames();
         }

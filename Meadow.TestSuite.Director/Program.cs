@@ -12,17 +12,19 @@ namespace Meadow.TestSuite
     // assembly -l -p COM12
     // test -l -p COM12
     // test -p COM12 -e Tests.Meadow.Core.GpioTests.LedTest
+    // result --all -p COM12
 
     class Program
     {
         static void Main(string[] args)
         {
             var r = CommandLine.Parser.Default
-            .ParseArguments<UplinkOptions, AssemblyOptions, TestOptions>(args)
+            .ParseArguments<UplinkOptions, AssemblyOptions, TestOptions, ResultOptions>(args)
             .MapResult(
                 (UplinkOptions o) => Launch(o),
                 (AssemblyOptions o) => Launch(o),
                 (TestOptions o) => Launch(o),
+                (ResultOptions o) => Launch(o),
                 fail => -1
                 );
         }
@@ -50,6 +52,10 @@ namespace Meadow.TestSuite
             else if (options is TestOptions)
             {
                 p.ProcessTestCommand(director, options as TestOptions);
+            }
+            else if (options is ResultOptions)
+            {
+                p.ProcessResultCommand(director, options as ResultOptions);
             }
             return 0;
         }
@@ -105,7 +111,48 @@ namespace Meadow.TestSuite
             {
                 // allow a few delimiters
                 var names = options.Execute.Split(new char[] { ';', ',', '|' }, StringSplitOptions.RemoveEmptyEntries);
-                director.ExecuteTests(names);
+                var results = director.ExecuteTests(names);
+
+                Console.WriteLine("Executing tests:");
+
+                // TODO: support verbose
+                foreach (var r in results)
+                {
+                    Console.WriteLine($"  {r.TestID} as {r.ResultID}");
+                }                
+            }
+        }
+
+        private void ProcessResultCommand(TestDirector director, ResultOptions options)
+        {
+            TestResult[] results;
+
+            Console.WriteLine($"List of Results:");
+
+            if (!options.ResultID.Equals(Guid.Empty))
+            {
+                results = director.GetTestResults(options.ResultID);
+            }
+            else if (!string.IsNullOrEmpty(options.TestID))
+            {
+                results = director.GetTestResults(options.TestID);
+            }
+            else
+            {
+                results = director.GetTestResults();
+            }
+
+            if ((results == null) || (results.Length == 0))
+            {
+                Console.WriteLine($"  <none>");
+            }
+            else
+            {
+                // TODO: support verbose
+                foreach (var r in results)
+                {
+                    Console.WriteLine($"  ({r.State})\t{r.TestID}");
+                }
             }
         }
     }
