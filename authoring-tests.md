@@ -9,8 +9,9 @@
   - `True(bool condition)`
   - `False(bool condition)`
   - `NotNull(object o)`
-  - `Assert.Null(object o)`
-  - `Assert.Equal(object expected, object actual)`
+  - `Null(object o)`
+  - `Equal(object expected, object actual)`
+  - `Throws<T>(Action testCode) where T : Exception` 
 
 ## `Device` Access
 

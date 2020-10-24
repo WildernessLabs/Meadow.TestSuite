@@ -7,7 +7,6 @@ namespace Meadow.TestSuite
 {
     public class TestDirector
     {
-        private TestRegistry Registry { get; }
         private ITestTransport Transport { get; }
         private ICommandSerializer Serializer { get; }
 
@@ -17,8 +16,6 @@ namespace Meadow.TestSuite
         {
             Transport = transport;
             Serializer = serializer;
-
-            Registry = new TestRegistry();
         }
 
         public string UplinkTestAssembly(string assemblyPath)

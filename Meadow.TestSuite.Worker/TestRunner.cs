@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Munit;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -6,7 +7,7 @@ namespace Meadow.TestSuite
 {
     public class TestRunner
     {
-        public bool ShowDebug { get; set; } = false;
+        public bool ShowDebug { get; set; } = true;
         public TestResult Result { get; private set; }
 
         private ITestProvider Provider { get; }
@@ -48,21 +49,33 @@ namespace Meadow.TestSuite
                         test.DeviceProperty.SetValue(instance, this.Provider.Device);
                     }
 
-                    Output.WriteLineIf(ShowDebug, $" Invoking {test?.TestMethod.Name}");
+                    Output.WriteLine($" Invoking {test?.TestMethod.Name}");
                     test.TestMethod.Invoke(instance, null);
 
-                    //TODO: figure out the actual state
-                    
+                    Output.WriteLineIf(ShowDebug, $" Invoke complete");
+                    // if the test didn't throw, it succeeded
+
                     Result.State = TestState.Success;
                 }
-                catch(Exception ex)
+                catch(TestFailedException tfe)
                 {
+                    Output.WriteLineIf(ShowDebug, $" TestFailedException");
+
                     Result.State = TestState.Failed;
+                    Result.Output.Add(tfe.Message);
+                }
+                catch (Exception ex)
+                {
+                    Output.WriteLineIf(ShowDebug, $" Exception");
+
+                    Result.State = TestState.Failed;
+                    Result.Output.Add("Unhandled exception");
                     Result.Output.Add(ex.Message);
                 }
                 finally
                 {
                     sw.Stop();
+                    Output.WriteLineIf(ShowDebug, $" finally block");
                     Result.RunTimeSeconds = sw.Elapsed.TotalSeconds;
                     Result.CompletionDate = DateTime.Now.ToUniversalTime();
                 }

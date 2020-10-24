@@ -1,8 +1,20 @@
 {
   "profiles": {
-    "Meadow.TestSuite.Director": {
+    "Execute Test": {
       "commandName": "Project",
-      "commandLineArgs": "result -p COM12 -r bad41fd9-2115-4425-9af8-df28f9973d20"
+      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.GpioTests.Loopback5_6"
+    },
+    "Get Results": {
+      "commandName": "Project",
+      "commandLineArgs": "result --all -p COM12"
+    },
+    "Push Test Assembly": {
+      "commandName": "Project",
+      "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Tests.Meadow.Core\\bin\\Debug\\net472\\Tests.Meadow.Core.dll\""
+    },
+    "Get Test Names": {
+      "commandName": "Project",
+      "commandLineArgs": "test -l -p COM12"
     }
   }
 }
