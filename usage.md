@@ -70,6 +70,7 @@ mtd uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Mea
 
     Required. Serial port used to communicate with the Meadow.
 
+
 - `-l|--list`
 
     Optional. Retrieves a list of all known tests on the Meadow

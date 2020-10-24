@@ -36,6 +36,8 @@ namespace MeadowApp
             {
                 Console.WriteLine($" Port buffer overrun");
             };
+            
+            Port.WriteTimeout = 5000;
 
             Console.WriteLine(" Listening for serial commands...");
             while (true)
@@ -68,6 +70,7 @@ namespace MeadowApp
             Console.WriteLine($"Sending length of {buffer.Length}");
             var lengthBytes = BitConverter.GetBytes(buffer.Length);
             Console.WriteLine(BitConverter.ToString(lengthBytes));
+            
             Port.Write(lengthBytes);
 
             Thread.Sleep(1000); // TEST CODE

@@ -27,8 +27,6 @@ namespace Munit
 
         public static void NotNull(object o, string userMessage = null)
         {
-            Console.WriteLine("+NotNull");
-
             if (o == null)
             {
                 throw new TestFailedException("Assert.NotNull() Failure", userMessage);

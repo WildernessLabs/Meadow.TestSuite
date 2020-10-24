@@ -15,20 +15,15 @@ namespace MeadowLibary
             // We don't have access to the concrete Device instance, so the specific Pins aren't directly available.
             // You must request them by string, which can be either the name or ID.
             // For most, it's simple - "D01" or "A02" for instance works.  The onboard LED names are less friendly.
-            Console.WriteLine("Getting pins");
             var d05 = Device.GetPin("D05");
             var d06 = Device.GetPin("D06");
-
-            Console.WriteLine("Checking null");
 
             Assert.NotNull(d05);
             Assert.NotNull(d06);
 
-            Console.WriteLine("Creating ports");
             using (var output = Device.CreateDigitalOutputPort(d05))
             using (var input = Device.CreateDigitalInputPort(d06, resistorMode: ResistorMode.PullDown))
             {
-                Console.WriteLine("State stuff");
                 Assert.False(input.State, "D06 Expected to be pulled low");
 
                 // state checks
@@ -40,11 +35,9 @@ namespace MeadowLibary
                 Assert.False(input.State, "D06 Expected to be driven low");
             }
 
-            Console.WriteLine("Re-creating ports");
             using (var output = Device.CreateDigitalOutputPort(d06))
             using (var input = Device.CreateDigitalInputPort(d05, resistorMode: ResistorMode.PullDown))
             {
-                Console.WriteLine("State stuff");
                 Assert.False(input.State, "D05 Expected to be pulled low");
 
                 // state checks

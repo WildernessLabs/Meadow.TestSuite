@@ -7,7 +7,7 @@ namespace Meadow.TestSuite
 {
     public class TestRunner
     {
-        public bool ShowDebug { get; set; } = true;
+        public bool ShowDebug { get; set; } = false;
         public TestResult Result { get; private set; }
 
         private ITestProvider Provider { get; }
