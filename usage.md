@@ -76,7 +76,8 @@ mtd uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Mea
 
 - `-e|--execute`
 
-    Optional. A delimited list of test methods to execute.  Delimiters allowed: `,`, `;`, `|`
+    Optional. A delimited list of test methods to execute.  Delimiters allowed: `,`, `;`, `|`  
+    A *trailing* wildcard character (i.e. '*') is allowed.
 
 
 *Examples*
@@ -85,6 +86,8 @@ mtd uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Mea
 > mtd test -p COM12 -l
 > mtd test -p COM12 -e Tests.Meadow.Core.GpioTests.LedTest
 > mtd test -p COM12 -e Tests.Meadow.Core.GpioTests.LedTest|Tests.Meadow.Core.OtherTetsts.RamTest
+> mtd test -p COM12 -e Tests.Meadow.Core.LEDTests.*
+> mtd test -p COM12 -e *
 ```
 
 #### `result`<a name="result"></a>

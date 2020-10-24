@@ -13,7 +13,7 @@ namespace TestSuite.Unit.Tests
         {
             var r = new WorkerRegistry(null, null);
 
-            var names = r.GetTestsNames();
+            var names = r.GetTestNames();
         }
     }
 }

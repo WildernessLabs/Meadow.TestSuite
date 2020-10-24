@@ -35,8 +35,21 @@ namespace Meadow.TestSuite
 
                 foreach (var t in TestNames)
                 {
-                    Console.WriteLine($"Running {t}");
-                    list.Add(worker.ExecuteTest(t));
+                    // allow for wildcard test execution
+                    if (t.Contains('*'))
+                    {
+                        var names = worker.Registry.GetMatchingNames(t);
+                        foreach (var n in names)
+                        {
+                            Console.WriteLine($"Running {n}");
+                            list.Add(worker.ExecuteTest(n));
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Running {t}");
+                        list.Add(worker.ExecuteTest(t));
+                    }
                 }
 
                 Result = list;

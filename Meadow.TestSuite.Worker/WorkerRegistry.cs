@@ -161,7 +161,7 @@ namespace Meadow.TestSuite
             }
         }
 
-        public string[] GetTestsNames()
+        public string[] GetTestNames()
         {
             lock (m_cache)
             {
@@ -169,6 +169,43 @@ namespace Meadow.TestSuite
                     .Values
                     .Select(v => v.ID)
                     .ToArray();
+            }
+        }
+
+        public string[] GetMatchingNames(string testPath)
+        {
+            // we support *only* trailing wildcard right now
+            if (testPath.Contains('*'))
+            {
+                var start = testPath.Substring(0, testPath.IndexOf('*'));
+                if(string.IsNullOrEmpty(start))
+                {
+                    // request for "all"
+                    return GetTestNames();
+                }
+                else
+                {
+                    return m_cache
+                        .Values
+                        .Where(v => v.ID.StartsWith(start, StringComparison.InvariantCultureIgnoreCase))
+                        .Select( v=> v.ID)
+                        .ToArray();
+                }
+            }
+            else
+            {
+                lock (m_cache)
+                {
+                    var t = m_cache
+                        .Values
+                        .FirstOrDefault(v => v.ID == testPath);
+                    if(t == null)
+                    {
+                        return new string[] { };
+                    }
+
+                    return new string[] { t.ID };
+                }
             }
         }
     }

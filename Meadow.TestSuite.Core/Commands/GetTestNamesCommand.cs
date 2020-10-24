@@ -9,7 +9,7 @@
 
         public override void Execute(IWorker worker)
         {
-            Result = worker.Registry.GetTestsNames();
+            Result = worker.Registry.GetTestNames();
         }
     }
 }

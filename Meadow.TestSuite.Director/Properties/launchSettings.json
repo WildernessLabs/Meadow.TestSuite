@@ -1,5 +1,9 @@
 {
   "profiles": {
+    "Execute All": {
+      "commandName": "Project",
+      "commandLineArgs": "test -p COM12 -e *"
+    },
     "Execute Test": {
       "commandName": "Project",
       "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.GpioTests.Loopback5_6"
