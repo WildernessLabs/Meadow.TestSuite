@@ -4,16 +4,32 @@ namespace Munit
 {
     public static class Assert
     {
+        internal static bool Throw { get; set; } = false;
+
         public static void Fail(string message)
         {
-            throw new TestFailedException($"Assert.Fail(): {message}");
+            if (Assert.Throw)
+            {
+                throw new TestFailedException($"Assert.Fail(): {message}");
+            }
+            else
+            {
+                Console.WriteLine($"Assert.Fail(): {message}");
+            }
         }
 
         public static void True(bool condition, string userMessage = null)
         {
             if (!condition)
             {
-                throw new TestFailedException("Assert.True() Failure", userMessage);
+                if (Assert.Throw)
+                {
+                    throw new TestFailedException("Assert.True() Failure", userMessage);
+                }
+                else
+                {
+                    Console.WriteLine("Assert.True() Failure", userMessage);
+                }
             }
         }
 
@@ -21,7 +37,14 @@ namespace Munit
         {
             if (condition)
             {
-                throw new TestFailedException("Assert.False() Failure", userMessage);
+                if (Assert.Throw)
+                {
+                    throw new TestFailedException("Assert.False() Failure", userMessage);
+                }
+                else
+                {
+                    Console.WriteLine("Assert.False() Failure", userMessage);
+                }
             }
         }
 
@@ -29,7 +52,14 @@ namespace Munit
         {
             if (o == null)
             {
-                throw new TestFailedException("Assert.NotNull() Failure", userMessage);
+                if (Assert.Throw)
+                {
+                    throw new TestFailedException("Assert.NotNull() Failure", userMessage);
+                }
+                else
+                {
+                    Console.WriteLine("Assert.NotNull() Failure", userMessage);
+                }
             }
         }
 
@@ -37,7 +67,14 @@ namespace Munit
         {
             if (o != null)
             {
-                throw new TestFailedException("Asssert.Null() Failure", userMessage);
+                if (Assert.Throw)
+                {
+                    throw new TestFailedException("Assert.Null() Failure", userMessage);
+                }
+                else
+                {
+                    Console.WriteLine("Assert.Null() Failure", userMessage);
+                }
             }
         }
 
@@ -45,7 +82,14 @@ namespace Munit
         {
             if (!actual.Equals(expected))
             {
-                throw new TestFailedException($"Assert.Equal() Failure. Expected {expected}, Actual {actual}", userMessage);
+                if (Assert.Throw)
+                {
+                    throw new TestFailedException($"Assert.Equal() Failure. Expected {expected}, Actual {actual}", userMessage);
+                }
+                else
+                {
+                    Console.WriteLine($"Assert.Equal() Failure. Expected {expected}, Actual {actual}", userMessage);
+                }
             }
         }
 
@@ -62,7 +106,14 @@ namespace Munit
                 return;
             }
 
-            throw new TestFailedException($"Expected exception of type {typeof(T).Name}", userMessage);
+            if (Assert.Throw)
+            {
+                throw new TestFailedException($"Expected exception of type {typeof(T).Name}", userMessage);
+            }
+            else
+            {
+                Console.WriteLine($"Expected exception of type {typeof(T).Name}", userMessage);
+            }
         }
     }
 }

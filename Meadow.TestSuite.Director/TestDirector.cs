@@ -68,6 +68,18 @@ namespace Meadow.TestSuite
             return ProcessResults<TestResult[]>(result);
         }
 
+        public string DeleteAssemblies()
+        {
+            var cmd = new DeleteFileCommand()
+            {
+                Path = MeadowTestFolder,
+                Pattern = "*"
+            };
+
+            var result = Transport.DeliverCommand(cmd);
+            return ProcessResults<string>(result);
+        }
+
         public string[] GetAssemblies()
         {
             var cmd = new GetAssembliesCommand();

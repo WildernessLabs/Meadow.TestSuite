@@ -39,10 +39,17 @@ namespace Meadow.TestSuite
                     if (t.Contains('*'))
                     {
                         var names = worker.Registry.GetMatchingNames(t);
-                        foreach (var n in names)
+                        if (names == null || names.Length == 0)
                         {
-                            Console.WriteLine($"Running {n}");
-                            list.Add(worker.ExecuteTest(n));
+                            Console.WriteLine($"No tests found matching {t}");
+                        }
+                        else
+                        {
+                            foreach (var n in names)
+                            {
+                                Console.WriteLine($"Running {n}");
+                                list.Add(worker.ExecuteTest(n));
+                            }
                         }
                     }
                     else

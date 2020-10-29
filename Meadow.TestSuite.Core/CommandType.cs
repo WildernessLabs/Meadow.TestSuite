@@ -7,5 +7,6 @@
         EnumerateTests,
         ExecuteTests,
         GetTestResults,
+        DeleteAssemblies
     }
 }

@@ -4,9 +4,13 @@
       "commandName": "Project",
       "commandLineArgs": "test -p COM12 -e *"
     },
-    "Execute Test": {
+    "Execute Interrupt Tests": {
       "commandName": "Project",
-      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.GpioTests.Loopback5_6"
+      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.InterruptTests.Interrupt3_4"
+    },
+    "Execute GPIO Tests": {
+      "commandName": "Project",
+      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.GpioTests.*"
     },
     "Get Results": {
       "commandName": "Project",
@@ -15,6 +19,10 @@
     "Push Test Assembly": {
       "commandName": "Project",
       "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Tests.Meadow.Core\\bin\\Debug\\net472\\Tests.Meadow.Core.dll\""
+    },
+    "Erase Test Assemblies": {
+      "commandName": "Project",
+      "commandLineArgs": "assembly -p COM12 -c"
     },
     "Get Test Names": {
       "commandName": "Project",

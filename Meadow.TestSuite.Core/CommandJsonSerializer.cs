@@ -99,6 +99,8 @@ namespace Meadow.TestSuite
                         return System.Text.Json.JsonSerializer.Deserialize<ExecuteTestsCommand>(json);
                     case CommandType.GetTestResults:
                         return System.Text.Json.JsonSerializer.Deserialize<GetResultsCommand>(json);
+                    case CommandType.DeleteAssemblies:
+                        return System.Text.Json.JsonSerializer.Deserialize<DeleteFileCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -133,6 +135,8 @@ namespace Meadow.TestSuite
                         return SimpleJson.SimpleJson.DeserializeObject<ExecuteTestsCommand>(json);
                     case CommandType.GetTestResults:
                         return SimpleJson.SimpleJson.DeserializeObject<GetResultsCommand>(json);
+                    case CommandType.DeleteAssemblies:
+                        return SimpleJson.SimpleJson.DeserializeObject<DeleteFileCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;
@@ -167,6 +171,8 @@ namespace Meadow.TestSuite
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<ExecuteTestsCommand>(json);
                     case CommandType.GetTestResults:
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<GetResultsCommand>(json);
+                    case CommandType.DeleteAssemblies:
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<DeleteFileCommand>(json);
                     default:
                         Console.WriteLine($" Command '{command.CommandType}' not yet implemented");
                         break;

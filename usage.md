@@ -53,6 +53,10 @@ mtd uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Mea
 
     Optional. Retrieves a list of all known test assemblies on the Meadow
 
+- `-c|--clear`
+- 
+    Optional. Deletes all test test assemblies on the Meadow
+
 *Examples*
 
 ```
@@ -125,6 +129,8 @@ mtd uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Mea
 
 [TBD]
 
-## Known Issues
+## Known Issues/Areas of Improvement
 
 1. Currently the Worker must interpret a fair bit of deserialization code on the first call. If your first call is to upload an assembly, the interpreter starves the processor and the serial port will overflow, causing the assemly upload to fail.  The Worker detects this condition and the corrupted assembly will not be written to the device but it means that the uplink must be done a second time.
+2. The worker is improperly caching the tests in an assembly.  If you overwrite a test assembly, you must restart the worker to re-initialize.
+3. The worker holds results only in memory, so test results do not survive a restart

@@ -4,6 +4,6 @@
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup>
-    <ActiveDebugProfile>Get Results</ActiveDebugProfile>
+    <ActiveDebugProfile>Execute Interrupt Tests</ActiveDebugProfile>
   </PropertyGroup>
 </Project>

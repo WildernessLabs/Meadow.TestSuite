@@ -52,6 +52,14 @@ namespace Meadow.TestSuite
             }
         }
 
+        public void Clear()
+        {
+            lock(m_cache)
+            {
+                m_cache.Clear();
+            }
+        }
+
         public void RegisterAssembly(string assemblyPath)
         {
             Console.WriteLine($"Getting info for '{assemblyPath}'...");
@@ -70,15 +78,34 @@ namespace Meadow.TestSuite
 
             Console.WriteLine($"Loading assembly '{assemblyPath}'...");
             var asm = Assembly.LoadFrom(assemblyPath);
+            var name = asm.GetName().Name;
             var added = 0;
 
+            Console.WriteLine("Erasing old tests...");
+
+            lock (m_cache)
+            {
+                var list = m_cache.Values
+                    .Where(c => c.AssemblyName == name)
+                    .Select(c => c.ID)
+                    .ToList();
+
+                foreach (var existing in list)
+                {
+                    if (m_cache.ContainsKey(existing))
+                    {
+                        m_cache.Remove(existing);
+                    }
+                }
+            }
+
             Console.WriteLine("Looking for tests...");
-            foreach(var t in asm.GetTypes())
+
+            foreach (var t in asm.GetTypes())
             {
                 // we have very simple rules here - don't build complex test types
                 if(t.IsClass && !t.IsAbstract)
                 {
-                    Console.WriteLine($" Checking {t.Name}...");
                     var ctor = t.GetConstructor(Type.EmptyTypes);
                     if(ctor == null)
                     {
@@ -92,19 +119,16 @@ namespace Meadow.TestSuite
 
                         var count = methods.Count();
 
-                        Console.WriteLine($" {t.Name} contains {count} tests.");
-
                         if (count > 0)
                         {
-                            var props = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                            foreach(var p in props)
-                            {
-                                Console.WriteLine($" prop {p.Name}: {p.PropertyType.Name}");
-                            }
-                            var device = props.FirstOrDefault(p => p.PropertyType == typeof(IIODevice));
-                            Console.WriteLine($" device = {device}");
+                            Console.WriteLine($" {t.Name} contains {count} tests.");
 
-                            var name = asm.GetName().Name;
+                            var props = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                            var device = props.FirstOrDefault(p => p.PropertyType == typeof(IIODevice));
+                            if (device != null)
+                            {
+                                Console.WriteLine($" {t.Name} has Device property");
+                            }
 
                             foreach(var method in methods)
                             {

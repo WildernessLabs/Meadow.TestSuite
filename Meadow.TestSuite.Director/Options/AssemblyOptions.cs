@@ -7,5 +7,7 @@ namespace Meadow.TestSuite
     {
         [Option('l', "list", Required = false, HelpText = "List All Known Assemlies")]
         public bool List { get; set; }
+        [Option('c', "clear", Required = false, HelpText = "Delete All Test Assemlies")]
+        public bool Clear { get; set; }
     }
 }

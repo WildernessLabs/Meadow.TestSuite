@@ -70,20 +70,27 @@ namespace Meadow.TestSuite
 
         private void ProcessAssemblyCommand(TestDirector director, AssemblyOptions options)
         {
-            // we only have one assembly command right now
-            Console.WriteLine($"List of Assemblies:");
-
-            var result = director.GetAssemblies();
-            if((result == null) || (result.Length == 0))
+            if (options.List)
             {
-                Console.WriteLine($"  <none>");
-            }
-            else
-            {
-                foreach(var a in result)
+                Console.WriteLine($"List of Assemblies:");
+                var result = director.GetAssemblies();
+                if ((result == null) || (result.Length == 0))
                 {
-                    Console.WriteLine($"  {a}");
+                    Console.WriteLine($"  <none>");
                 }
+                else
+                {
+                    foreach (var a in result)
+                    {
+                        Console.WriteLine($"  {a}");
+                    }
+                }
+            }
+            else if(options.Clear)
+            {
+                Console.WriteLine($"Delete all Test Assemblies...");
+                var result = director.DeleteAssemblies();
+
             }
         }
 
@@ -151,7 +158,7 @@ namespace Meadow.TestSuite
                 // TODO: support verbose
                 foreach (var r in results)
                 {
-                    Console.WriteLine($"  ({r.State})\t{r.TestID}");
+                    Console.WriteLine($"  ({r.State})\t{r.TestID}\t{string.Join(',', r.Output)}");
                 }
             }
         }
