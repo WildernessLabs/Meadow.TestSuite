@@ -120,13 +120,20 @@ namespace Meadow.TestSuite
                 var names = options.Execute.Split(new char[] { ';', ',', '|' }, StringSplitOptions.RemoveEmptyEntries);
                 var results = director.ExecuteTests(names);
 
-                Console.WriteLine("Executing tests:");
-
-                // TODO: support verbose
-                foreach (var r in results)
+                if (results != null)
                 {
-                    Console.WriteLine($"  {r.TestID} as {r.ResultID}");
-                }                
+                    Console.WriteLine("Executing tests:");
+
+                    // TODO: support verbose
+                    foreach (var r in results)
+                    {
+                        Console.WriteLine($"  {r.TestID} as {r.ResultID}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No results received.");
+                }
             }
         }
 

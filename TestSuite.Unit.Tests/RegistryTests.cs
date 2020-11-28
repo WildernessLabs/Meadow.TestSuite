@@ -12,7 +12,6 @@ namespace TestSuite.Unit.Tests
         public void WorkerRegistryTest()
         {
             var r = new WorkerRegistry(null, null);
-
             var names = r.GetTestNames();
         }
     }

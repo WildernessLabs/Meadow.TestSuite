@@ -1,6 +1,5 @@
-﻿using System;
-using System.Threading;
-using Meadow.Hardware;
+﻿using Meadow.Hardware;
+using Meadow.TestSuite;
 using Munit;
 
 namespace MeadowLibary
@@ -14,8 +13,8 @@ namespace MeadowLibary
         {
             var pins = new string[]
             {
-                "D02", "D03","D04", "D05","D06", "D07", "D08",
-                "D09", "D10", "D11","D12", "D13","D14", "D15"
+                "D02", "D03", "D04", "D05", "D06", "D07", "D08",
+                "D09", "D10", "D11", "D12", "D13", "D14", "D15"
             };
 
             foreach(var p in pins)
@@ -92,7 +91,7 @@ namespace MeadowLibary
 
         private void LoopbackPins(string a, string b)
         {
-            
+
             // We don't have access to the concrete Device instance, so the specific Pins aren't directly available.
             // You must request them by string, which can be either the name or ID.
             // For most, it's simple - "D01" or "A02" for instance works.  The onboard LED names are less friendly.
@@ -111,6 +110,7 @@ namespace MeadowLibary
                 output.State = true;
                 Assert.True(output.State, $"{a} Expected to be asserted high");
                 Assert.True(input.State, $"{b} Expected to be driven high");
+
                 output.State = false;
                 Assert.False(output.State, $"{a} Expected to be asserted low");
                 Assert.False(input.State, $"{b} Expected to be driven low");
@@ -125,6 +125,7 @@ namespace MeadowLibary
                 output.State = true;
                 Assert.True(output.State, $"{b} Expected to be asserted high");
                 Assert.True(input.State, $"{a} Expected to be driven high");
+
                 output.State = false;
                 Assert.False(output.State, $"{b} Expected to be asserted low");
                 Assert.False(input.State, $"{a} Expected to be driven low");

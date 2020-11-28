@@ -13,15 +13,13 @@ namespace MeadowLibary
         [Fact]
         public void Interrupt3_4()
         {
-            InterruptTestRising("D03", "D04", 3, 5000);
-            /*
+            InterruptTestRising("D03", "D04", 3, 2000);
             InterruptTestFalling("D03", "D04");
             InterruptTestBidirectional("D03", "D04");
 
             InterruptTestRising("D04", "D03", 3);
             InterruptTestFalling("D04", "D03");
             InterruptTestBidirectional("D04", "D03");
-            */
         }
 
         private void InterruptTestRising(string source, string sink, int edgeCount, int sleepTimeMs = 200)
@@ -41,7 +39,13 @@ namespace MeadowLibary
             {
                 output.State = false;
 
-                using (var input = Device.CreateDigitalInputPort(pinB, resistorMode: ResistorMode.PullDown, interruptMode: InterruptMode.EdgeRising))
+                using (var input = Device.CreateDigitalInputPort(
+                    pinB, 
+                    resistorMode: ResistorMode.PullDown, 
+                    interruptMode: InterruptMode.EdgeRising,
+                    debounceDuration: 10,
+                    glitchDuration: 10
+                    ))
                 {
                     var interruptDetected = false;
                     var interruptState = false;

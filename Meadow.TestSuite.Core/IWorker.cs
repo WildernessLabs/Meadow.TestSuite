@@ -6,5 +6,7 @@
         IResultsStore Results { get; }
 
         TestResult ExecuteTest(string testID);
+
+        void IndicateState(TestState state);
     }
 }

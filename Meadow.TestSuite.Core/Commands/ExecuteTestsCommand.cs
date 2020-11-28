@@ -33,6 +33,11 @@ namespace Meadow.TestSuite
             {
                 var list = new List<TestResult>();
 
+                var successCount = 0;
+                var failCount = 0;
+
+                worker.IndicateState(TestState.NotRun);
+
                 foreach (var t in TestNames)
                 {
                     // allow for wildcard test execution
@@ -47,15 +52,32 @@ namespace Meadow.TestSuite
                         {
                             foreach (var n in names)
                             {
-                                Console.WriteLine($"Running {n}");
-                                list.Add(worker.ExecuteTest(n));
+                                Console.Write($"Running {n}...");
+                                var result = worker.ExecuteTest(n);
+                                list.Add(result);
+                                switch(result.State)
+                                {
+                                    case TestState.Success:
+                                        successCount++;
+                                        break;
+                                    case TestState.Failed:
+                                        failCount++;
+                                        break;
+                                }
+                                Console.WriteLine($"{result.State}");
                             }
+
+                            Console.WriteLine($"Done: {successCount} succeeded. {failCount} failed.");
+                            worker.IndicateState(failCount == 0 ? TestState.Success : TestState.Failed);
                         }
                     }
                     else
                     {
-                        Console.WriteLine($"Running {t}");
-                        list.Add(worker.ExecuteTest(t));
+                        Console.Write($"Running {t}...");
+                        var result = worker.ExecuteTest(t);
+                        list.Add(result);
+                        Console.WriteLine($"{result.State}");
+                        worker.IndicateState(result.State);
                     }
                 }
 

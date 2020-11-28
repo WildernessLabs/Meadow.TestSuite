@@ -1,4 +1,5 @@
 ﻿using Meadow.Devices;
+using Meadow.Hardware;
 using Meadow.TestSuite;
 using System;
 using System.Runtime.CompilerServices;
@@ -10,12 +11,13 @@ namespace MeadowApp
     public class Worker : IWorker
     {
         private ResultsStore m_resultsStore;
+        private IPin m_green = null;
+        private IPin m_red = null;
 
         public ITestRegistry Registry { get; }
         internal ITestProvider Provider { get; }
         public ICommandSerializer Serializer { get; }
         public ITestListener Listener { get; }
-
         public IResultsStore Results => m_resultsStore;
 
         public Worker(F7Micro device)
@@ -29,14 +31,43 @@ namespace MeadowApp
                 device.SerialPortNames.Com4,
                 9600,
                 8,
-                Meadow.Hardware.
                 Parity.None,
-                Meadow.Hardware.StopBits.One);
+                StopBits.One);
 
             Serializer = new CommandJsonSerializer(JsonLibrary.SystemTextJson);
 
             Listener = new MeadowSerialListener(port, Serializer);
             Listener.CommandReceived += Listener_CommandReceived;
+        }
+
+        public void IndicateState(TestState state)
+        {
+            if (m_green == null)
+            {
+                m_green = Provider.Device.GetPin("OnboardLedGreen");
+            }
+            if (m_red == null)
+            {
+                m_red = Provider.Device.GetPin("OnboardLedRed");
+            }
+
+            using (var red = Provider.Device.CreateDigitalOutputPort(m_red, false))
+            using (var green = Provider.Device.CreateDigitalOutputPort(m_green, false))
+            {
+                switch (state)
+                {
+                    case TestState.Success:
+                        green.State = true;
+                        break;
+                    case TestState.Failed:
+                        red.State = true;
+                        break;
+                    default:
+                        green.State = true;
+                        red.State = true;
+                        break;
+                }
+            }
         }
 
         public TestResult ExecuteTest(string testID)
