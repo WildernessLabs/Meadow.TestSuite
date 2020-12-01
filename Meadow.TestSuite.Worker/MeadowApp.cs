@@ -17,15 +17,13 @@ namespace MeadowApp
 
         public MeadowApp()
         {
-            Console.WriteLine("+ MeadowApp");
+            Console.WriteLine("=== Meadow TestSuite Worker ===");
 
             Worker = new Worker(Device);
             Worker.Start();
             // the above blocks, so we never actually get here
 
             Thread.Sleep(Timeout.Infinite);
-
-            Console.WriteLine("- MeadowApp");
         }
     }
 }

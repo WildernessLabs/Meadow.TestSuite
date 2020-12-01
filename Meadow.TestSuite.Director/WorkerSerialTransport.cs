@@ -15,6 +15,8 @@ namespace Meadow.TestSuite
     {
         private SerialPort SerialPort { get; }
 
+        public const int ResponseTimeoutSeconds = 45;
+
         internal bool ExternalManageSerialPort { get; set; } = false;
         
         public WorkerSerialTransport(ICommandSerializer serializer, SerialPort serialPort)
@@ -85,7 +87,7 @@ namespace Meadow.TestSuite
             }
 
             // TODO: start a timeout - make this configurable
-            SerialPort.ReadTimeout = 30000;
+            SerialPort.ReadTimeout = ResponseTimeoutSeconds * 1000;
 
             // receive any result
             // get length

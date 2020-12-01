@@ -10,6 +10,8 @@ namespace MeadowApp
     {
         private ISerialPort Port { get; }
 
+        public const int WriteTimeout = 5000;
+
         public MeadowSerialListener(ISerialPort port, ICommandSerializer serializer)
             : base(serializer)
         {
@@ -37,7 +39,7 @@ namespace MeadowApp
                 Console.WriteLine($" Port buffer overrun");
             };
             
-            Port.WriteTimeout = 5000;
+            Port.WriteTimeout = WriteTimeout;
 
             Console.WriteLine(" Listening for serial commands...");
             while (true)
@@ -73,9 +75,10 @@ namespace MeadowApp
             
             Port.Write(lengthBytes);
 
-            Thread.Sleep(1000); // TEST CODE
+            Thread.Sleep(500); // TEST CODE
 
             // send result
+            // TODO: add in a timeout here
             Console.WriteLine($"Sending {buffer.Length} bytes");
             Port.Write(buffer);
         }

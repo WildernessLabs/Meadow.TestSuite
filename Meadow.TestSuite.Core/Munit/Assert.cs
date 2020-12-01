@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Meadow.TestSuite;
+using System;
 using System.Runtime.CompilerServices;
 
 [assembly:InternalsVisibleTo("App")]
@@ -7,14 +8,16 @@ namespace Munit
 {
     public static class Assert
     {
-        internal static bool ThrowOnFail { get; set; } = false;
+        internal static bool ThrowOnFail { get; set; } = true;
         internal static bool HasFailed { get; set; }
         internal static string LastFailMessage { get; set; }
+        internal static bool ShowDebug { get; set; } = true;
 
         private static void SetFailed(string baseMessage, string userMessage)
         {
             HasFailed = true;
             LastFailMessage = $"{baseMessage}{(userMessage == null ? string.Empty : $": {userMessage}")}";
+            Output.WriteLineIf(ShowDebug, LastFailMessage);
         }
 
         /// <summary>

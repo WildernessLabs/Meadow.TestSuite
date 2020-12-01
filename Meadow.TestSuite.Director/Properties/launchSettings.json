@@ -10,7 +10,7 @@
     },
     "Execute GPIO Tests": {
       "commandName": "Project",
-      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.GpioTests.Loopback*"
+      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.GpioTests.*"
     },
     "Get Results": {
       "commandName": "Project",

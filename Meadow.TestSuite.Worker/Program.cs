@@ -9,8 +9,6 @@ namespace MeadowApp
         static IApp app;
         public static void Main(string[] args)
         {
-            Console.WriteLine("+ Main");
-
             // instantiate and run new meadow app
             app = new MeadowApp();
 

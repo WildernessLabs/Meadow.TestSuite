@@ -52,7 +52,7 @@ namespace Meadow.TestSuite
                         {
                             foreach (var n in names)
                             {
-                                Console.Write($"Running {n}...");
+                                Console.WriteLine($"Running {n}...");
                                 var result = worker.ExecuteTest(n);
                                 list.Add(result);
                                 switch(result.State)
@@ -73,7 +73,7 @@ namespace Meadow.TestSuite
                     }
                     else
                     {
-                        Console.Write($"Running {t}...");
+                        Console.WriteLine($"Running {t}...");
                         var result = worker.ExecuteTest(t);
                         list.Add(result);
                         Console.WriteLine($"{result.State}");

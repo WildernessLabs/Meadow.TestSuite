@@ -14,7 +14,7 @@ namespace Meadow.TestSuite
 
         // NOTE: as of beta 4.x, exceptions in a method loaded via reflaction cause a mono crash, so we have to
         // use a static flag, which in turn means tests must be run synchronously.  When the bug is fixed, we can set these both to `true`
-        public bool UseExceptionsForAssertControl { get; set; } = false;
+        public bool UseExceptionsForAssertControl { get; set; } = true;
         public bool RunTestsAsync { get; set; } = false;
 
         internal TestRunner(ITestProvider provider, string testID)

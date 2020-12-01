@@ -220,8 +220,6 @@ namespace Meadow.TestSuite
                         m_buffer = new byte[BitConverter.ToInt32(m_header.ToArray(), 4)];
                         Console.WriteLine($"Allocated.");
 
-                        m_rxTimeoutTimer.Change(CommandTimeoutSeconds * 1000, Timeout.Infinite);
-
                         // any remaining data copy to the buffer
                         var count = length - index;
                         if (count > 0)
@@ -233,6 +231,11 @@ namespace Meadow.TestSuite
                         if (m_remaining == 0)
                         {
                             ProcessMessageInBuffer();
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{m_remaining} remaining bytes.");
+                            m_rxTimeoutTimer.Change(CommandTimeoutSeconds * 1000, Timeout.Infinite);
                         }
                     }
                 }
@@ -263,15 +266,19 @@ namespace Meadow.TestSuite
 
         private void ProcessMessageInBuffer()
         {
+            Console.WriteLine("Command received. Deserializing..");
+
             // stop the timer
             m_rxTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
+            Console.WriteLine(".");
+
             // we've finished the packet
-            Console.WriteLine("Command received!");
             TestCommand c = null;
             try
             {
                 c = Serializer?.Deserialize(m_buffer);
+                Console.WriteLine("done.");
             }
             catch (Exception ex)
             {
