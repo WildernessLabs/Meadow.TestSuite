@@ -6,7 +6,7 @@ namespace MeadowLibary
 {
     public partial class GpioTests
     {
-        public bool ShowDebug { get; set; } = true;
+        public bool ShowDebug { get; set; } = false;
         public IIODevice Device { get; set; }
 
         [Fact]
@@ -14,6 +14,8 @@ namespace MeadowLibary
         {
             var pins = new string[]
             {
+                "A00", "A01", "A02", "A03", "A04", "A05", "A06",
+                "SCK", "MOSI", "MISO",
                 "D02", "D03", "D04", "D05", "D06", "D07", "D08",
                 "D09", "D10", "D11", "D12", "D13", "D14", "D15"
             };
@@ -29,23 +31,57 @@ namespace MeadowLibary
             Assert.Throws<PortInUseException>(() =>
             {
                 var p = Device.GetPin(pin);
-                var a = Device.CreateDigitalOutputPort(p);
-                var b = Device.CreateDigitalOutputPort(p);
+
+                using (var a = Device.CreateDigitalOutputPort(p))
+                using (var b = Device.CreateDigitalOutputPort(p))
+                {
+                    // nop - just ensuring Dispose gets called
+                }
             }, $"Pin {pin} was allowed duplication");
 
             Assert.Throws<PortInUseException>(() =>
             {
                 var p = Device.GetPin(pin);
-                var a = Device.CreateDigitalInputPort(p);
-                var b = Device.CreateDigitalInputPort(p);
+                using (var a = Device.CreateDigitalInputPort(p))
+                using (var b = Device.CreateDigitalInputPort(p))
+                {
+                    // nop - just ensuring Dispose gets called
+                }
             }, $"Pin {pin} was allowed duplication");
 
             Assert.Throws<PortInUseException>(() =>
             {
                 var p = Device.GetPin(pin);
-                var a = Device.CreateDigitalOutputPort(p);
-                var b = Device.CreateDigitalInputPort(p);
+                using (var a = Device.CreateDigitalOutputPort(p))
+                using (var b = Device.CreateDigitalInputPort(p))
+                {
+                    // nop - just ensuring Dispose gets called
+                }
             }, $"Pin {pin} was allowed duplication");
+        }
+
+        [Fact]
+        public void LoopbackA0_A1()
+        {
+            LoopbackPins("A00", "A01");
+        }
+
+        [Fact]
+        public void LoopbackA2_A3()
+        {
+            LoopbackPins("A02", "A03");
+        }
+
+        [Fact]
+        public void LoopbackA4_A5()
+        {
+            LoopbackPins("A04", "A05");
+        }
+
+        [Fact]
+        public void LoopbackMOSI_MISO()
+        {
+            LoopbackPins("MOSI", "MISO");
         }
 
         [Fact]

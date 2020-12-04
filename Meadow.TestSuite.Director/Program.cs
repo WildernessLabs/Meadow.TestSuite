@@ -118,7 +118,18 @@ namespace Meadow.TestSuite
             {
                 // allow a few delimiters
                 var names = options.Execute.Split(new char[] { ';', ',', '|' }, StringSplitOptions.RemoveEmptyEntries);
-                var results = director.ExecuteTests(names);
+
+                TestResult[] results;
+
+                try
+                {
+                    results = director.ExecuteTests(names);
+                }
+                catch(System.IO.FileNotFoundException fe)
+                {
+                    Console.WriteLine($"Unable to open the serial port: {fe.Message}");
+                    return;
+                }
 
                 if (results != null)
                 {

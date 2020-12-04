@@ -6,7 +6,7 @@
     },
     "Execute Interrupt Tests": {
       "commandName": "Project",
-      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.InterruptTests.Interrupt3_4"
+      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.InterruptTests.*"
     },
     "Execute GPIO Tests": {
       "commandName": "Project",

@@ -68,11 +68,17 @@ namespace Meadow.TestSuite
                 toWrite -= c;
 
                 progress += steps;
+                if (progress > 100)
+                {
+                    // cap due to math
+                    progress = 100f;
+                }
+
                 Debug.WriteLine($"{progress}%");
                 
                 // oddly sometimes (on first run since power?) this delay is required, but once it's worked once, it can be ignored.
                 // no idea yet WTF is going on there.
-                Thread.Sleep(100);
+                Thread.Sleep(30);
             }
             Debug.WriteLine($"100%");
             var et = Environment.TickCount - start;

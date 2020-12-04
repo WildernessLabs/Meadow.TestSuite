@@ -11,10 +11,6 @@ namespace Meadow.TestSuite
         public bool ShowDebug { get; set; } = false;
         public TestResult Result { get; private set; }
         private ITestProvider Provider { get; }
-
-        // NOTE: as of beta 4.x, exceptions in a method loaded via reflaction cause a mono crash, so we have to
-        // use a static flag, which in turn means tests must be run synchronously.  When the bug is fixed, we can set these both to `true`
-        public bool UseExceptionsForAssertControl { get; set; } = true;
         public bool RunTestsAsync { get; set; } = false;
 
         internal TestRunner(ITestProvider provider, string testID)
@@ -53,10 +49,6 @@ namespace Meadow.TestSuite
 
         private void ExecuteTest(TestInfo test)
         {
-            Assert.ThrowOnFail = UseExceptionsForAssertControl;
-            Assert.LastFailMessage = null;
-            Assert.HasFailed = false;
-
             var sw = new Stopwatch();
             sw.Start();
 
@@ -79,39 +71,15 @@ namespace Meadow.TestSuite
 
                 Output.WriteLineIf(ShowDebug, $" Invoke complete");
 
-                if (UseExceptionsForAssertControl)
-                {
-                    // if the test didn't throw, it succeeded
-                    Result.State = TestState.Success;
-                }
-                else
-                {
-                    if (Assert.HasFailed)
-                    {
-                        Result.State = TestState.Failed;
-                        Result.Output.Add(Assert.LastFailMessage);
-                    }
-                    else
-                    {
-                        Result.State = TestState.Success;
-                    }
-
-                    Output.WriteLineIf(ShowDebug, $" Invoke result: {Result.State}");
-                }
+                // if the test didn't throw, it succeeded
+                Result.State = TestState.Success;
             }
             catch (TargetInvocationException tie)
             {
-                Output.WriteLineIf(ShowDebug, $" TargetInvocationException");
+                Output.WriteLine($" Test Failure: {tie.InnerException.Message}");
 
                 Result.State = TestState.Failed;
                 Result.Output.Add(tie.InnerException.Message);
-            }
-            catch (TestFailedException tfe)
-            {
-                Output.WriteLineIf(ShowDebug, $" TestFailedException");
-
-                Result.State = TestState.Failed;
-                Result.Output.Add(tfe.Message);
             }
             catch (Exception ex)
             {

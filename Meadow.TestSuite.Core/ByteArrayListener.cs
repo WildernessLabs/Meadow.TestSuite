@@ -271,8 +271,6 @@ namespace Meadow.TestSuite
             // stop the timer
             m_rxTimeoutTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
-            Console.WriteLine(".");
-
             // we've finished the packet
             TestCommand c = null;
             try

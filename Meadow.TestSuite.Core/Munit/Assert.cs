@@ -8,16 +8,11 @@ namespace Munit
 {
     public static class Assert
     {
-        internal static bool ThrowOnFail { get; set; } = true;
-        internal static bool HasFailed { get; set; }
-        internal static string LastFailMessage { get; set; }
-        internal static bool ShowDebug { get; set; } = true;
+        internal static bool ShowDebug { get; set; } = false;
 
-        private static void SetFailed(string baseMessage, string userMessage)
+        private static string CreateFailedMessage(string baseMessage, string userMessage)
         {
-            HasFailed = true;
-            LastFailMessage = $"{baseMessage}{(userMessage == null ? string.Empty : $": {userMessage}")}";
-            Output.WriteLineIf(ShowDebug, LastFailMessage);
+            return $"{baseMessage}{(userMessage == null ? string.Empty : $": {userMessage}")}";
         }
 
         /// <summary>
@@ -26,12 +21,9 @@ namespace Munit
         /// <param name="userMessage">The message to show</param>
         public static void Fail(string userMessage)
         {
-            SetFailed("Assert.Fail()", userMessage);
+            var msg = CreateFailedMessage("Assert.Fail()", userMessage);
 
-            if (Assert.ThrowOnFail)
-            {
-                throw new TestFailedException(LastFailMessage);
-            }
+            throw new TestFailedException(msg);
         }
 
         /// <summary>
@@ -43,12 +35,9 @@ namespace Munit
         {
             if (!condition)
             {
-                SetFailed("Assert.True() Failure", userMessage);
+                var msg = CreateFailedMessage("Assert.True() Failure", userMessage);
 
-                if (Assert.ThrowOnFail)
-                {
-                    throw new TestFailedException(LastFailMessage);
-                }
+                throw new TestFailedException(msg);
             }
         }
 
@@ -61,12 +50,9 @@ namespace Munit
         {
             if (condition)
             {
-                SetFailed("Assert.False() Failure", userMessage);
+                var msg = CreateFailedMessage("Assert.False() Failure", userMessage);
 
-                if (Assert.ThrowOnFail)
-                {
-                    throw new TestFailedException(LastFailMessage);
-                }
+                throw new TestFailedException(msg);
             }
         }
 
@@ -79,12 +65,9 @@ namespace Munit
         {
             if (o == null)
             {
-                SetFailed("Assert.NotNull() Failure", userMessage);
+                var msg = CreateFailedMessage("Assert.NotNull() Failure", userMessage);
 
-                if (Assert.ThrowOnFail)
-                {
-                    throw new TestFailedException(LastFailMessage);
-                }
+                throw new TestFailedException(msg);
             }
         }
 
@@ -97,12 +80,9 @@ namespace Munit
         {
             if (o != null)
             {
-                SetFailed("Assert.Null() Failure", userMessage);
+                var msg = CreateFailedMessage("Assert.Null() Failure", userMessage);
 
-                if (Assert.ThrowOnFail)
-                {
-                    throw new TestFailedException(LastFailMessage);
-                }
+                throw new TestFailedException(msg);
             }
         }
 
@@ -116,12 +96,9 @@ namespace Munit
         {
             if (!actual.Equals(expected))
             {
-                SetFailed($"Assert.Equal() Failure. Expected {expected}, Actual {actual}", userMessage);
+                var msg = CreateFailedMessage($"Assert.Equal() Failure. Expected {expected}, Actual {actual}", userMessage);
 
-                if (Assert.ThrowOnFail)
-                {
-                    throw new TestFailedException(LastFailMessage);
-                }
+                throw new TestFailedException(msg);
             }
         }
 
@@ -135,12 +112,9 @@ namespace Munit
         {
             if (actual.Equals(expected))
             {
-                SetFailed($"Assert.NotEqual() Failure. Expected {expected}, Actual {actual}", userMessage);
+                var msg = CreateFailedMessage($"Assert.NotEqual() Failure. Expected {expected}, Actual {actual}", userMessage);
 
-                if (Assert.ThrowOnFail)
-                {
-                    throw new TestFailedException(LastFailMessage);
-                }
+                throw new TestFailedException(msg);
             }
         }
 
@@ -162,12 +136,9 @@ namespace Munit
                 return;
             }
 
-            SetFailed($"Expected exception of type {typeof(T).Name}", userMessage);
+            var msg = CreateFailedMessage($"Expected exception of type {typeof(T).Name}", userMessage);
 
-            if (Assert.ThrowOnFail)
-            {
-                throw new TestFailedException(LastFailMessage);
-            }
+            throw new TestFailedException(msg);
         }
     }
 }
