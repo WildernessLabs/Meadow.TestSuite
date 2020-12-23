@@ -12,13 +12,21 @@
       "commandName": "Project",
       "commandLineArgs": "test -p COM12 -e Tests.Meadow.Core.GpioTests.*"
     },
+    "Execute Foundation Tests": {
+      "commandName": "Project",
+      "commandLineArgs": "test -p COM12 -e Tests.Meadow.Foundation.*"
+    },
     "Get Results": {
       "commandName": "Project",
       "commandLineArgs": "result --all -p COM12"
     },
-    "Push Test Assembly": {
+    "Push Core Test Assembly": {
       "commandName": "Project",
       "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Tests.Meadow.Core\\bin\\Debug\\net472\\Tests.Meadow.Core.dll\""
+    },
+    "Push Foundation Test Assembly": {
+      "commandName": "Project",
+      "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Tests.Meadow.Foundation\\bin\\Debug\\net472\\Tests.Meadow.Foundation.dll\""
     },
     "Erase Test Assemblies": {
       "commandName": "Project",

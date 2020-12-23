@@ -13,7 +13,10 @@ namespace MeadowLibary
         public bool ShowDebug { get; set; } = false;
         public IIODevice Device { get; set; }
 
+        // DEV NOTE
+        // with Meadow b4.2 (likely anything pre-AOT) the first interrupt handler is way slow, so we need to account for that during testing
         private static bool VeryFirstInterrupt { get; set; } = true;
+
         // DEV NOTE
         // Dec 3, 20 meadow b4.x
         // any faster than this and tests start failing
