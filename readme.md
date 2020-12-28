@@ -12,3 +12,68 @@ A goal is to provide a API that at least feels like xUnit, or a subset of xUnit,
 
 [TestSuite Implementation Details](implementation.md)
 
+## Beta Notes
+
+Currently the Beta source has references to local projects for the full source of Meadow Core and Meadow Foundation since we're using it to find and fix bugs in both and it makes things a bit easier internally. If you don't have the source for those, however, it leads to compile errors like this:
+
+```
+Error	NU1104	Unable to find project '...\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj'. Check that the project reference is valid and that the project file exists.	Tests.Meadow.Foundation	{My Repo Folder}\Source\Repos\Meadow.TestSuite\Tests.Meadow.Foundation\Tests.Meadow.Foundation.csproj
+```
+
+This is solved by changing from the local project reference to using the Nuget packages instead.
+
+### Update `Meadow.TestSuite.Worker.csproj`
+
+Old:
+```
+<Project Sdk="Meadow.Sdk/1.1.0">
+  ...
+  <ItemGroup>
+    <ProjectReference Include="..\..\Meadow.Core\source\Meadow.Core\Meadow.Core.csproj" />
+    <ProjectReference Include="..\..\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj" />
+    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
+  </ItemGroup>
+</Project>
+```
+New:
+```
+<Project Sdk="Meadow.Sdk/1.1.0">
+  ...
+  <ItemGroup>
+    <PackageReference Include="Meadow" Version="0.18.0" />
+    <PackageReference Include="Meadow.Foundation" Version="0.20.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
+  </ItemGroup>
+</Project>
+```
+
+### Update `Tests.Meadow.Core.csproj` and `Tests.Meadow.Foundation.csproj`
+
+Old (similar to):
+```
+<Project Sdk="Meadow.Sdk/1.1.0">
+  ...
+  <ItemGroup>
+    <PackageReference Include="Meadow.Foundation" Version="0.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Meadow.Core\source\Meadow.Core\Meadow.Core.csproj" />
+    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
+  </ItemGroup>
+</Project>
+```
+New:
+```
+<Project Sdk="Meadow.Sdk/1.1.0">
+  ...
+  <ItemGroup>
+    <PackageReference Include="Meadow" Version="0.18.0" />
+    <PackageReference Include="Meadow.Foundation" Version="0.*.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
+  </ItemGroup>
+</Project>
+```
