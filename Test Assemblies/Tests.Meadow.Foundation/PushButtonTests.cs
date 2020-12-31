@@ -9,8 +9,6 @@ namespace Foundation
 {
     public partial class PushButtonTests
     {
-        public bool ShowDebug { get; set; } = false;
-
         // DEV NOTE
         // with Meadow b4.2 (likely anything pre-AOT) the first interrupt handler is way slow, so we need to account for that during testing
         private static bool VeryFirstInterrupt { get; set; } = true;
@@ -91,20 +89,17 @@ namespace Foundation
         }
 
         [Fact]
-        public void PressStartedTest()
+        public void PressStartedTest_PortConstructor()
         {
             var startsDetected = 0;
 
             var buttonPin = Device.GetPin(ButtonPinIdentifier);
             var drivePin = Device.GetPin(DrivePinIdentifier);
 
-            Output.WriteLineIf(ShowDebug, $"Creating output on {drivePin.Key}");
-
             using (var output = Device.CreateDigitalOutputPort(drivePin))
             {
                 output.State = true;
 
-                Output.WriteLineIf(ShowDebug, $"Creating input on {buttonPin.Key}");
                 using (var buttonInput = Device.CreateDigitalInputPort(
                     buttonPin,
                     InterruptMode.EdgeFalling,
@@ -112,12 +107,10 @@ namespace Foundation
                     20,
                     20))
                 {
-                    Output.WriteLineIf(ShowDebug, $"Creating PushButton");
                     var button = new PushButton(buttonInput);
 
                     button.PressStarted += (s, e) =>
                     {
-                        Output.WriteLineIf(ShowDebug, $"Press Started");
                         startsDetected++;
 
                         VeryFirstInterrupt = false;
@@ -125,8 +118,6 @@ namespace Foundation
 
                     for (var i = 0; i < ClicksToTest; i++)
                     {
-                        Output.WriteLineIf(ShowDebug, $"Click {i + 1}");
-
                         // "click" the button n times. and make sure we got that many clicks
                         output.State = false;
 
@@ -138,31 +129,24 @@ namespace Foundation
                         // wait a little while
                         Thread.Sleep(250);
                     }
-
-                    Output.WriteLineIf(ShowDebug, $"Dispose input");
                 }
-
-                Output.WriteLineIf(ShowDebug, $"Dispose output");
             }
 
             Assert.Equal(ClicksToTest, startsDetected);
         }
 
         [Fact]
-        public void ClickTest()
+        public void ClickTest_PortConstructor()
         {
             var clicksDetected = 0;
 
             var buttonPin = Device.GetPin(ButtonPinIdentifier);
             var drivePin = Device.GetPin(DrivePinIdentifier);
 
-            Output.WriteLineIf(ShowDebug, $"Creating output on {drivePin.Key}");
-
             using (var output = Device.CreateDigitalOutputPort(drivePin))
             {
                 output.State = true;
 
-                Output.WriteLineIf(ShowDebug, $"Creating input on {buttonPin.Key}");
                 using (var buttonInput = Device.CreateDigitalInputPort(
                     buttonPin,
                     InterruptMode.EdgeBoth,
@@ -170,12 +154,10 @@ namespace Foundation
                     20,
                     20))
                 {
-                    Output.WriteLineIf(ShowDebug, $"Creating PushButton");
                     var button = new PushButton(buttonInput);
 
                     button.Clicked += (s, e) =>
                     {
-                        Output.WriteLineIf(ShowDebug, $"Clicked");
                         clicksDetected++;
 
                         VeryFirstInterrupt = false;
@@ -183,8 +165,6 @@ namespace Foundation
 
                     for (var i = 0; i < ClicksToTest; i++)
                     {
-                        Output.WriteLineIf(ShowDebug, $"Click {i + 1}");
-
                         // "click" the button n times. and make sure we got that many clicks
                         output.State = false;
 
@@ -196,44 +176,29 @@ namespace Foundation
                         // wait a little while
                         Thread.Sleep(250);
                     }
-
-                    Output.WriteLineIf(ShowDebug, $"Dispose input");
                 }
-
-                Output.WriteLineIf(ShowDebug, $"Dispose output");
             }
 
             Assert.Equal(ClicksToTest, clicksDetected);
         }
 
         [Fact]
-        public void PressEndedTest()
+        public void ClickTest_DeviceAndPinConstructor()
         {
             var clicksDetected = 0;
 
             var buttonPin = Device.GetPin(ButtonPinIdentifier);
             var drivePin = Device.GetPin(DrivePinIdentifier);
 
-            Output.WriteLineIf(ShowDebug, $"Creating output on {drivePin.Key}");
-
             using (var output = Device.CreateDigitalOutputPort(drivePin))
             {
                 output.State = true;
 
-                Output.WriteLineIf(ShowDebug, $"Creating input on {buttonPin.Key}");
-                using (var buttonInput = Device.CreateDigitalInputPort(
-                    buttonPin,
-                    InterruptMode.EdgeBoth,
-                    ResistorMode.PullUp,
-                    20,
-                    20))
+                using (var button = new PushButton(Device, buttonPin, ResistorMode.PullUp, 20))
                 {
-                    Output.WriteLineIf(ShowDebug, $"Creating PushButton");
-                    var button = new PushButton(buttonInput);
 
-                    button.PressEnded += (s, e) =>
+                    button.Clicked += (s, e) =>
                     {
-                        Output.WriteLineIf(ShowDebug, $"Ended");
                         clicksDetected++;
 
                         VeryFirstInterrupt = false;
@@ -241,8 +206,6 @@ namespace Foundation
 
                     for (var i = 0; i < ClicksToTest; i++)
                     {
-                        Output.WriteLineIf(ShowDebug, $"Click {i + 1}");
-
                         // "click" the button n times. and make sure we got that many clicks
                         output.State = false;
 
@@ -254,14 +217,137 @@ namespace Foundation
                         // wait a little while
                         Thread.Sleep(250);
                     }
-
-                    Output.WriteLineIf(ShowDebug, $"Dispose input");
                 }
-
-                Output.WriteLineIf(ShowDebug, $"Dispose output");
             }
 
             Assert.Equal(ClicksToTest, clicksDetected);
+        }
+
+        [Fact]
+        public void PressEndedTest_PortConstructor()
+        {
+            var clicksDetected = 0;
+
+            var buttonPin = Device.GetPin(ButtonPinIdentifier);
+            var drivePin = Device.GetPin(DrivePinIdentifier);
+
+            using (var output = Device.CreateDigitalOutputPort(drivePin))
+            {
+                output.State = true;
+
+                using (var buttonInput = Device.CreateDigitalInputPort(
+                    buttonPin,
+                    InterruptMode.EdgeBoth,
+                    ResistorMode.PullUp,
+                    20,
+                    20))
+                {
+                    var button = new PushButton(buttonInput);
+
+                    button.PressEnded += (s, e) =>
+                    {
+                        clicksDetected++;
+
+                        VeryFirstInterrupt = false;
+                    };
+
+                    for (var i = 0; i < ClicksToTest; i++)
+                    {
+                        // "click" the button n times. and make sure we got that many clicks
+                        output.State = false;
+
+                        // wait a little while
+                        Thread.Sleep(250 + (VeryFirstInterrupt ? 1000 : 0));
+
+                        output.State = true;
+
+                        // wait a little while
+                        Thread.Sleep(250);
+                    }
+                }
+            }
+
+            Assert.Equal(ClicksToTest, clicksDetected);
+        }
+
+        [Fact]
+        public void LongPressTest_PortConstructor()
+        {
+            var longPressesDetected = 0;
+
+            var buttonPin = Device.GetPin(ButtonPinIdentifier);
+            var drivePin = Device.GetPin(DrivePinIdentifier);
+
+            using (var output = Device.CreateDigitalOutputPort(drivePin))
+            {
+                output.State = true;
+
+                using (var buttonInput = Device.CreateDigitalInputPort(
+                    buttonPin,
+                    InterruptMode.EdgeBoth,
+                    ResistorMode.PullUp,
+                    20,
+                    20))
+                {
+                    var button = new PushButton(buttonInput);
+                    button.LongPressThreshold = TimeSpan.FromMilliseconds(500);
+
+                    button.LongPressClicked += (s, e) =>
+                    {
+                        longPressesDetected++;
+
+                        VeryFirstInterrupt = false;
+                    };
+
+                    // this throws things off, so let's just sink it if it's true
+                    if(VeryFirstInterrupt)
+                    {
+                        // "click" the button n times. and make sure we got that many clicks
+                        output.State = false;
+
+                        // wait a little while
+                        Thread.Sleep(1000);
+
+                        output.State = true;
+
+                        longPressesDetected = 0;
+                    }
+
+                    // first, let's do a few short presses and make sure we *dont" get events
+                    for (var i = 0; i < ClicksToTest; i++)
+                    {
+                        // "click" the button n times. and make sure we got that many clicks
+                        output.State = false;
+
+                        // wait less than the threshold
+                        Thread.Sleep(button.LongPressThreshold.Subtract(TimeSpan.FromMilliseconds(100)));
+
+                        output.State = true;
+
+                        // wait a while before we click again
+                        Thread.Sleep(250);
+                    }
+
+                    Assert.Equal(0, longPressesDetected, "Short presses created long press events");
+
+                    // now do a few long presses and make sure we *do" get events
+                    for (var i = 0; i < ClicksToTest; i++)
+                    {
+                        // "click" the button n times. and make sure we got that many clicks
+                        output.State = false;
+
+                        // wait more than the threshold
+                        Thread.Sleep(button.LongPressThreshold.Add(TimeSpan.FromMilliseconds(100)));
+
+                        output.State = true;
+
+                        // wait a while before we click again
+                        Thread.Sleep(250);
+                    }
+
+                    Assert.Equal(ClicksToTest, longPressesDetected);
+                }
+            }
         }
     }
 }

@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Meadow.TestSuite</RootNamespace>
     <AssemblyName>mtd</AssemblyName>
+    <Configurations>Debug;Release;Nuget Debug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

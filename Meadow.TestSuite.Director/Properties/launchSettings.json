@@ -22,11 +22,11 @@
     },
     "Push Core Test Assembly": {
       "commandName": "Project",
-      "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Tests.Meadow.Core\\bin\\Debug\\net472\\Tests.Meadow.Core.dll\""
+      "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Test Assemblies\\Tests.Meadow.Core\\bin\\Debug\\net472\\Tests.Meadow.Core.dll\""
     },
     "Push Foundation Test Assembly": {
       "commandName": "Project",
-      "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Tests.Meadow.Foundation\\bin\\Debug\\net472\\Tests.Meadow.Foundation.dll\""
+      "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Test Assemblies\\Tests.Meadow.Foundation\\bin\\Debug\\net472\\Tests.Meadow.Foundation.dll\""
     },
     "Erase Test Assemblies": {
       "commandName": "Project",
@@ -35,6 +35,14 @@
     "Get Test Names": {
       "commandName": "Project",
       "commandLineArgs": "test -l -p COM12"
+    },
+    "Push MCP Test Assembly": {
+      "commandName": "Project",
+      "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Test Assemblies\\Tests.Mcp23x08\\bin\\Debug\\net472\\Tests.Mcp23x08.dll\""
+    },
+    "Execute MCP Tests": {
+      "commandName": "Project",
+      "commandLineArgs": "test -p COM12 -e Tests.Mcp23x08.*"
     }
   }
 }
