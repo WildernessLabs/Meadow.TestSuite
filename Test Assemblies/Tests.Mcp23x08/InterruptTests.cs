@@ -42,6 +42,8 @@ namespace Peripheral
             var bus = Device.CreateI2cBus(scl, sda);
             Assert.NotNull(bus);
 
+            var meadow_interrupt_count = 0;
+
             // this is the meadow interrupt that will forward expander interrupts
             using (var int_port = Device.CreateDigitalInputPort(
                 int_pin,
@@ -52,6 +54,7 @@ namespace Peripheral
             {
                 int_port.Changed += (s, e) =>
                {
+                   meadow_interrupt_count++;
                    Output.WriteLineIf(ShowDebug, $"Meadow Interrupt");
                };
 
@@ -59,21 +62,29 @@ namespace Peripheral
                 Output.WriteLineIf(ShowDebug, "Creating the expander...");
                 var expander = new Mcp23x08(bus, interruptPort: int_port);
                 Assert.NotNull(expander, "Failed to create the Expander object");
-
                 expander.InputChanged += (sender, args) =>
                 {
                     Output.WriteLineIf(ShowDebug, $"! Expander Input Changed state: {Convert.ToString(args.InputState, 2)}");
                 };
 
+                // BUG BUG BUG - we don't pass this currently
+                Assert.Equal(0, meadow_interrupt_count, "We got an unsolicted interrupt from the MCP ctor");
+
                 Output.WriteLineIf(ShowDebug, "Creating the expanded input...");
-                var gp0_input = expander.CreateDigitalInputPort(expander.Pins.GP0, InterruptMode.EdgeBoth, ResistorMode.PullUp);
-                gp0_input.Changed += (sender, args) =>
+                var gp_input = expander.CreateDigitalInputPort(expander.Pins.GP7, InterruptMode.EdgeBoth, ResistorMode.PullUp);
+                gp_input.Changed += (sender, args) =>
                 {
-                    Output.WriteLineIf(ShowDebug, $"Expanded input interrupt. Event says it's {args.Value}. Pin says it's {gp0_input.State}.");
+                    // dev note
+                    // BUG BUG BUG
+                    // Without the gp_input.State read here, this event will never fire a second time
+                    Output.WriteLineIf(ShowDebug, $"Expanded input interrupt. Event says it's {args.Value}. Pin says it's {gp_input.State}.");
                 };
 
-                // TODO: add loopbacks - for now it's a manual test
-                for(int i = 0; i < 30; i++)
+                // BUG BUG BUG - we don't pass this currently
+                Assert.Equal(0, meadow_interrupt_count, "We got an unsolicted interrupt from the MCP Input Creation");
+
+                // TODO: add loopbacks - for now it's a manual test.  Just pull GP low and then back high.
+                for (int i = 0; i < 30; i++)
                 {
                     Output.WriteLineIf(ShowDebug, $"tick");
                     Thread.Sleep(1000);
