@@ -38,11 +38,11 @@
     },
     "Push MCP Test Assembly": {
       "commandName": "Project",
-      "commandLineArgs": "uplink -p COM12 -s \"..\\..\\..\\..\\Test Assemblies\\Tests.Mcp23x08\\bin\\Debug\\net472\\Tests.Mcp23x08.dll\""
+      "commandLineArgs": "uplink -p COM11 -s \"..\\..\\..\\..\\Test Assemblies\\Tests.Mcp23x08\\bin\\Debug\\net472\\Tests.Mcp23x08.dll\""
     },
     "Execute MCP Tests": {
       "commandName": "Project",
-      "commandLineArgs": "test -p COM12 -e Tests.Mcp23x08.*"
+      "commandLineArgs": "test -p COM11 -e Tests.Mcp23x08.*"
     }
   }
 }

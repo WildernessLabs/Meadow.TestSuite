@@ -1,4 +1,6 @@
-﻿using Meadow.Foundation.ICs.IOExpanders;
+﻿using Meadow;
+using Meadow.Devices;
+using Meadow.Foundation.ICs.IOExpanders;
 using Meadow.Foundation.Sensors.Buttons;
 using Meadow.Hardware;
 using Meadow.TestSuite;
@@ -23,7 +25,7 @@ namespace Peripheral
         private const string InterruptIdentifier = "D06";
 
         [Fact]
-        public void NoInterruptsCheck()
+        public void InterruptCheck()
         {
             // Get the Meadow pins we'll use
             Output.WriteLineIf(ShowDebug, "Getting pins...");
@@ -36,6 +38,7 @@ namespace Peripheral
 
             // create the IIC bus
             Output.WriteLineIf(ShowDebug, "Creating IIC Bus...");
+//            var bus = (Device as F7Micro).CreateI2cBus();
             var bus = Device.CreateI2cBus(scl, sda);
             Assert.NotNull(bus);
 
@@ -43,10 +46,15 @@ namespace Peripheral
             using (var int_port = Device.CreateDigitalInputPort(
                 int_pin,
                 InterruptMode.EdgeRising,
-                ResistorMode.PullUp,
+                ResistorMode.PullDown,
                 20,
                 20))
             {
+                int_port.Changed += (s, e) =>
+               {
+                   Output.WriteLineIf(ShowDebug, $"Meadow Interrupt");
+               };
+
                 // build the expander
                 Output.WriteLineIf(ShowDebug, "Creating the expander...");
                 var expander = new Mcp23x08(bus, interruptPort: int_port);
@@ -54,22 +62,22 @@ namespace Peripheral
 
                 expander.InputChanged += (sender, args) =>
                 {
-                    Output.WriteLineIf(ShowDebug, $"! Expander Input Changed state: {args.InputState:b8}");
+                    Output.WriteLineIf(ShowDebug, $"! Expander Input Changed state: {Convert.ToString(args.InputState, 2)}");
                 };
 
+                Output.WriteLineIf(ShowDebug, "Creating the expanded input...");
                 var gp0_input = expander.CreateDigitalInputPort(expander.Pins.GP0, InterruptMode.EdgeBoth, ResistorMode.PullUp);
                 gp0_input.Changed += (sender, args) =>
                 {
                     Output.WriteLineIf(ShowDebug, $"Expanded input interrupt. Event says it's {args.Value}. Pin says it's {gp0_input.State}.");
                 };
 
-                // TODO: loopback - for now it's a manual test
-                for(int i = 0; i < 20; i++)
+                // TODO: add loopbacks - for now it's a manual test
+                for(int i = 0; i < 30; i++)
                 {
                     Output.WriteLineIf(ShowDebug, $"tick");
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
                 }
-
             }
         }
     }

@@ -281,6 +281,10 @@ namespace Meadow.TestSuite
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to deserialize: {ex.Message}");
+                if(ex.InnerException != null)
+                {
+                    Console.WriteLine($" Inner: {ex.InnerException.Message}");
+                }
             }
 
             if (c != null)
