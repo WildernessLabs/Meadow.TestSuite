@@ -91,6 +91,7 @@ namespace Peripheral
 
                 // BUG BUG BUG - we don't pass this currently
                 Assert.Equal(0, meadow_interrupt_count, "We got an unsolicted interrupt from the MCP Input Creation");
+                Assert.Equal(0, expander_event_count, "We got an unsolicted event from the Expander");
 
                 var tests_to_perform = 3;
 
