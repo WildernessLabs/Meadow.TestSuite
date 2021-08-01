@@ -14,9 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
     <ProjectReference Include="..\Meadow.TestSuite.Director\Meadow.TestSuite.Director.csproj" />
-    <ProjectReference Include="..\Meadow.TestSuite.Worker\Meadow.TestSuite.Worker.csproj" />
+    <ProjectReference Include="..\Meadow.TestSuite.Worker\Meadow.TestSuite.Worker.F7.csproj" />
   </ItemGroup>
 
 </Project>
