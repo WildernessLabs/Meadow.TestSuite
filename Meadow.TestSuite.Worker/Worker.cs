@@ -14,30 +14,62 @@ namespace MeadowApp
         private IPin m_green = null;
         private IPin m_red = null;
 
-        public ITestRegistry Registry { get; }
-        internal ITestProvider Provider { get; }
-        public ICommandSerializer Serializer { get; }
-        public ITestListener Listener { get; }
+        public ITestRegistry Registry { get; private set; }
+        internal ITestProvider Provider { get; private set; }
+        public ICommandSerializer Serializer { get; private set; }
+        public ITestListener Listener { get; private set; }
+
         public IResultsStore Results => m_resultsStore;
+        private F7Micro Device { get; }
+        private Config? Config { get; set; } = null;
 
         public Worker(F7Micro device)
         {
-            // TODO: make this all configurable
             m_resultsStore = new ResultsStore();
-            Registry = Provider = new WorkerRegistry("/meadow0/test", device);
-
-            Console.WriteLine(" Creating serial port...");
-            var port = device.CreateSerialPort(
-                device.SerialPortNames.Com4,
-                9600,
-                8,
-                Parity.None,
-                StopBits.One);
-
+            Registry = Provider = new WorkerRegistry("/meadow0/test", Device);
             Serializer = new CommandJsonSerializer(JsonLibrary.SystemTextJson);
 
-            Listener = new MeadowSerialListener(port, Serializer);
-            Listener.CommandReceived += Listener_CommandReceived;
+            // TODO: handle v2 device
+            Device = device;
+        }
+
+        public void Configure(Config config)
+        {
+            Config = config;
+
+            // TODO: make this all configurable
+
+            if (config.Network != null)
+            {
+                Console.WriteLine($" Connecting to WiFi ssid {config.Network.SSID}...");
+                Device.InitWiFiAdapter();
+
+                // TODO: only do this if we're not connected
+                Device.WiFiAdapter.WiFiConnected += WiFiAdapter_WiFiConnected;
+                Device.WiFiAdapter.Connect(config.Network.SSID, config.Network.Pass);
+            }
+            else
+            {
+                // serial fallback
+
+                Console.WriteLine(" Creating serial port...");
+                var port = Device.CreateSerialPort(
+                    Device.SerialPortNames.Com4,
+                    9600,
+                    8,
+                    Parity.None,
+                    StopBits.One);
+
+                Listener = new MeadowSerialListener(port, Serializer);
+                Listener.CommandReceived += Listener_CommandReceived;
+            }
+        }
+
+        private void WiFiAdapter_WiFiConnected(object sender, EventArgs e)
+        {
+            Console.WriteLine(" WiFi connected");
+
+            // TODO: build up a listener
         }
 
         public void IndicateState(TestState state)
@@ -72,6 +104,12 @@ namespace MeadowApp
 
         public TestResult ExecuteTest(string testID)
         {
+            if(Config == null)
+            {
+                Console.WriteLine($" Failure: Worker not configured");
+                return null;
+            }
+
             try
             {
                 var runner = new TestRunner(Provider, testID);
@@ -108,6 +146,12 @@ namespace MeadowApp
 
         public void Start()
         {
+            if (Config == null)
+            {
+                Console.WriteLine($" Failure: Worker not configured");
+                return;
+            }
+
             // TODO: make this non-blocking?
             Listener.StartListening();
         }
