@@ -7,7 +7,7 @@ namespace MeadowLibary
     public partial class GpioTests
     {
         public bool ShowDebug { get; set; } = false;
-        public IIODevice Device { get; set; }
+        public Meadow.Devices.F7MicroBase Device { get; set; }
 
         [Fact]
         public void PortInUseValidations()
@@ -141,7 +141,7 @@ namespace MeadowLibary
 
             Output.WriteLineIf(ShowDebug, $"Creating Ports for '{a}'->'{b}'...");
             using (var output = Device.CreateDigitalOutputPort(pinA))
-            using (var input = Device.CreateDigitalInputPort(pinB, resistorMode: ResistorMode.PullDown))
+            using (var input = Device.CreateDigitalInputPort(pinB, resistorMode: ResistorMode.InternalPullDown))
             {
                 Output.WriteLineIf(ShowDebug, $"Checking initial state of '{b}'...");
                 Assert.False(input.State, $"{b} Expected to be pulled low");
@@ -160,7 +160,7 @@ namespace MeadowLibary
 
             Output.WriteLineIf(ShowDebug, $"Creating Ports for '{b}'->'{a}'...");
             using (var output = Device.CreateDigitalOutputPort(pinB))
-            using (var input = Device.CreateDigitalInputPort(pinA, resistorMode: ResistorMode.PullDown))
+            using (var input = Device.CreateDigitalInputPort(pinA, resistorMode: ResistorMode.InternalPullDown))
             {
                 Output.WriteLineIf(ShowDebug, $"Checking initial state of '{a}'...");
                 Assert.False(input.State, $"{a} Expected to be pulled low");

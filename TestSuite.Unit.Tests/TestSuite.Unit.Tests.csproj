@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -14,10 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Meadow.Core\source\Meadow.Core\Meadow.Core.csproj" />
     <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
     <ProjectReference Include="..\Meadow.TestSuite.Director\Meadow.TestSuite.Director.csproj" />
-    <ProjectReference Include="..\Meadow.TestSuite.Master\Meadow.TestSuite.Director.csproj" />
     <ProjectReference Include="..\Meadow.TestSuite.Worker\Meadow.TestSuite.Worker.csproj" />
   </ItemGroup>
 

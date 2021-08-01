@@ -12,6 +12,10 @@ namespace Meadow.TestSuite
         JsonDotNet
     }
 
+    // NOTE: In initial testing I tried Json.NET, but it kept running out of memory on the Meadow.
+    // Rather than lose that work, in the event we want to come back to it, I've just conditionally compiled it out
+    // using `#if SUPPORT_JSON_NET`
+
     public class CommandJsonSerializer : ICommandSerializer
     {
         public JsonLibrary UseLibrary { get; set; }
@@ -35,8 +39,10 @@ namespace Meadow.TestSuite
                 {
                     case JsonLibrary.SimpleJson:
                         return SimpleJson.SimpleJson.DeserializeObject<T>(json);
+#if SUPPORT_JSON_NET
                     case JsonLibrary.JsonDotNet:
                         return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+#endif
                     default:
                         return System.Text.Json.JsonSerializer.Deserialize<T>(json);
                 }
@@ -66,8 +72,10 @@ namespace Meadow.TestSuite
                 {
                     case JsonLibrary.SimpleJson:
                         return DeserializeSimpleJson(commandPayload);
+#if SUPPORT_JSON_NET
                     case JsonLibrary.JsonDotNet:
                         return DeserializeNewtonsoft(commandPayload);
+#endif
                     default:
                         return DeserializeSystemTextJson(commandPayload);
                 }
@@ -151,6 +159,7 @@ namespace Meadow.TestSuite
             return null;
         }
 
+#if SUPPORT_JSON_NET
         private TestCommand DeserializeNewtonsoft(ReadOnlySpan<byte> commandPayload)
         {
             try
@@ -186,15 +195,18 @@ namespace Meadow.TestSuite
 
             return null;
         }
-
+#endif
         public byte[] SerializeCommand(TestCommand command)
         {
             switch (UseLibrary)
             {
                 case JsonLibrary.SimpleJson:
                     return SerializeSimpleJson(command);
+
+#if SUPPORT_JSON_NET
                 case JsonLibrary.JsonDotNet:
                     return SerializeNewtonsoft(command);
+#endif
                 default:
                     return SerializeSystemTextJson(command);
             }
@@ -206,8 +218,10 @@ namespace Meadow.TestSuite
             {
                 case JsonLibrary.SimpleJson:
                     return SerializeSimpleJson(result);
+#if SUPPORT_JSON_NET
                 case JsonLibrary.JsonDotNet:
                     return SerializeNewtonsoft(result);
+#endif
                 default:
                     return SerializeSystemTextJson(result);
             }
@@ -233,6 +247,7 @@ namespace Meadow.TestSuite
             return null;
         }
 
+#if SUPPORT_JSON_NET
         private byte[] SerializeNewtonsoft(object payload)
         {
             Output.WriteLineIf(ShowDebug, $" {this.GetType().Name} Deserializing...");
@@ -252,6 +267,7 @@ namespace Meadow.TestSuite
 
             return null;
         }
+#endif
 
         private byte[] SerializeSystemTextJson(object payload)
         {

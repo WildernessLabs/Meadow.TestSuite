@@ -1,13 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Meadow.Sdk/1.1.0">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="protobuf-net" Version="3.0.29" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <None Remove="Meadow" />
+    <None Remove="System.IO.Ports" />
+    <None Remove="System.Text.Json" />
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Meadow" Version="0.25.0" />
+    <PackageReference Include="System.IO.Ports" Version="5.0.1" />
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="CommandProtoBufSerializer.cs" />
+  </ItemGroup>
 </Project>

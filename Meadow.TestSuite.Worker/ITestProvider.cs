@@ -1,10 +1,11 @@
-﻿using Meadow.Hardware;
+﻿using Meadow.Devices;
+using Meadow.Hardware;
 
 namespace Meadow.TestSuite
 {
     internal interface ITestProvider : ITestRegistry
     {
-        IIODevice Device { get; }
+        F7MicroBase Device { get; }
 
         TestInfo GetTest(string id);
     }

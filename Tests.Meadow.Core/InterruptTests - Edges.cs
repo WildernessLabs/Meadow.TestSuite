@@ -1,17 +1,14 @@
-﻿using Meadow.Hardware;
+﻿using System.Threading;
+using Meadow.Hardware;
 using Meadow.TestSuite;
 using Munit;
-using System;
-using System.EnterpriseServices;
-using System.Linq;
-using System.Threading;
 
 namespace MeadowLibary
 {
     public partial class InterruptTests
     {
         public bool ShowDebug { get; set; } = false;
-        public IIODevice Device { get; set; }
+        public Meadow.Devices.F7MicroBase Device { get; set; }
 
         // DEV NOTE
         // with Meadow b4.2 (likely anything pre-AOT) the first interrupt handler is way slow, so we need to account for that during testing
@@ -120,7 +117,7 @@ namespace MeadowLibary
 
                 using (var input = Device.CreateDigitalInputPort(
                     pinB, 
-                    resistorMode: ResistorMode.PullDown, 
+                    resistorMode: ResistorMode.InternalPullDown, 
                     interruptMode: InterruptMode.EdgeRising,
                     debounceDuration: 10,
                     glitchDuration: 10
@@ -134,7 +131,7 @@ namespace MeadowLibary
                     {
                         Output.WriteLineIf(ShowDebug, $"interrupt {count}");
                         interruptDetected = true;
-                        interruptState = e.Value;
+                        interruptState = e.New.State;
                         count++;
                         VeryFirstInterrupt = false;
                     };
@@ -196,7 +193,7 @@ namespace MeadowLibary
 
                 using (var input = Device.CreateDigitalInputPort(
                     pinB, 
-                    resistorMode: ResistorMode.PullUp, 
+                    resistorMode: ResistorMode.InternalPullUp, 
                     interruptMode: InterruptMode.EdgeFalling,
                     debounceDuration: 10,
                     glitchDuration: 10
@@ -209,7 +206,7 @@ namespace MeadowLibary
                     input.Changed += (s, e) =>
                     {
                         interruptDetected = true;
-                        interruptState = e.Value;
+                        interruptState = e.New.State;
                         count++;
                         VeryFirstInterrupt = false;
                     };
@@ -261,14 +258,14 @@ namespace MeadowLibary
             {
                 output.State = false;
 
-                using (var input = Device.CreateDigitalInputPort(pinB, resistorMode: ResistorMode.PullDown, interruptMode: InterruptMode.EdgeBoth))
+                using (var input = Device.CreateDigitalInputPort(pinB, resistorMode: ResistorMode.InternalPullDown, interruptMode: InterruptMode.EdgeBoth))
                 {
                     var interruptState = new bool[2];
                     var count = 0;
 
                     input.Changed += (s, e) =>
                     {
-                        interruptState[count % 2] = e.Value;
+                        interruptState[count % 2] = e.New.State;
                         count++;
                         VeryFirstInterrupt = false;
                     };

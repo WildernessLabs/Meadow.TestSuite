@@ -23,7 +23,7 @@ namespace MeadowLibary
 
             var pinA = Device.GetPin(group[0]);
 
-            using (var portA = Device.CreateDigitalInputPort(pinA, resistorMode: ResistorMode.PullDown, interruptMode: InterruptMode.EdgeRising))
+            using (var portA = Device.CreateDigitalInputPort(pinA, resistorMode: ResistorMode.InternalPullDown, interruptMode: InterruptMode.EdgeRising))
             {
                 for(int i = firstAnalog; i <= lastAnalog; i++)
                 {
@@ -36,14 +36,14 @@ namespace MeadowLibary
                     {
                         Assert.Throws<InterruptGroupInUseException>(() =>
                         {
-                            using (var portB = Device.CreateDigitalInputPort(testPin, resistorMode: ResistorMode.PullDown, interruptMode: InterruptMode.EdgeRising))
+                            using (var portB = Device.CreateDigitalInputPort(testPin, resistorMode: ResistorMode.InternalPullDown, interruptMode: InterruptMode.EdgeRising))
                             {
                             }
                         });
                     }
                     else
                     {
-                        using (var portB = Device.CreateDigitalInputPort(testPin, resistorMode: ResistorMode.PullDown, interruptMode: InterruptMode.EdgeRising))
+                        using (var portB = Device.CreateDigitalInputPort(testPin, resistorMode: ResistorMode.InternalPullDown, interruptMode: InterruptMode.EdgeRising))
                         {
                             Assert.NotNull(portB);
                         }
@@ -61,14 +61,14 @@ namespace MeadowLibary
                     {
                         Assert.Throws<InterruptGroupInUseException>(() =>
                         {
-                            using (var portB = Device.CreateDigitalInputPort(testPin, resistorMode: ResistorMode.PullDown, interruptMode: InterruptMode.EdgeRising))
+                            using (var portB = Device.CreateDigitalInputPort(testPin, resistorMode: ResistorMode.InternalPullDown, interruptMode: InterruptMode.EdgeRising))
                             {
                             }
                         });
                     }
                     else
                     {
-                        using (var portB = Device.CreateDigitalInputPort(testPin, resistorMode: ResistorMode.PullDown, interruptMode: InterruptMode.EdgeRising))
+                        using (var portB = Device.CreateDigitalInputPort(testPin, resistorMode: ResistorMode.InternalPullDown, interruptMode: InterruptMode.EdgeRising))
                         {
                             Assert.NotNull(portB);
                         }

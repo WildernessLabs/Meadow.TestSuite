@@ -15,7 +15,7 @@ namespace Foundation
         // with Meadow b4.2 (likely anything pre-AOT) the first interrupt handler is way slow, so we need to account for that during testing
         private static bool VeryFirstInterrupt { get; set; } = true;
 
-        public IIODevice Device { get; set; }
+        public Meadow.Devices.F7MicroBase Device { get; set; }
 
         private const string DrivePinIdentifier = "D04";
         private const string ButtonPinIdentifier = "D03";
@@ -29,7 +29,7 @@ namespace Foundation
             using (var buttonInput = Device.CreateDigitalInputPort(
                 buttonPin,
                 InterruptMode.None,
-                ResistorMode.PullUp,
+                ResistorMode.InternalPullUp,
                 20,
                 20))
             {
@@ -53,7 +53,7 @@ namespace Foundation
 
                 Assert.Throws<Exception>(() =>
                 {
-                    button.LongPressClicked += delegate { };
+                    button.LongClicked += delegate { };
                 });
             }
         }
@@ -66,7 +66,7 @@ namespace Foundation
             using (var buttonInput = Device.CreateDigitalInputPort(
                 buttonPin,
                 InterruptMode.EdgeFalling,
-                ResistorMode.PullUp,
+                ResistorMode.InternalPullUp,
                 20,
                 20))
             {
@@ -85,7 +85,7 @@ namespace Foundation
 
                 Assert.Throws<Exception>(() =>
                 {
-                    button.LongPressClicked += delegate { };
+                    button.LongClicked += delegate { };
                 });
             }
         }
@@ -108,7 +108,7 @@ namespace Foundation
                 using (var buttonInput = Device.CreateDigitalInputPort(
                     buttonPin,
                     InterruptMode.EdgeFalling,
-                    ResistorMode.PullUp,
+                    ResistorMode.InternalPullUp,
                     20,
                     20))
                 {
@@ -166,7 +166,7 @@ namespace Foundation
                 using (var buttonInput = Device.CreateDigitalInputPort(
                     buttonPin,
                     InterruptMode.EdgeBoth,
-                    ResistorMode.PullUp,
+                    ResistorMode.InternalPullUp,
                     20,
                     20))
                 {
@@ -224,7 +224,7 @@ namespace Foundation
                 using (var buttonInput = Device.CreateDigitalInputPort(
                     buttonPin,
                     InterruptMode.EdgeBoth,
-                    ResistorMode.PullUp,
+                    ResistorMode.InternalPullUp,
                     20,
                     20))
                 {

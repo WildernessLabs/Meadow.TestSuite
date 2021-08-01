@@ -1,7 +1,6 @@
 ﻿using System.Threading;
-using Meadow.Foundation.Leds;
+using Meadow.Devices;
 using Meadow.Hardware;
-using Meadow.TestSuite;
 using Munit;
 
 namespace MeadowLibary
@@ -9,7 +8,7 @@ namespace MeadowLibary
 
     public class LEDTests
     {
-        public IIODevice Device { get; set; }
+        public F7MicroBase Device { get; set; }
 
         [Fact]
         public void LedTestFunction()

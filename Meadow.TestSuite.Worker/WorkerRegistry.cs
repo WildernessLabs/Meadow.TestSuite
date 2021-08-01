@@ -1,4 +1,5 @@
-﻿using Meadow.Hardware;
+﻿using Meadow.Devices;
+using Meadow.Hardware;
 using Munit;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,10 @@ namespace Meadow.TestSuite
     {
         // tests are [assembly].[class].[method]
         // they are divined by looking for public methods with a [Fact] attribute and nothing else
-        public IIODevice Device { get; }
+        public F7MicroBase Device { get; }
         private Dictionary<string, TestInfo> m_cache = new Dictionary<string, TestInfo>();
 
-        public WorkerRegistry(string testDirectory, IIODevice device)
+        public WorkerRegistry(string testDirectory, F7MicroBase device)
         {
             RegisterAssembliesInFolder(testDirectory);
             Device = device;
@@ -124,7 +125,7 @@ namespace Meadow.TestSuite
                             Console.WriteLine($" {t.Name} contains {count} tests.");
 
                             var props = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                            var device = props.FirstOrDefault(p => p.PropertyType == typeof(IIODevice));
+                            var device = props.FirstOrDefault(p => p.PropertyType.IsAssignableFrom(typeof(F7MicroBase)));
                             if (device != null)
                             {
                                 Console.WriteLine($" {t.Name} has Device property");
