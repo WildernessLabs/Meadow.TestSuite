@@ -1,8 +1,11 @@
 ﻿using Meadow.Devices;
 using Meadow.Hardware;
 using Meadow.TestSuite;
+using Meadow.Units;
 using System;
+using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 [assembly: InternalsVisibleTo("TestSuite.Unit.Tests")]
 
@@ -18,6 +21,7 @@ namespace MeadowApp
         internal ITestProvider Provider { get; private set; }
         public ICommandSerializer Serializer { get; private set; }
         public ITestListener Listener { get; private set; }
+        public ITestDisplay? Display { get; private set; }
 
         public IResultsStore Results => m_resultsStore;
         private F7Micro Device { get; }
@@ -35,18 +39,54 @@ namespace MeadowApp
 
         public void Configure(Config config)
         {
+            Console.WriteLine($" Configuring Worker...");
+
             Config = config;
 
-            // TODO: make this all configurable
+            if (!string.IsNullOrEmpty(config.Display))
+            {
+                switch (config.Display.ToUpper())
+                {
+                    case "ST7789":
+                        Display = new ST7789TestDisplay(Device);
+                        Display.ShowText(0, "TestSuite"); // TODO: show version
+                        break;
+                    default:
+                        Console.WriteLine($"Unsupported Display Requested: {config.Display}");
+                        break;
+                }
+            }
 
+            // TODO: make this all configurable
             if (config.Network != null)
             {
-                Console.WriteLine($" Connecting to WiFi ssid {config.Network.SSID}...");
-                Device.InitWiFiAdapter();
+                try
+                {
+                    Console.WriteLine($"Initializing WiFi...");
+                    Device.InitWiFiAdapter();
 
-                // TODO: only do this if we're not connected
-                Device.WiFiAdapter.WiFiConnected += WiFiAdapter_WiFiConnected;
-                Device.WiFiAdapter.Connect(config.Network.SSID, config.Network.Pass);
+                    // TODO: only do this if we're not connected
+                    Device.WiFiAdapter.WiFiConnected += WiFiAdapter_WiFiConnected;
+
+                    Console.WriteLine($" Connecting to WiFi ssid {config.Network.SSID}...");
+                    Display.ShowText(1, $"--> {config.Network.SSID}");
+                    Device.WiFiAdapter.Connect(config.Network.SSID, config.Network.Pass);
+
+                    while (!Device.WiFiAdapter.IsConnected)
+                    {
+                        Console.WriteLine("Waiting to connect to AP....");
+                        Thread.Sleep(1000);
+                    }
+
+                    Console.WriteLine($"Local IP: {Device.WiFiAdapter.IpAddress}");
+                    Display.ShowText(1, $"IP: {Device.WiFiAdapter.IpAddress}");
+
+                    Listener = new MeadowNetworkListener(Device.WiFiAdapter.IpAddress, config, Serializer);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"ERROR: {ex.Message}");
+                }
             }
             else
             {
@@ -67,9 +107,7 @@ namespace MeadowApp
 
         private void WiFiAdapter_WiFiConnected(object sender, EventArgs e)
         {
-            Console.WriteLine(" WiFi connected");
-
-            // TODO: build up a listener
+            Console.WriteLine(" WiFi connected");            
         }
 
         public void IndicateState(TestState state)
@@ -150,6 +188,14 @@ namespace MeadowApp
             {
                 Console.WriteLine($" Failure: Worker not configured");
                 return;
+            }
+
+            // wait for a listener (wifi is async)
+            while(Listener == null)
+            {
+                Console.WriteLine($"{Device.WiFiAdapter.IpAddress}");
+
+                Thread.Sleep(1000);
             }
 
             // TODO: make this non-blocking?

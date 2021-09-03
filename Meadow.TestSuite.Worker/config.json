@@ -1,7 +1,10 @@
 ﻿{
-    "network":
-    {
-        "ssid": "BOBS_YOUR_UNCLE",
-        "pass": "1234567890"
-    }
+  "Display":  "ST7789",
+  "Network": {
+    "SSID": "BOBS_YOUR_UNCLE",
+    "Pass": "1234567890"
+  },
+  "Serial": {
+    "Enabled": false
+  }
 }

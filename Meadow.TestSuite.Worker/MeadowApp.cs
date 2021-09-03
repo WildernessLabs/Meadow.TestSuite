@@ -12,32 +12,6 @@ using System.Threading;
 
 namespace MeadowApp
 {
-    public class Config
-    {
-        public NetworkConfig Network { get; set; }
-
-        public class NetworkConfig
-        {
-            public string SSID { get; set; }
-            public string Pass { get; set; }
-        }
-
-        public static Config Default
-        {
-            get
-            {
-                return new Config
-                {
-                    Network = new NetworkConfig
-                    {
-                        SSID = "MeadowNetwork",
-                        Pass = "passphrase"
-                    }
-                };
-            }
-        }
-    }
-
     public class MeadowApp : App<F7Micro, MeadowApp>
     {
         private Worker Worker { get; }
@@ -47,6 +21,9 @@ namespace MeadowApp
             Console.WriteLine("=== Meadow TestSuite Worker ===");
 
             Worker = new Worker(Device);
+            var cfg = LoadConfig();
+            Worker.Configure(cfg);
+
             Worker.Start();
             // the above blocks, so we never actually get here
 
@@ -58,15 +35,17 @@ namespace MeadowApp
             var fileName = "config.json";
 
             Console.WriteLine($" Loading configuration from {fileName}....");
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
 
-            var fi = new FileInfo(fileName);
+            var fi = new FileInfo(path);
             if(!fi.Exists)
             {
                 Console.WriteLine($" ! Configuration file not found at '{fi.FullName}'");
                 return Config.Default;
             }
 
-            
+
+            Console.WriteLine($" Deserializing config...");
             var cfg = SimpleJson.SimpleJson.DeserializeObject<Config>(File.ReadAllText(fi.FullName));
             return cfg;
         }

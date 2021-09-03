@@ -10,7 +10,7 @@
     <None Remove="System.Text.Json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow" Version="0.25.0" />
+    <PackageReference Include="Meadow" Version="0.26.0" />
     <PackageReference Include="System.IO.Ports" Version="5.0.1" />
     <PackageReference Include="System.Text.Json" Version="5.0.2" />
   </ItemGroup>

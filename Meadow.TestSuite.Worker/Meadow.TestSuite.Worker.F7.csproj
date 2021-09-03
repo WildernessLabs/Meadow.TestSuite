@@ -3,20 +3,28 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Exe</OutputType>
     <AssemblyName>App</AssemblyName>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Meadow" />
     <None Remove="Meadow.F7" />
     <None Remove="app.config" />
+    <None Remove="Meadow.Foundation.Displays.TftSpi" />
+    <None Remove="Meadow.Foundation.Displays.GraphicsLibrary" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow" Version="0.25.0" />
-    <PackageReference Include="Meadow.F7" Version="0.24.7.1" />
+    <PackageReference Include="Meadow" Version="0.26.0" />
+    <PackageReference Include="Meadow.F7" Version="0.26.0" />
+    <PackageReference Include="Meadow.Foundation.Displays.TftSpi" Version="0.7.46" />
+    <PackageReference Include="Meadow.Foundation.Displays.GraphicsLibrary" Version="0.9.44" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="config.json" />
+    <Content Include="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
+    <ProjectReference Include="..\..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Web.Maple\Driver\Web.Maple.Server\Meadow.Foundation.Web.Maple.Server.csproj" />
   </ItemGroup>
 </Project>
