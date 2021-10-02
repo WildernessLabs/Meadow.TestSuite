@@ -1,5 +1,5 @@
 ﻿{
-  "Display":  "ST7789",
+  "Display": "ST7789",
   "Network": {
     "SSID": "BOBS_YOUR_UNCLE",
     "Pass": "1234567890"

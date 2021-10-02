@@ -1,9 +1,11 @@
 ﻿using Meadow.Devices;
+using Meadow.Foundation.Web.Maple.Server;
 using Meadow.Hardware;
 using Meadow.TestSuite;
 using Meadow.Units;
 using System;
 using System.Net;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -25,12 +27,16 @@ namespace MeadowApp
 
         public IResultsStore Results => m_resultsStore;
         private F7Micro Device { get; }
-        private Config? Config { get; set; } = null;
+        public static Config? Config { get; private set; } = null;
+
+        public ILogger Logger { get; }
 
         public Worker(F7Micro device)
         {
+            Logger = new ConsoleLogger();
+            Logger.Loglevel = Loglevel.Info;
+
             m_resultsStore = new ResultsStore();
-            Registry = Provider = new WorkerRegistry("/meadow0/test", Device);
             Serializer = new CommandJsonSerializer(JsonLibrary.SystemTextJson);
 
             // TODO: handle v2 device
@@ -39,9 +45,18 @@ namespace MeadowApp
 
         public void Configure(Config config)
         {
-            Console.WriteLine($" Configuring Worker...");
+            if(config == null)
+            {
+                Logger.Warn($"Configuration is null");
+                config = Config.Default;
+            }
+
+            Logger.Info($" Configuring Worker...");
 
             Config = config;
+
+            Console.WriteLine($" Test assemblies are at {Config.TestAssemblyFolder}");
+            Registry = Provider = new WorkerRegistry(Config.TestAssemblyFolder, Device);
 
             if (!string.IsNullOrEmpty(config.Display))
             {
@@ -49,50 +64,53 @@ namespace MeadowApp
                 {
                     case "ST7789":
                         Display = new ST7789TestDisplay(Device);
-                        Display.ShowText(0, "TestSuite"); // TODO: show version
                         break;
                     default:
-                        Console.WriteLine($"Unsupported Display Requested: {config.Display}");
+                        Logger.Error($"Unsupported Display Requested: {config.Display}");
                         break;
                 }
             }
+
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            Display?.ShowText(0, $"TestSuite v{version.ToString(3)}");
 
             // TODO: make this all configurable
             if (config.Network != null)
             {
                 try
                 {
-                    Console.WriteLine($"Initializing WiFi...");
+                    Logger.Info($"Initializing WiFi...");
                     Device.InitWiFiAdapter();
 
                     // TODO: only do this if we're not connected
                     Device.WiFiAdapter.WiFiConnected += WiFiAdapter_WiFiConnected;
 
-                    Console.WriteLine($" Connecting to WiFi ssid {config.Network.SSID}...");
-                    Display.ShowText(1, $"--> {config.Network.SSID}");
+                    Logger.Info($" Connecting to WiFi ssid {config.Network.SSID}...");
+                    Display?.ShowText(1, $"--> {config.Network.SSID}");
                     Device.WiFiAdapter.Connect(config.Network.SSID, config.Network.Pass);
 
                     while (!Device.WiFiAdapter.IsConnected)
                     {
-                        Console.WriteLine("Waiting to connect to AP....");
+                        Logger.Info("Waiting to connect to AP....");
                         Thread.Sleep(1000);
                     }
 
-                    Console.WriteLine($"Local IP: {Device.WiFiAdapter.IpAddress}");
-                    Display.ShowText(1, $"IP: {Device.WiFiAdapter.IpAddress}");
+                    Logger.Info($"Local IP: {Device.WiFiAdapter.IpAddress}");
+                    Display?.ShowText(1, $"IP: {Device.WiFiAdapter.IpAddress}");
 
-                    Listener = new MeadowNetworkListener(Device.WiFiAdapter.IpAddress, config, Serializer);
+                    Listener = new MeadowNetworkListener(Device.WiFiAdapter.IpAddress, config, Serializer, Logger);
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine($"ERROR: {ex.Message}");
+                    Logger.Error($"{ex.Message}");
                 }
             }
             else
             {
                 // serial fallback
 
-                Console.WriteLine(" Creating serial port...");
+                Logger.Info(" Creating serial port...");
                 var port = Device.CreateSerialPort(
                     Device.SerialPortNames.Com4,
                     9600,
@@ -107,7 +125,7 @@ namespace MeadowApp
 
         private void WiFiAdapter_WiFiConnected(object sender, EventArgs e)
         {
-            Console.WriteLine(" WiFi connected");            
+            Logger.Info(" WiFi connected");            
         }
 
         public void IndicateState(TestState state)
@@ -121,6 +139,7 @@ namespace MeadowApp
                 m_red = Provider.Device.GetPin("OnboardLedRed");
             }
 
+
             using (var red = Provider.Device.CreateDigitalOutputPort(m_red, false))
             using (var green = Provider.Device.CreateDigitalOutputPort(m_green, false))
             {
@@ -128,13 +147,16 @@ namespace MeadowApp
                 {
                     case TestState.Success:
                         green.State = true;
+                        Display?.ShowText(5, "PASS");
                         break;
                     case TestState.Failed:
                         red.State = true;
+                        Display?.ShowText(5, "FAIL");
                         break;
                     default:
                         green.State = true;
                         red.State = true;
+                        Display?.ShowText(5, "");
                         break;
                 }
             }
@@ -144,13 +166,15 @@ namespace MeadowApp
         {
             if(Config == null)
             {
-                Console.WriteLine($" Failure: Worker not configured");
+                Logger.Error($" Failure: Worker not configured");
                 return null;
             }
 
             try
             {
                 var runner = new TestRunner(Provider, testID);
+
+                Display?.ShowText(4, "Executing");
                 var result = runner.Begin();
 
                 // store the result
@@ -160,7 +184,7 @@ namespace MeadowApp
             }
             catch(Exception ex)
             {
-                Console.WriteLine($" Failure: {ex.Message}");
+                Logger.Error($" Failure: {ex.Message}");
                 return null;
             }
         }
@@ -169,7 +193,7 @@ namespace MeadowApp
         {
             if (command == null)
             {
-                Console.WriteLine(" ** NULL COMMAND** ");
+                Logger.Warn(" ** NULL COMMAND** ");
             }
             else
             {
@@ -186,14 +210,14 @@ namespace MeadowApp
         {
             if (Config == null)
             {
-                Console.WriteLine($" Failure: Worker not configured");
+                Logger.Error($" Failure: Worker not configured");
                 return;
             }
 
             // wait for a listener (wifi is async)
             while(Listener == null)
             {
-                Console.WriteLine($"{Device.WiFiAdapter.IpAddress}");
+                Logger.Info($"{Device.WiFiAdapter.IpAddress}");
 
                 Thread.Sleep(1000);
             }

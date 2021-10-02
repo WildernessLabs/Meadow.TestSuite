@@ -1,43 +1,34 @@
 ﻿using Meadow.Foundation.Web.Maple.Server;
-using Meadow.Foundation.Web.Maple.Server.Routing;
 using Meadow.TestSuite;
 using System;
 using System.Net;
 
 namespace MeadowApp
 {
-    public class TestRequestHandler : RequestHandlerBase
-    {
-        public override bool IsReusable => true;
-
-        [HttpGet]
-        public void Tests()
-        {
-            Console.WriteLine("GET Tests");
-        }
-    }
-
     public class MeadowNetworkListener : ITestListener
     {
         MapleServer _server;
+        ILogger _logger;
 
-        public MeadowNetworkListener(IPAddress address, Config config, ICommandSerializer serializer)
+        public MeadowNetworkListener(IPAddress address, Config config, ICommandSerializer serializer, ILogger logger)
         {            
-            _server = new MapleServer(address, 8080);
+            _server = new MapleServer(address, 8080, false, RequestProcessMode.Serial, logger);
+            _logger = logger;
         }
 
         public event CommandReceivedHandler CommandReceived;
 
         public void SendResult(object result)
         {
-            Console.WriteLine("+MeadowNetworkListener.SendResult");
+            _logger?.Info("+MeadowNetworkListener.SendResult");
         }
 
         public void StartListening()
         {
-            Console.WriteLine("+MeadowNetworkListener.StartListening");
-            Console.WriteLine("Starting Maple Server");
+            _logger?.Info("+MeadowNetworkListener.StartListening");
+            _logger?.Info("Starting Maple Server");
             _server.Start();
+            _logger?.Info("-MeadowNetworkListener.StartListening");
         }
     }
 }
