@@ -3,50 +3,37 @@ using Meadow.Foundation.Web.Maple.Server.Routing;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 
 namespace MeadowApp
 {
-    public class TestRequestHandler : RequestHandlerBase
+    public class AssembliesHandler : RequestHandlerBase
     {
-        public override bool IsReusable => true;
 
         // TODO: pull from config
         public const int FileBufferSize = 4096;
 
-        [HttpGet("/")]
-        public IActionResult GetInfo()
-        {
-            return new JsonResult(
-                new
-                {
-                    Name = "Meadow TestSuite",
-                    Version = Assembly.GetEntryAssembly().GetName().Version.ToString(3)
-                });
-        }
-
-        [HttpGet("tests")]
-        public void GetTests()
-        {
-            Console.WriteLine("GET Tests");
-        }
-
-        [HttpGet("assemblies")]
+        [HttpGet("")]
         public IActionResult GetAssemblies()
         {
-            var list = new List<TestAssemblyInfo>();
-
             Console.WriteLine("GET Assemblies");
 
-            return new JsonResult(list);
+            // TODO: include versions            
+
+            return new JsonResult(AppState.Registry.GetAssemblies());
         }
 
-        [HttpPut("assemblies/{name}")]
+        [HttpPut("{name}")]
         public IActionResult PutAssembly(string name)
         {
-            Console.WriteLine($"PUT assembly '{name}'");
+            AppState.Logger?.Info($"PUT assembly '{name}'");
 
-            var destination = Worker.Config.TestAssemblyFolder;
+            var destination = AppState.Config.TestAssemblyFolder;
+            if (!Directory.Exists(destination))
+            {
+                AppState.Logger?.Info($"Creating test assembly folder '{destination}'");
+                Directory.CreateDirectory(destination);
+            }
+
             var path = Path.Combine(destination, name);
 
             if(!Path.HasExtension(path))
@@ -55,11 +42,11 @@ namespace MeadowApp
             }
 
             var fi = new FileInfo(path);
-            Console.WriteLine($"File '{fi.FullName}'");
+            AppState.Logger?.Info($"File '{fi.FullName}'");
 
             if (fi.Exists)
             {
-                Console.WriteLine($"Deleting existing assembly");
+                AppState.Logger?.Info($"Deleting existing assembly");
                 fi.Delete();
             }
 
@@ -79,11 +66,12 @@ namespace MeadowApp
                 } while (read > 0);
             }
 
-            Console.WriteLine($"File size is {size} bytes");
+            AppState.Logger?.Info($"File size is {size} bytes");
+
+            // tell the framework to load this assembly
+            AppState.Registry.RegisterAssembly(path);
 
             // TODO: respond with name and version
-
-            // TODO: tell the framework to load this assembly
 
             return new OkResult();
         }

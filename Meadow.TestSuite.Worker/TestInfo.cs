@@ -2,7 +2,7 @@
 
 namespace Meadow.TestSuite
 {
-    internal class TestInfo
+    public class TestInfo
     {
         public string AssemblyName { get; set; }
         public string TypeName { get; set; }

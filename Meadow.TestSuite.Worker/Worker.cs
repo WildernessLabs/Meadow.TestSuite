@@ -13,23 +13,26 @@ using System.Threading;
 
 namespace MeadowApp
 {
+    internal static class AppState
+    {
+        public static Config? Config { get; set; } = null;
+        public static ILogger Logger { get; set; }
+        public static ITestRegistry Registry { get; set; }
+        public static ITestProvider Provider { get; set; }
+    }
+
     public class Worker : IWorker
     {
         private ResultsStore m_resultsStore;
         private IPin m_green = null;
         private IPin m_red = null;
 
-        public ITestRegistry Registry { get; private set; }
-        internal ITestProvider Provider { get; private set; }
         public ICommandSerializer Serializer { get; private set; }
         public ITestListener Listener { get; private set; }
         public ITestDisplay? Display { get; private set; }
 
         public IResultsStore Results => m_resultsStore;
         private F7Micro Device { get; }
-        public static Config? Config { get; private set; } = null;
-
-        public ILogger Logger { get; }
 
         public Worker(F7Micro device)
         {
@@ -41,6 +44,30 @@ namespace MeadowApp
 
             // TODO: handle v2 device
             Device = device;
+        }
+
+        public Config? Config
+        {
+            get => AppState.Config;
+            private set => AppState.Config = value;
+        }
+
+        public ILogger Logger
+        {
+            get => AppState.Logger;
+            private set => AppState.Logger = value;
+        }
+
+        public ITestRegistry Registry
+        {
+            get => AppState.Registry;
+            private set => AppState.Registry = value;
+        }
+
+        internal ITestProvider Provider
+        {
+            get => AppState.Provider;
+            private set => AppState.Provider = value;
         }
 
         public void Configure(Config config)
