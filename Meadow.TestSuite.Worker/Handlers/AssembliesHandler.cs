@@ -12,7 +12,7 @@ namespace MeadowApp
         // TODO: pull from config
         public const int FileBufferSize = 4096;
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult GetAssemblies()
         {
             Console.WriteLine("GET Assemblies");

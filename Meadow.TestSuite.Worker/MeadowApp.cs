@@ -14,7 +14,7 @@ namespace MeadowApp
 {
     public class MeadowApp : App<F7Micro, MeadowApp>
     {
-        private Worker Worker { get; }
+        public static Worker Worker { get; private set; }
 
         public MeadowApp()
         {

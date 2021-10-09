@@ -4,6 +4,7 @@ using Meadow.Hardware;
 using Meadow.TestSuite;
 using Meadow.Units;
 using System;
+using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -19,6 +20,7 @@ namespace MeadowApp
         public static ILogger Logger { get; set; }
         public static ITestRegistry Registry { get; set; }
         public static ITestProvider Provider { get; set; }
+        public static IResultsStore ResultsStore { get; set; }
     }
 
     public class Worker : IWorker
@@ -31,16 +33,15 @@ namespace MeadowApp
         public ITestListener Listener { get; private set; }
         public ITestDisplay? Display { get; private set; }
 
-        public IResultsStore Results => m_resultsStore;
         private F7Micro Device { get; }
 
         public Worker(F7Micro device)
         {
             Logger = new ConsoleLogger();
             Logger.Loglevel = Loglevel.Info;
+            Results = new ResultsStore();
 
-            m_resultsStore = new ResultsStore();
-            Serializer = new CommandJsonSerializer(JsonLibrary.SystemTextJson);
+            Serializer = new CommandJsonSerializer(JsonLibrary.SimpleJson);
 
             // TODO: handle v2 device
             Device = device;
@@ -70,6 +71,12 @@ namespace MeadowApp
             private set => AppState.Provider = value;
         }
 
+        public IResultsStore Results
+        {
+            get => AppState.ResultsStore;
+            private set => AppState.ResultsStore = value;
+        }
+
         public void Configure(Config config)
         {
             if(config == null)
@@ -83,6 +90,20 @@ namespace MeadowApp
             Config = config;
 
             Console.WriteLine($" Test assemblies are at {Config.TestAssemblyFolder}");
+
+            var di = new DirectoryInfo(Config.TestAssemblyFolder);
+            if (!di.Exists)
+            {
+                di.Create();
+            }
+            else
+            {
+                Console.WriteLine("Existing files in Test folder:");
+                foreach (var f in di.GetFiles())
+                {
+                    Console.WriteLine($"  {f}");
+                }
+            }
             Registry = Provider = new WorkerRegistry(Config.TestAssemblyFolder, Device);
 
             if (!string.IsNullOrEmpty(config.Display))
