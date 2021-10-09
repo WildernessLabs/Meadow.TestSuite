@@ -19,18 +19,18 @@ namespace MeadowApp
 
             // TODO: include versions            
 
-            return new JsonResult(AppState.Registry.GetAssemblies());
+            return new JsonResult(MeadowApp.Worker.Registry.GetAssemblies());
         }
 
         [HttpPut("{name}")]
         public IActionResult PutAssembly(string name)
         {
-            AppState.Logger?.Info($"PUT assembly '{name}'");
+            MeadowApp.Worker.Logger?.Info($"PUT assembly '{name}'");
 
-            var destination = AppState.Config.TestAssemblyFolder;
+            var destination = MeadowApp.Worker.Config.TestAssemblyFolder;
             if (!Directory.Exists(destination))
             {
-                AppState.Logger?.Info($"Creating test assembly folder '{destination}'");
+                MeadowApp.Worker.Logger?.Info($"Creating test assembly folder '{destination}'");
                 Directory.CreateDirectory(destination);
             }
 
@@ -42,11 +42,11 @@ namespace MeadowApp
             }
 
             var fi = new FileInfo(path);
-            AppState.Logger?.Info($"File '{fi.FullName}'");
+            MeadowApp.Worker.Logger?.Info($"File '{fi.FullName}'");
 
             if (fi.Exists)
             {
-                AppState.Logger?.Info($"Deleting existing assembly");
+                MeadowApp.Worker.Logger?.Info($"Deleting existing assembly");
                 fi.Delete();
             }
 
@@ -66,20 +66,14 @@ namespace MeadowApp
                 } while (read > 0);
             }
 
-            AppState.Logger?.Info($"File size is {size} bytes");
+            MeadowApp.Worker.Logger?.Info($"File size is {size} bytes");
 
             // tell the framework to load this assembly
-            AppState.Registry.RegisterAssembly(path);
+            MeadowApp.Worker.Registry.RegisterAssembly(path);
 
             // TODO: respond with name and version
 
             return new OkResult();
         }
-    }
-
-    public class TestAssemblyInfo
-    {
-        public string Name { get; set; }
-        public string Version { get; set; }
     }
 }

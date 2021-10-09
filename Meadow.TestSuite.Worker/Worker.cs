@@ -14,24 +14,19 @@ using System.Threading;
 
 namespace MeadowApp
 {
-    internal static class AppState
-    {
-        public static Config? Config { get; set; } = null;
-        public static ILogger Logger { get; set; }
-        public static ITestRegistry Registry { get; set; }
-        public static ITestProvider Provider { get; set; }
-        public static IResultsStore ResultsStore { get; set; }
-    }
-
     public class Worker : IWorker
     {
-        private ResultsStore m_resultsStore;
         private IPin m_green = null;
         private IPin m_red = null;
 
         public ICommandSerializer Serializer { get; private set; }
         public ITestListener Listener { get; private set; }
         public ITestDisplay? Display { get; private set; }
+        public ILogger Logger { get; }
+        public IResultsStore Results { get; }
+        public ITestRegistry Registry { get; private set; }
+        internal ITestProvider Provider { get; private set; }
+        public Config? Config { get; private set; }
 
         private F7Micro Device { get; }
 
@@ -45,36 +40,6 @@ namespace MeadowApp
 
             // TODO: handle v2 device
             Device = device;
-        }
-
-        public Config? Config
-        {
-            get => AppState.Config;
-            private set => AppState.Config = value;
-        }
-
-        public ILogger Logger
-        {
-            get => AppState.Logger;
-            private set => AppState.Logger = value;
-        }
-
-        public ITestRegistry Registry
-        {
-            get => AppState.Registry;
-            private set => AppState.Registry = value;
-        }
-
-        internal ITestProvider Provider
-        {
-            get => AppState.Provider;
-            private set => AppState.Provider = value;
-        }
-
-        public IResultsStore Results
-        {
-            get => AppState.ResultsStore;
-            private set => AppState.ResultsStore = value;
         }
 
         public void Configure(Config config)
@@ -226,7 +191,7 @@ namespace MeadowApp
                 var result = runner.Begin();
 
                 // store the result
-                m_resultsStore.Add(result);
+                Results.Add(result);
 
                 return result;
             }

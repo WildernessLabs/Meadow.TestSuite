@@ -13,17 +13,17 @@ namespace MeadowApp
 
             // TODO
 
-            return new JsonResult(AppState.ResultsStore.GetResults());
+            return new JsonResult(MeadowApp.Worker.Results.GetResults());
         }
 
-        [HttpGet("testID")]
+        [HttpGet("{testID}")]
         public IActionResult GetResults(string testID)
         {
             Console.WriteLine("GET Results");
 
             // TODO
 
-            return new JsonResult(AppState.ResultsStore.GetResults(testID));
+            return new JsonResult(MeadowApp.Worker.Results.GetResults(testID));
         }
     }
 }

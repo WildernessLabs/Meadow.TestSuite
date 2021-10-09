@@ -13,19 +13,17 @@ namespace MeadowApp
 
             // TODO:          
 
-            return new JsonResult(AppState.Registry.GetTestNames());
+            return new JsonResult(MeadowApp.Worker.Registry.GetTestNames());
         }
 
-        [HttpPost("testID")]
+        [HttpPost("{testID}")]
         public IActionResult RunTest(string testID)
         {
             Console.WriteLine("Post Test");
 
-            // TODO:
-
-            MeadowApp.Worker.ExecuteTest(testID);
-
-            return new JsonResult(AppState.Registry.GetTestNames());
+            var result = MeadowApp.Worker.ExecuteTest(testID);
+            
+            return new JsonResult(result);
         }
     }
 }

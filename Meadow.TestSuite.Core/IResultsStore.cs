@@ -7,5 +7,7 @@ namespace Meadow.TestSuite
         TestResult GetResult(Guid resultID);
         TestResult[] GetResults(string testID);
         TestResult[] GetResults();
+
+        void Add(TestResult result);
     }
 }
