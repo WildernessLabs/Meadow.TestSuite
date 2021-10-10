@@ -14,6 +14,10 @@ A goal is to provide a API that at least feels like xUnit, or a subset of xUnit,
 
 [Authoring TestSuite Tests](doc/authoring-tests.md)
 
+[TestSuite Worker REST API](doc/rest-api.md)
+
+[TestSuite Worker Configuration](doc/config.md)
+
 [TestSuite Implementation Details](doc/implementation.md)
 
 ## Beta Notes
