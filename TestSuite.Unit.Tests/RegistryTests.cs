@@ -15,4 +15,14 @@ namespace TestSuite.Unit.Tests
             var names = r.GetTestNames();
         }
     }
+
+    public class SerializationTests
+    {
+        [Fact]
+        public void WorkerRegistryTest()
+        {
+            var r = new WorkerRegistry(null, null);
+            var names = r.GetTestNames();
+        }
+    }
 }

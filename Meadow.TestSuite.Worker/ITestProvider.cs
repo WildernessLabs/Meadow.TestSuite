@@ -3,7 +3,7 @@ using Meadow.Hardware;
 
 namespace Meadow.TestSuite
 {
-    internal interface ITestProvider : ITestRegistry
+    public interface ITestProvider : ITestRegistry
     {
         F7MicroBase Device { get; }
 
