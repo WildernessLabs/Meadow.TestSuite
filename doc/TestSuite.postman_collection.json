@@ -1,0 +1,278 @@
+{
+	"info": {
+		"_postman_id": "b3befbd8-b926-4cac-aad5-508ce0392c0c",
+		"name": "TestSuite",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Time",
+			"item": [
+				{
+					"name": "Get Time",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/time",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"time"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Time",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SystemTime\": \"{{$isoTimestamp}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/time",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"time"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assemblies",
+			"item": [
+				{
+					"name": "Add or Update Assembly",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/Users/christophertacke/repos/wilderness/Meadow.TestSuite/Tests.Meadow.Core/bin/Debug/netstandard2.1/Tests.Meadow.Core.dll"
+							}
+						},
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/assemblies/Tests.Meadow.Core",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"assemblies",
+								"Tests.Meadow.Core"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Assemblies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/assemblies",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"assemblies"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tests",
+			"item": [
+				{
+					"name": "Get Tests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/tests",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"tests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Test Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/tests/Tests.Meadow.Core.LEDTests.LedTestFunction",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"tests",
+								"Tests.Meadow.Core.LEDTests.LedTestFunction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start GPIO Test",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/tests/Tests.Meadow.Core.GpioTests.Loopback3_4",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"tests",
+								"Tests.Meadow.Core.GpioTests.Loopback3_4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start LED Test",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/tests/Tests.Meadow.Core.LEDTests.LedTestFunction",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"tests",
+								"Tests.Meadow.Core.LEDTests.LedTestFunction"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Results",
+			"item": [
+				{
+					"name": "Get Specific Test Result By Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/results/Tests.Meadow.Core.LEDTests.LedTestFunction",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"results",
+								"Tests.Meadow.Core.LEDTests.LedTestFunction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Test Results",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/results",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"results"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Test Result By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{meadow-address}}:{{meadow-port}}/results/b15e9829-b081-4e69-8343-66107c9076e3",
+							"protocol": "http",
+							"host": [
+								"{{meadow-address}}"
+							],
+							"port": "{{meadow-port}}",
+							"path": [
+								"results",
+								"b15e9829-b081-4e69-8343-66107c9076e3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get TestSuite Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{meadow-address}}:{{meadow-port}}/",
+					"protocol": "http",
+					"host": [
+						"{{meadow-address}}"
+					],
+					"port": "{{meadow-port}}",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
