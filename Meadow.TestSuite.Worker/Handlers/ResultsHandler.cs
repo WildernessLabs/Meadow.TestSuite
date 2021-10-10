@@ -9,21 +9,20 @@ namespace MeadowApp
         [HttpGet]
         public IActionResult GetResults()
         {
-            Console.WriteLine("GET Results");
-
-            // TODO
-
             return new JsonResult(MeadowApp.Worker.Results.GetResults());
         }
 
         [HttpGet("{testID}")]
         public IActionResult GetResults(string testID)
         {
-            Console.WriteLine("GET Results");
-
-            // TODO
-
-            return new JsonResult(MeadowApp.Worker.Results.GetResults(testID));
+            if (Guid.TryParse(testID, out Guid id))
+            {
+                return new JsonResult(MeadowApp.Worker.Results.GetResult(id));
+            }
+            else
+            {
+                return new JsonResult(MeadowApp.Worker.Results.GetResults(testID));
+            }
         }
     }
 }

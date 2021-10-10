@@ -15,6 +15,7 @@
     <PackageReference Include="coverlet.collector" Version="3.1.0"><IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 <PrivateAssets>all</PrivateAssets>
 </PackageReference>
+    <PackageReference Include="SimpleJson" Version="0.38.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,4 +23,7 @@
     <ProjectReference Include="..\Meadow.TestSuite.Worker\Meadow.TestSuite.Worker.F7.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="SimpleJson" />
+  </ItemGroup>
 </Project>
