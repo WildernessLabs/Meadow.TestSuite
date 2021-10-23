@@ -7,8 +7,8 @@ namespace MeadowApp
 {
     public class MeadowNetworkListener : ITestListener
     {
-        MapleServer _server;
-        ILogger _logger;
+        private MapleServer _server;
+        private ILogger _logger;
 
         public MeadowNetworkListener(IPAddress address, Config config, ICommandSerializer serializer, ILogger logger)
         {            

@@ -27,6 +27,7 @@ namespace Meadow.TestSuite
         {
             WorkerEndPoint = ep;
             Client = new HttpClient();
+            Client.BaseAddress = new Uri($"http://{ep}");
         }
 
         public async Task SendFile(FileInfo source, string? destinationName)
