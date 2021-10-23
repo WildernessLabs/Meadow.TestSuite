@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Meadow.TestSuite
 {
     public interface ITestTransport
     {
-        byte[] DeliverCommand(TestCommand command);
+//        Task SendFile(FileInfo source, string? destinationName);
+
+//        byte[] DeliverCommand(TestCommand command);
 
         /*
         IEnumerable<string> GetTestAreas();

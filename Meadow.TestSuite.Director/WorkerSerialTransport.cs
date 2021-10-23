@@ -1,37 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using Meadow.TestSuite;
 
 namespace Meadow.TestSuite
 {
-    public class WorkerSerialTransport : TestTransportBase
+
+    public class WorkerSerialTransport
     {
         private SerialPort SerialPort { get; }
+        private ICommandSerializer Serializer { get; }
 
         public const int ResponseTimeoutSeconds = 120;
 
-        internal bool ExternalManageSerialPort { get; set; } = false;
+        public bool ExternalManageSerialPort { get; set; } = false;
         
         public WorkerSerialTransport(ICommandSerializer serializer, SerialPort serialPort)
-            : base(serializer)
         {
             SerialPort = serialPort;
         }
 
         public WorkerSerialTransport(ICommandSerializer serializer, string serialPort, int baudRate = 9600)
-            : base(serializer)
         {
             SerialPort = new SerialPort(serialPort, baudRate);
         }
 
-        public override byte[] DeliverCommand(TestCommand command)
+        public Task<byte[]> DeliverCommandAsync(TestCommand command)
+        {
+            return Task.Run(() => DeliverCommand(command));
+        }
+
+        public byte[] DeliverCommand(TestCommand command)
         {
             var data = Serializer.SerializeCommand(command).ToArray();
 

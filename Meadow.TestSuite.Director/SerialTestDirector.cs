@@ -2,34 +2,36 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Meadow.TestSuite
 {
-    public class TestDirector
+    public class SerialTestDirector : ITestDirector
     {
-        private ITestTransport Transport { get; }
+        private WorkerSerialTransport Transport { get; }
         private ICommandSerializer Serializer { get; }
 
         public string MeadowTestFolder { get; } = "/meadow0/test";
 
-        public TestDirector(ICommandSerializer serializer, ITestTransport transport)
+        public SerialTestDirector(ICommandSerializer serializer, WorkerSerialTransport transport)
         {
             Transport = transport;
             Serializer = serializer;
         }
 
-        public string UplinkTestAssembly(string assemblyPath)
+        public async Task SendFile(FileInfo source, string? destinationName)
         {
-            var fi = new FileInfo(assemblyPath);
-            if(!fi.Exists)
+            if(!source.Exists)
             {
                 throw new FileNotFoundException("Source file not found");
             }
 
-            var destpath = Path.Combine(MeadowTestFolder, fi.Name)
+            if (destinationName == string.Empty) destinationName = null;
+
+            var destpath = Path.Combine(MeadowTestFolder, destinationName ?? source.Name)
                 .Replace('\\', '/');
 
-            var payload = Convert.ToBase64String(File.ReadAllBytes(fi.FullName));
+            var payload = Convert.ToBase64String(File.ReadAllBytes(source.FullName));
             Debug.WriteLine($"Payload is {payload.Length} bytes");
             var cmd = new UplinkFileCommand
             {
@@ -37,8 +39,15 @@ namespace Meadow.TestSuite
                 FileData = payload
             };
 
-            var result = Transport.DeliverCommand(cmd);
-            return ProcessResults<string>(result);
+            await Transport.DeliverCommandAsync(cmd);
+        }
+
+        public async Task<string[]> GetAssemblies()
+        {
+            var cmd = new GetAssembliesCommand();
+            var result = await Transport.DeliverCommandAsync(cmd);
+            var assemblies = ProcessResults<string[]>(result);
+            return assemblies;
         }
 
         public TestResult[] GetTestResults()
@@ -78,14 +87,6 @@ namespace Meadow.TestSuite
 
             var result = Transport.DeliverCommand(cmd);
             return ProcessResults<string>(result);
-        }
-
-        public string[] GetAssemblies()
-        {
-            var cmd = new GetAssembliesCommand();
-            var result = Transport.DeliverCommand(cmd);
-            var assemblies = ProcessResults<string[]>(result);
-            return assemblies;
         }
 
         public string[] GetTestNames()

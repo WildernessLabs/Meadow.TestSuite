@@ -4,5 +4,6 @@
     {
         string Port { get; }
         int BaudRate { get; }
+        string Ethernet { get; }
     }
 }
