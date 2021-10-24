@@ -2,34 +2,36 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSuite.Unit.Tests", "TestSuite.Unit.Tests\TestSuite.Unit.Tests.csproj", "{C6E093CC-124F-4989-B7E5-22A243F16AA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSuite.Unit.Tests", "TestSuite.Unit.Tests\TestSuite.Unit.Tests.csproj", "{C6E093CC-124F-4989-B7E5-22A243F16AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.TestSuite.Core", "Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj", "{F77A2AA8-DDC5-4238-B8F4-E191D7B98F7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.TestSuite.Core", "Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj", "{F77A2AA8-DDC5-4238-B8F4-E191D7B98F7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Meadow.Core.F7", "Tests.Meadow.Core\Tests.Meadow.Core.F7.csproj", "{62AF01CF-769B-454F-85BC-4CDD571ADD8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Meadow.Core.F7", "Tests.Meadow.Core\Tests.Meadow.Core.F7.csproj", "{62AF01CF-769B-454F-85BC-4CDD571ADD8F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{085FCF8D-543A-465C-B239-BCEFC3B75537}"
 	ProjectSection(SolutionItems) = preProject
-		readme.md = readme.md
 		doc\authoring-tests.md = doc\authoring-tests.md
-		doc\usage.md = doc\usage.md
-		doc\TestSuite.postman_collection.json = doc\TestSuite.postman_collection.json
-		doc\setup.md = doc\setup.md
-		doc\raspi.md = doc\raspi.md
-		doc\implementation.md = doc\implementation.md
-		rest-api.md = rest-api.md
 		config.md = config.md
+		doc\implementation.md = doc\implementation.md
+		doc\raspi.md = doc\raspi.md
+		readme.md = readme.md
+		rest-api.md = rest-api.md
+		doc\setup.md = doc\setup.md
+		doc\TestSuite.postman_collection.json = doc\TestSuite.postman_collection.json
+		doc\usage.md = doc\usage.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.TestSuite.Director", "Meadow.TestSuite.Director\Meadow.TestSuite.Director.csproj", "{88D83E30-8507-4007-9F60-69A57D0A6636}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.TestSuite.Director", "Meadow.TestSuite.Director\Meadow.TestSuite.Director.csproj", "{88D83E30-8507-4007-9F60-69A57D0A6636}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Meadow.Foundation", "Tests.Meadow.Foundation\Tests.Meadow.Foundation.csproj", "{BA1DE075-6C5E-40F6-84AF-5F98EFF2A9AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Meadow.Foundation", "Tests.Meadow.Foundation\Tests.Meadow.Foundation.csproj", "{BA1DE075-6C5E-40F6-84AF-5F98EFF2A9AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.TestSuite.Worker.F7", "Meadow.TestSuite.Worker\Meadow.TestSuite.Worker.F7.csproj", "{BF3C06DF-09A5-44F5-B6F6-3E70FD39BAC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.TestSuite.Worker.F7", "Meadow.TestSuite.Worker\Meadow.TestSuite.Worker.F7.csproj", "{BF3C06DF-09A5-44F5-B6F6-3E70FD39BAC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.Foundation.Web.Maple.Server", "..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Web.Maple\Driver\Web.Maple.Server\Meadow.Foundation.Web.Maple.Server.csproj", "{264981F8-0A35-4254-926E-3B342637BB73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Foundation.Web.Maple.Server", "..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Web.Maple\Driver\Web.Maple.Server\Meadow.Foundation.Web.Maple.Server.csproj", "{264981F8-0A35-4254-926E-3B342637BB73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.TestSuite.Cli", "Meadow.TestSuite.Cli\Meadow.TestSuite.Cli.csproj", "{024292B8-30CE-46AB-8B33-AB82C4B8A758}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.TestSuite.Cli", "Meadow.TestSuite.Cli\Meadow.TestSuite.Cli.csproj", "{024292B8-30CE-46AB-8B33-AB82C4B8A758}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test Assemblies", "Test Assemblies", "{EB6241B5-16A8-45A2-B75F-818CB2DB9192}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{62AF01CF-769B-454F-85BC-4CDD571ADD8F} = {EB6241B5-16A8-45A2-B75F-818CB2DB9192}
+		{BA1DE075-6C5E-40F6-84AF-5F98EFF2A9AD} = {EB6241B5-16A8-45A2-B75F-818CB2DB9192}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E6ED5BA-7442-4B70-8045-D87C76CB7968}

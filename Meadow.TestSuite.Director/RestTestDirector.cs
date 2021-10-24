@@ -21,6 +21,7 @@ namespace Meadow.TestSuite
 
             WorkerEndPoint = ep;
             Client = new HttpClient();
+            Client.BaseAddress = new Uri($"http://{ep}");
         }
 
         public RestTestDirector(IPEndPoint ep)
@@ -41,7 +42,7 @@ namespace Meadow.TestSuite
                 throw new ArgumentException($"Source file '{source.FullName}' not found");
             }
 
-            var dest = $"{WorkerEndPoint}/assemblies/{destinationName ?? source.Name}";
+            var dest = $"/assemblies/{destinationName ?? source.Name}";
             var content = new StreamContent(source.OpenRead());
 
             await Client.PutAsync(dest, content);
@@ -50,7 +51,7 @@ namespace Meadow.TestSuite
         public async Task<string[]> GetAssemblies()
         {
             // GET http://{{meadow-address}}:{{meadow-port}}/assemblies
-            var path = $"{WorkerEndPoint}/assemblies";
+            var path = "/assemblies";
             var result = await Client.GetAsync(path);
             if (result.IsSuccessStatusCode)
             {
@@ -61,7 +62,6 @@ namespace Meadow.TestSuite
             {
                 throw new Exception($"REST call returned {result.StatusCode}");
             }
-            
         }
 
         public string DeleteAssemblies()

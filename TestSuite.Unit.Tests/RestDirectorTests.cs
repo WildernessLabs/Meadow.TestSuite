@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using Meadow.TestSuite;
 using Xunit;
@@ -11,8 +14,13 @@ namespace TestSuite.Unit.Tests
         private RestTestDirector GetDirector()
         {
             return new RestTestDirector(
-                new IPEndPoint(IPAddress.Parse("192.168.1.87"),
+                new IPEndPoint(IPAddress.Parse("192.168.0.15"),
                 8080));
+        }
+
+        private FileInfo GetTestAssemblySource()
+        {
+            return new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tests.Meadow.Core.dll"));
         }
 
         [Fact]
@@ -47,5 +55,21 @@ namespace TestSuite.Unit.Tests
             Assert.NotNull(assemblies); 
         }
 
+        [Fact]
+        public async Task FileManagementTest()
+        {
+            var director = GetDirector();
+
+            var sourceFile = GetTestAssemblySource();
+
+            // create a destiantion name that is unique (in case the test assembly is already there)
+            var remoteName = $"{Path.GetFileNameWithoutExtension(sourceFile.Name)}.{DateTime.UtcNow.Ticks}.dll";
+
+            await director.SendFile(sourceFile, remoteName);
+            var updatedAssemblies = await director.GetAssemblies();
+
+            Assert.Contains(remoteName, updatedAssemblies);
+
+        }
     }
 }

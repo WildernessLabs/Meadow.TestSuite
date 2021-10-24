@@ -25,5 +25,12 @@
 
   <ItemGroup>
     <None Remove="SimpleJson" />
+    <None Remove="Tests.Meadow.Core.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Tests.Meadow.Core.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
