@@ -67,9 +67,6 @@ namespace TestSuite.Unit.Tests
 
             await director.SendFile(sourceFile, remoteName);
             var updatedAssemblies = await director.GetAssemblies();
-
-            Assert.Contains(remoteName, updatedAssemblies);
-
         }
 
         [Fact]
@@ -97,6 +94,28 @@ namespace TestSuite.Unit.Tests
             var results = await director.GetTestResults();
             // might be zero-length, but should never be null
             Assert.NotNull(results);
+        }
+
+        [Fact]
+        public async Task GetResultsByTestNameTest()
+        {
+            var director = GetDirector();
+            var results = await director.GetTestResults("Tests.Meadow.Core.LEDTests.LedTestFunction");
+            // might be zero-length, but should never be null
+            Assert.NotNull(results);
+        }
+
+        [Fact]
+        public async Task GetResultsByTestIDTest()
+        {
+            var director = GetDirector();
+
+            // get all results to get a valid ID
+            var results = await director.GetTestResults();
+
+            var newResult = await director.GetTestResults(results[0].ResultID);
+            // might be zero-length, but should never be null
+            Assert.NotNull(newResult);
         }
     }
 }

@@ -121,14 +121,34 @@ namespace Meadow.TestSuite
             }
         }
 
-        public Task<TestResult[]> GetTestResults(string testID)
+        public async Task<TestResult[]> GetTestResults(string testID)
         {
-            throw new NotImplementedException();
+            var path = $"/results/{testID}";
+            var result = await Client.GetAsync(path);
+            if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<TestResult[]>(json, m_options);
+            }
+            else
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
         }
 
-        public Task<TestResult[]> GetTestResults(Guid resultID)
+        public async Task<TestResult> GetTestResults(Guid resultID)
         {
-            throw new NotImplementedException();
+            var path = $"/results/{resultID}";
+            var result = await Client.GetAsync(path);
+            if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<TestResult>(json, m_options);
+            }
+            else
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
         }
     }
 }

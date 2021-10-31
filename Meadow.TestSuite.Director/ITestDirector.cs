@@ -14,6 +14,6 @@ namespace Meadow.TestSuite
 
         Task<TestResult[]> GetTestResults();
         Task<TestResult[]> GetTestResults(string testID);
-        Task<TestResult[]> GetTestResults(Guid resultID);
+        Task<TestResult> GetTestResults(Guid resultID);
     }
 }

@@ -67,14 +67,14 @@ namespace Meadow.TestSuite
             return ProcessResults<TestResult[]>(result);
         }
 
-        public async Task<TestResult[]> GetTestResults(Guid resultID)
+        public async Task<TestResult> GetTestResults(Guid resultID)
         {
             var cmd = new GetResultsCommand()
             {
                 ResultID = resultID
             };
             var result = await Transport.DeliverCommandAsync(cmd);
-            return ProcessResults<TestResult[]>(result);
+            return ProcessResults<TestResult>(result);
         }
 
         public string DeleteAssemblies()
