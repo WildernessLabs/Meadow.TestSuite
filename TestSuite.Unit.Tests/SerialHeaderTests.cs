@@ -5,7 +5,7 @@ using Xunit;
 
 namespace TestSuite.Unit.Tests
 {
-    public class SerialHeaderTests : ByteArrayListener
+    public class SerialHeaderTests : List
     {
         public SerialHeaderTests()
             : base(null)

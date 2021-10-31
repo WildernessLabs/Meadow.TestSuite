@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Meadow.TestSuite</RootNamespace>
-    <AssemblyName>mtd</AssemblyName>
+    <AssemblyName>Meadow.TestsSuite.Director</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

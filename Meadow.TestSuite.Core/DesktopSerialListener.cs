@@ -9,7 +9,7 @@ namespace Meadow.TestSuite
     /// <summary>
     /// A class intended for tests only
     /// </summary>
-    public class DesktopSerialListener : ByteArrayListener
+    public class DesktopSerialListener : List
     {
         private SerialPort Port { get; }
 

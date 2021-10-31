@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Meadow.TestSuite
 {
-    public abstract class ByteArrayListener : ITestListener
+    public abstract class List : ITestListener
     {
         public abstract void StartListening();
         public abstract void SendResult(object result);
@@ -24,7 +24,7 @@ namespace Meadow.TestSuite
 
         protected ICommandSerializer Serializer { get; }
 
-        public ByteArrayListener(ICommandSerializer serializer)
+        public List(ICommandSerializer serializer)
         {
             Serializer = serializer;            
 

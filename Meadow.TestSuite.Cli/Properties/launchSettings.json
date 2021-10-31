@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Assembly List": {
+      "commandName": "Project",
+      "commandLineArgs": "assembly list -t 192.168.0.15:8080"
+    },
+    "File Send": {
+      "commandName": "Project",
+      "commandLineArgs": "file send -t 192.168.0.15:8080 -s C:\\Repos\\WildernessLabs\\Meadow.TestSuite\\Tests.Meadow.Core\\bin\\Debug\\netstandard2.1\\Tests.Meadow.Core.dll"
+    }
+  }
+}

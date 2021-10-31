@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace MeadowApp
 {
-    public class MeadowSerialListener : ByteArrayListener
+    public class MeadowSerialListener : List
     {
         private ISerialPort Port { get; }
 

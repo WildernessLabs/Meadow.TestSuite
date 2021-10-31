@@ -1,33 +1,47 @@
-﻿using CommandLine;
+﻿using CliFx;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Net;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Meadow.TestSuite.Cli
 {
-    // TEST command lines
-    //
-    // uplink -p COM12 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Meadow.Core.dll"
-    // uplink -e 192.168.10.123:8000 -s "..\..\..\..\Tests.Meadow.Core\bin\Debug\net472\Tests.Meadow.Core.dll"
-    // assembly -l -p COM12
-    // test -l -p COM12
-    // test -p COM12 -e Tests.Meadow.Core.GpioTests.LedTest
-    // result --all -p COM12
-
     class Program
     {
-        static void Main(string[] args)
+        public static async Task<int> Main()
         {
-            var r = CommandLine.Parser.Default
-            .ParseArguments<UplinkOptions, AssemblyOptions, TestOptions, ResultOptions>(args)
-            .MapResult(
-                (UplinkOptions o) => Launch(o),
-                (AssemblyOptions o) => Launch(o),
-                (TestOptions o) => Launch(o),
-                (ResultOptions o) => Launch(o),
-                fail => -1
-                );
+            var services = new ServiceCollection();
+            services.AddSingleton<DirectorProvider>();
+
+            AddCommandsAsServices(services);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var result = await new CliApplicationBuilder()
+                .AddCommandsFromThisAssembly()
+                .SetExecutableName("mtd")
+                .UseTypeActivator(serviceProvider.GetService)
+                .Build()
+                .RunAsync();
+
+            return result;
         }
 
+        private static void AddCommandsAsServices(IServiceCollection services)
+        {
+            var assembly = System.Reflection.Assembly.GetEntryAssembly();
+
+            foreach (var type in assembly
+                .GetTypes()
+                .Where(t => t.IsAssignableTo(typeof(CommandBase)) && !t.IsAbstract))
+            {
+                services.AddTransient(type);
+            }
+        }
+
+
+        /*
         private static ITestDirector GetDirector(IOptions options, ICommandSerializer serializer)
         {
             // are we using rest or serial?
@@ -66,68 +80,66 @@ namespace Meadow.TestSuite.Cli
                 return -1;
             }
 
+            Task task = null;
+
             if (options is UplinkOptions)
             {
-                p.Uplink(director, options as UplinkOptions);
+                task = p.Uplink(director, options as UplinkOptions);
             }
             else if (options is AssemblyOptions)
             {
-                p.ProcessAssemblyCommand(director, options as AssemblyOptions);
+                task = p.ProcessAssemblyCommand(director, options as AssemblyOptions);
             }
             else if (options is TestOptions)
             {
-                p.ProcessTestCommand(director, options as TestOptions);
+                task = p.ProcessTestCommand(director, options as TestOptions);
             }
             else if (options is ResultOptions)
             {
-                p.ProcessResultCommand(director, options as ResultOptions);
+                task = p.ProcessResultCommand(director, options as ResultOptions);
             }
+
+            task?.Wait();
+
             return 0;
         }
 
-        private void Uplink(ITestDirector director, UplinkOptions options)
+        private async Task Uplink(ITestDirector director, UplinkOptions options)
         {
             Console.WriteLine($"Uplink {options.Source}");
 
-            var task = director.SendFile(new System.IO.FileInfo( options.Source), options.Destination);
-            task.Wait();
+            await director.SendFile(new System.IO.FileInfo( options.Source), options.Destination);
             Console.WriteLine($"  sent.");
         }
 
-        private void ProcessAssemblyCommand(ITestDirector director, AssemblyOptions options)
+        private async Task ProcessAssemblyCommand(ITestDirector director, AssemblyOptions options)
         {
             if (options.List)
             {
                 Console.WriteLine($"List of Assemblies:");
-                var task = director.GetAssemblies();
-                task.Wait();
-                if ((task.Result == null) || (task.Result.Length == 0))
+                var assemblies = await director.GetAssemblies();
+
+                if (assemblies.Length == 0)
                 {
                     Console.WriteLine($"  <none>");
                 }
                 else
                 {
-                    foreach (var a in task.Result)
+                    foreach (var a in assemblies)
                     {
                         Console.WriteLine($"  {a}");
                     }
                 }
             }
-            else if (options.Clear)
-            {
-                Console.WriteLine($"Delete all Test Assemblies...");
-                var result = director.DeleteAssemblies();
-                Console.WriteLine(result);
-            }
         }
 
-        private void ProcessTestCommand(ITestDirector director, TestOptions options)
+        private async Task ProcessTestCommand(ITestDirector director, TestOptions options)
         {
             if (options.List)
             {
                 Console.WriteLine($"List of Tests:");
 
-                var result = director.GetTestNames();
+                var result = await director.GetTestNames();
 
                 if ((result == null) || (result.Length == 0))
                 {
@@ -146,36 +158,36 @@ namespace Meadow.TestSuite.Cli
                 // allow a few delimiters
                 var names = options.Execute.Split(new char[] { ';', ',', '|' }, StringSplitOptions.RemoveEmptyEntries);
 
-                TestResult[] results;
+                var results = new List<TestResult>();
 
-                try
+                foreach (var name in names)
                 {
-                    results = director.ExecuteTests(names);
-                }
-                catch (System.IO.FileNotFoundException fe)
-                {
-                    Console.WriteLine($"Unable to open the serial port: {fe.Message}");
-                    return;
-                }
-
-                if (results != null)
-                {
-                    Console.WriteLine("Executing tests:");
-
-                    // TODO: support verbose
-                    foreach (var r in results)
+                    try
                     {
-                        Console.WriteLine($"  {r.TestID} as {r.ResultID}");
+                        results.Add(await director.ExecuteTest(name));
+                    }
+                    catch (System.IO.FileNotFoundException fe)
+                    {
+                        Console.WriteLine($"Unable to open the serial port: {fe.Message}");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error running test {name}: {ex.Message}");
                     }
                 }
-                else
+
+                Console.WriteLine("Executing tests:");
+
+                // TODO: support verbose
+                foreach (var r in results)
                 {
-                    Console.WriteLine("No results received.");
+                    Console.WriteLine($"  {r.TestID} as {r.ResultID}");
                 }
             }
         }
 
-        private void ProcessResultCommand(ITestDirector director, ResultOptions options)
+        private async Task ProcessResultCommand(ITestDirector director, ResultOptions options)
         {
             TestResult[] results;
 
@@ -183,15 +195,15 @@ namespace Meadow.TestSuite.Cli
 
             if (!options.ResultID.Equals(Guid.Empty))
             {
-                results = director.GetTestResults(options.ResultID);
+                results = new TestResult[] { await director.GetTestResults(options.ResultID) };
             }
             else if (!string.IsNullOrEmpty(options.TestID))
             {
-                results = director.GetTestResults(options.TestID);
+                results = await director.GetTestResults(options.TestID);
             }
             else
             {
-                results = director.GetTestResults();
+                results = await director.GetTestResults();
             }
 
             if ((results == null) || (results.Length == 0))
@@ -207,5 +219,6 @@ namespace Meadow.TestSuite.Cli
                 }
             }
         }
+        */
     }
 }

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace TestSuite.Unit.Tests
 {
-    public class SerialBufferTests : ByteArrayListener
+    public class SerialBufferTests : List
     {
         public SerialBufferTests()
             : base(new TestSerializer())

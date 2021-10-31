@@ -3,17 +3,34 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <StartupObject>Meadow.TestSuite.Cli.Program</StartupObject>
+    <AssemblyName>mtd</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Options\AssemblyOptions.cs" />
+    <Compile Remove="Options\BaseOptions.cs" />
+    <Compile Remove="Options\IOptions.cs" />
+    <Compile Remove="Options\ResultOptions.cs" />
+    <Compile Remove="Options\TestOptions.cs" />
+    <Compile Remove="Options\UplinkOptions.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="CommandLineParser" />
     <None Remove="Options\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <None Include="Options\AssemblyOptions.cs" />
+    <None Include="Options\BaseOptions.cs" />
+    <None Include="Options\IOptions.cs" />
+    <None Include="Options\ResultOptions.cs" />
+    <None Include="Options\TestOptions.cs" />
+    <None Include="Options\UplinkOptions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Options\" />
+    <PackageReference Include="CliFx" Version="2.0.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Meadow.TestSuite.Director\Meadow.TestSuite.Director.csproj" />
