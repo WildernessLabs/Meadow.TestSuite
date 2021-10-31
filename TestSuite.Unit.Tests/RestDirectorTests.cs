@@ -71,5 +71,32 @@ namespace TestSuite.Unit.Tests
             Assert.Contains(remoteName, updatedAssemblies);
 
         }
+
+        [Fact]
+        public async Task GetTestNamesTest()
+        {
+            var director = GetDirector();
+            var names = await director.GetTestNames();
+            // might be zero-length, but should never be null
+            Assert.NotNull(names);
+        }
+
+        [Fact]
+        public async Task ExecuteTestTest()
+        {
+            var director = GetDirector();
+            var results = await director.ExecuteTest("Tests.Meadow.Core.LEDTests.LedTestFunction");
+            // might be zero-length, but should never be null
+            Assert.NotNull(results);
+        }
+
+        [Fact]
+        public async Task GetAllResultsTest()
+        {
+            var director = GetDirector();
+            var results = await director.GetTestResults();
+            // might be zero-length, but should never be null
+            Assert.NotNull(results);
+        }
     }
 }

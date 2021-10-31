@@ -3,14 +3,16 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Meadow.TestSuite
 {
     public class RestTestDirector : ITestDirector
     {
-        private HttpClient Client { get; }
-        private IPEndPoint WorkerEndPoint { get; }
+        private HttpClient Client { get; set; }
+        private IPEndPoint WorkerEndPoint { get; set; }
+        private JsonSerializerOptions m_options;
 
         public RestTestDirector(string endpoint)
         {
@@ -19,16 +21,24 @@ namespace Meadow.TestSuite
                 throw new ArgumentException($"Unable to parse Endpoint '{endpoint}'");
             }
 
-            WorkerEndPoint = ep;
-            Client = new HttpClient();
-            Client.BaseAddress = new Uri($"http://{ep}");
+            Init(ep);
         }
 
         public RestTestDirector(IPEndPoint ep)
         {
+            Init(ep);
+        }
+
+        private void Init(IPEndPoint ep)
+        {
             WorkerEndPoint = ep;
             Client = new HttpClient();
             Client.BaseAddress = new Uri($"http://{ep}");
+            m_options = new JsonSerializerOptions
+            {
+                 PropertyNameCaseInsensitive = true
+            };
+            m_options.Converters.Add(new JsonStringEnumConverter());
         }
 
         public async Task SendFile(FileInfo source, string? destinationName)
@@ -64,32 +74,59 @@ namespace Meadow.TestSuite
             }
         }
 
-        public string DeleteAssemblies()
+        public async Task<string[]> GetTestNames()
         {
-            return "Not implemented";
+            // GET http://{{meadow-address}}:{{meadow-port}}/tests
+            var path = "/tests";
+            var result = await Client.GetAsync(path);
+            if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<string[]>(json);
+            }
+            else
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
         }
 
-        public string[] GetTestNames()
+        public async Task<TestResult> ExecuteTest(string testName)
+        {
+            // GET http://{{meadow-address}}:{{meadow-port}}/tests
+            var path = $"/tests/{testName}";
+            var result = await Client.PostAsync(path, null);
+            if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<TestResult>(json, m_options);
+            }
+            else
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
+        }
+
+        public async Task<TestResult[]> GetTestResults()
+        {
+            var path = "/results";
+            var result = await Client.GetAsync(path);
+            if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<TestResult[]>(json, m_options);
+            }
+            else
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
+        }
+
+        public Task<TestResult[]> GetTestResults(string testID)
         {
             throw new NotImplementedException();
         }
 
-        public TestResult[] ExecuteTests(params string[] testNames)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TestResult[] GetTestResults()
-        {
-            throw new NotImplementedException();
-        }
-
-        public TestResult[] GetTestResults(string testID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TestResult[] GetTestResults(Guid resultID)
+        public Task<TestResult[]> GetTestResults(Guid resultID)
         {
             throw new NotImplementedException();
         }

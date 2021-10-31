@@ -9,13 +9,11 @@ namespace Meadow.TestSuite
         Task SendFile(FileInfo source, string? destinationName);
         Task<string[]> GetAssemblies();
 
-        string DeleteAssemblies();
+        Task<string[]> GetTestNames();        
+        Task<TestResult> ExecuteTest(string testName);
 
-        string[] GetTestNames();
-        TestResult[] ExecuteTests(params string[] testNames);
-
-        TestResult[] GetTestResults();
-        TestResult[] GetTestResults(string testID);
-        TestResult[] GetTestResults(Guid resultID);
+        Task<TestResult[]> GetTestResults();
+        Task<TestResult[]> GetTestResults(string testID);
+        Task<TestResult[]> GetTestResults(Guid resultID);
     }
 }

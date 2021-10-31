@@ -50,30 +50,30 @@ namespace Meadow.TestSuite
             return assemblies;
         }
 
-        public TestResult[] GetTestResults()
+        public async Task<TestResult[]> GetTestResults()
         {
             var cmd = new GetResultsCommand();
-            var result = Transport.DeliverCommand(cmd);
+            var result = await Transport.DeliverCommandAsync(cmd);
             return ProcessResults<TestResult[]>(result);
         }
 
-        public TestResult[] GetTestResults(string testID)
+        public async Task<TestResult[]> GetTestResults(string testID)
         {
             var cmd = new GetResultsCommand()
             {
                 TestID = testID
             };
-            var result = Transport.DeliverCommand(cmd);
+            var result = await Transport.DeliverCommandAsync(cmd);
             return ProcessResults<TestResult[]>(result);
         }
 
-        public TestResult[] GetTestResults(Guid resultID)
+        public async Task<TestResult[]> GetTestResults(Guid resultID)
         {
             var cmd = new GetResultsCommand()
             {
                 ResultID = resultID
             };
-            var result = Transport.DeliverCommand(cmd);
+            var result = await Transport.DeliverCommandAsync(cmd);
             return ProcessResults<TestResult[]>(result);
         }
 
@@ -89,17 +89,22 @@ namespace Meadow.TestSuite
             return ProcessResults<string>(result);
         }
 
-        public string[] GetTestNames()
+        public async Task<string[]> GetTestNames()
         {
             var cmd = new GetTestNamesCommand();
-            var result = Transport.DeliverCommand(cmd);
+            var result = await Transport.DeliverCommandAsync(cmd);
             return ProcessResults<string[]>(result);
         }
 
-        public TestResult[] ExecuteTests(params string[] testNames)
+        public async Task<TestResult> ExecuteTest(string testName)
+        {
+            return (await ExecuteTests(testName))[0];
+        }
+
+        public async Task<TestResult[]> ExecuteTests(params string[] testNames)
         {
             var cmd = new ExecuteTestsCommand(testNames);
-            var result = Transport.DeliverCommand(cmd);
+            var result = await Transport.DeliverCommandAsync(cmd);
             return ProcessResults<TestResult[]>(result);
         }
 
