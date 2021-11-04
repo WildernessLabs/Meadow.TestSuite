@@ -2,17 +2,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Library</OutputType>
-    <AssemblyName>Tests.Meadow.Foundation</AssemblyName>
+    <AssemblyName>Tests.Meadow.Core</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Meadow.Foundation" />
+    <None Remove="Meadow" />
     <None Remove="Meadow.F7" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow.Foundation" Version="0.28.0" />
+    <PackageReference Include="Meadow" Version="0.26.0" />
     <PackageReference Include="Meadow.F7" Version="0.26.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
   </ItemGroup>
 </Project>

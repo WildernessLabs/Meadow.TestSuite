@@ -26,7 +26,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Web.Maple\Driver\Web.Maple.Server\Meadow.Foundation.Web.Maple.Server.csproj" />
-    <ProjectReference Include="..\Tests.Meadow.Core\Tests.Meadow.Core.F7.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Handlers\" />

@@ -25,7 +25,7 @@ namespace Meadow.TestSuite.Cli
 
             var director = DirectorProvider.GetDirector(Transport);
 
-            console.Output.WriteLine($"List of Tests:");
+            console.Output.WriteLine($"Starting test runner...");
             var result = await director.ExecuteTest(TestName);
 
             console.Output.WriteLine($"Running '{TestName}' as Result ID {result.ResultID}");

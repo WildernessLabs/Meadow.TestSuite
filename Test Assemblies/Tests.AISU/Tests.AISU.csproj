@@ -1,0 +1,22 @@
+<Project Sdk="Meadow.Sdk/1.1.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Tests.AISU</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Remove="C:\Users\ctack\.nuget\packages\meadow.f7\0.26.0\contentFiles\any\netstandard2.1\netstandard.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Meadow" />
+    <None Remove="Meadow.F7" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Meadow" Version="0.26.0" />
+    <PackageReference Include="Meadow.F7" Version="0.26.0" />
+    <PackageReference Include="Meadow.Foundation" Version="0.28.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
+  </ItemGroup>
+</Project>

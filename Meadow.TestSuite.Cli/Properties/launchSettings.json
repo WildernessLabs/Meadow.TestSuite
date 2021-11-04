@@ -10,7 +10,11 @@
     },
     "File Send": {
       "commandName": "Project",
-      "commandLineArgs": "file send -t 192.168.0.15:8080 -s C:\\Repos\\WildernessLabs\\Meadow.TestSuite\\Tests.Meadow.Core\\bin\\Debug\\netstandard2.1\\Tests.Meadow.Core.dll"
+      "commandLineArgs": "file send -t 192.168.0.15:8080 -s \"..\\..\\..\\..\\Test Assemblies\\Tests.Meadow.Core\\bin\\Debug\\netstandard2.1\\Tests.Meadow.Core.dll\""
+    },
+    "File Send AISU": {
+      "commandName": "Project",
+      "commandLineArgs": "file send -t 192.168.0.15:8080 -s \"..\\..\\..\\..\\Test Assemblies\\Tests.AISU\\bin\\Debug\\netstandard2.1\\Tests.AISU.dll\""
     },
     "Test List": {
       "commandName": "Project",
@@ -18,8 +22,11 @@
     },
     "Run LED Test": {
       "commandName": "Project",
-      "7fef2315-22be-410c-bc35-8d595f134ad4": null,
       "commandLineArgs": "test run Tests.Meadow.Core.LEDTests.LedTestFunction -t 192.168.0.15:8080"
+    },
+    "Run Analog Temp Test": {
+      "commandName": "Project",
+      "commandLineArgs": "test run Tests.AISU.AnalogTempTests.TestAnalogTemps -t 192.168.0.15:8080"
     },
     "Get Result By ID": {
       "commandName": "Project",
