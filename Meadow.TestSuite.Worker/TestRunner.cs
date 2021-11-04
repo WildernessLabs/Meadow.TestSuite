@@ -8,6 +8,8 @@ namespace Meadow.TestSuite
 {
     public class TestRunner
     {
+        public event EventHandler ExecutionComplete = delegate { };
+
         public bool ShowDebug { get; set; } = false;
         public TestResult Result { get; private set; }
         private ITestProvider Provider { get; }
@@ -95,6 +97,8 @@ namespace Meadow.TestSuite
                 Output.WriteLineIf(ShowDebug, $" finally block");
                 Result.RunTimeSeconds = sw.Elapsed.TotalSeconds;
                 Result.CompletionDate = DateTime.Now.ToUniversalTime();
+
+                ExecutionComplete?.Invoke(this, EventArgs.Empty);
             }
         }
     }

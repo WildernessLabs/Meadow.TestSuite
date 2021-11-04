@@ -8,25 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Options\AssemblyOptions.cs" />
-    <Compile Remove="Options\BaseOptions.cs" />
-    <Compile Remove="Options\IOptions.cs" />
-    <Compile Remove="Options\ResultOptions.cs" />
-    <Compile Remove="Options\TestOptions.cs" />
-    <Compile Remove="Options\UplinkOptions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="CommandLineParser" />
     <None Remove="Options\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Options\AssemblyOptions.cs" />
-    <None Include="Options\BaseOptions.cs" />
-    <None Include="Options\IOptions.cs" />
-    <None Include="Options\ResultOptions.cs" />
-    <None Include="Options\TestOptions.cs" />
-    <None Include="Options\UplinkOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CliFx" Version="2.0.6" />

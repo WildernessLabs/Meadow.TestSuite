@@ -190,6 +190,11 @@ namespace MeadowApp
                 Display?.ShowText(4, "Executing");
                 var result = runner.Begin();
 
+                runner.ExecutionComplete += (s, e) =>
+                {
+                    Display?.ShowText(4, runner.Result.State.ToString());
+                };
+
                 // store the result
                 Results.Add(result);
 
