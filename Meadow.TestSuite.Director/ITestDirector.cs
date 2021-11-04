@@ -6,6 +6,10 @@ namespace Meadow.TestSuite
 {
     public interface ITestDirector
     {
+        Task<WorkerInfo> GetInfo();
+        Task<DateTime> GetTime();
+        Task SetTime(DateTime time);
+
         Task SendFile(FileInfo source, string? destinationName);
         Task<string[]> GetAssemblies();
 

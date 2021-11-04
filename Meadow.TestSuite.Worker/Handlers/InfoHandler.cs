@@ -1,5 +1,6 @@
 ﻿using Meadow.Foundation.Web.Maple.Server;
 using Meadow.Foundation.Web.Maple.Server.Routing;
+using Meadow.TestSuite;
 using System.Reflection;
 
 namespace MeadowApp
@@ -12,8 +13,8 @@ namespace MeadowApp
         public IActionResult GetInfo()
         {
             return new JsonResult(
-                new
-                {
+                new WorkerInfo
+                {                     
                     Name = "Meadow TestSuite",
                     Version = Assembly.GetEntryAssembly().GetName().Version.ToString(3)
                 });

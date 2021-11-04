@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -10,6 +11,11 @@ namespace Meadow.TestSuite
 {
     public class RestTestDirector : ITestDirector
     {
+        private class WorkerClock
+        {
+            public DateTime SystemTime { get; set; }
+        }
+
         private HttpClient Client { get; set; }
         private IPEndPoint WorkerEndPoint { get; set; }
         private JsonSerializerOptions m_options;
@@ -41,6 +47,55 @@ namespace Meadow.TestSuite
             m_options.Converters.Add(new JsonStringEnumConverter());
         }
 
+        public async Task<WorkerInfo> GetInfo()
+        {
+            var path = "/";
+            var result = await Client.GetAsync(path);
+            if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<WorkerInfo>(json, m_options);
+            }
+            else
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
+        }
+
+        public async Task<DateTime> GetTime()
+        {
+            var path = "/time";
+            var result = await Client.GetAsync(path);
+            if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                var clock =JsonSerializer.Deserialize<WorkerClock>(json, m_options);
+                return clock.SystemTime;
+            }
+            else
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
+        }
+
+        public async Task SetTime(DateTime time)
+        {
+            var dest = $"/time";
+            var c = new WorkerClock
+            {
+                SystemTime = time
+            };
+
+            
+            var content = JsonContent.Create(c);
+
+            var result = await Client.PutAsync(dest, content);
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
+        }
+
         public async Task SendFile(FileInfo source, string? destinationName)
         {
             if (source == null)
@@ -55,7 +110,11 @@ namespace Meadow.TestSuite
             var dest = $"/assemblies/{destinationName ?? source.Name}";
             var content = new StreamContent(source.OpenRead());
 
-            await Client.PutAsync(dest, content);
+            var result = await Client.PutAsync(dest, content);
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
         }
 
         public async Task<string[]> GetAssemblies()

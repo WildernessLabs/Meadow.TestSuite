@@ -42,6 +42,21 @@ namespace Meadow.TestSuite
             await Transport.DeliverCommandAsync(cmd);
         }
 
+        public Task<DateTime> GetTime()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetTime(DateTime time)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<WorkerInfo> GetInfo()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<string[]> GetAssemblies()
         {
             var cmd = new GetAssembliesCommand();
