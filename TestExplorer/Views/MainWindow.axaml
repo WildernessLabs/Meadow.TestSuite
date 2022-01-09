@@ -48,25 +48,24 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
+      
       <Border BorderBrush="Black"
         BorderThickness="2"
         CornerRadius="3"
         Padding="4"
-        Margin="10,0,5,10"
+        Margin="0,0,5,10"
         Grid.Row="0"
         Grid.Column="0">
-        
-        <StackPanel
-          VerticalAlignment="Stretch"
-          >
+
+        <StackPanel>
           <Label>Local</Label>
           <Label>Assembly Path</Label>
-          <DockPanel LastChildFill="True">
+          <DockPanel IsVisible="{Binding LocalIsVisible}" LastChildFill="True">
             <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="30" Click="BrowseLocalAssemblies">...</Button>
             <TextBox Text="{Binding LocalAssemblyPath}" />
           </DockPanel>
-          <ListBox 
-            SelectionMode="Multiple" 
+          <ListBox
+            SelectionMode="Multiple"
             Items="{Binding Assemblies}"
             SelectedItems="{Binding AssembliesToSend}"
             BorderThickness="1" />
@@ -132,11 +131,18 @@
               >
                 Refresh
               </Button>
+              <Button
+                Margin="10,5"
+                Command="{Binding RunTestsCommand}"
+              >
+                Run Selected
+              </Button>
             </StackPanel>
             <ListBox
-            VerticalAlignment="Stretch"
-            BorderThickness="1"
-            Items="{Binding KnownTests}"
+              VerticalAlignment="Stretch"
+              BorderThickness="1"
+              Items="{Binding KnownTests}"
+              SelectedItem="{Binding SelectedTest}"
             />
         </StackPanel>
       </Border>
@@ -158,11 +164,18 @@
               Refresh
             </Button>
           </StackPanel>
-          <ListBox
-          VerticalAlignment="Stretch"
-          BorderThickness="1"
-          Items="{Binding KnownResults}"
-            />
+          <ItemsControl
+            Items="{Binding KnownResults}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{Binding State}" />
+                  <TextBlock Text="{Binding CompletionDate}" />
+                  <TextBlock Text="{Binding RunTime}" />
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
         </StackPanel>
       </Border>
     </Grid>

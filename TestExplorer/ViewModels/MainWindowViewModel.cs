@@ -25,6 +25,7 @@ namespace TestExplorer.ViewModels
         public ObservableCollection<string> AssembliesToSend { get; } = new ObservableCollection<string>();
         public ObservableCollection<string> DeviceAssemblies { get; } = new ObservableCollection<string>();
         public ObservableCollection<string> KnownTests { get; } = new ObservableCollection<string>();
+        public ObservableCollection<TestResult> KnownResults { get; } = new ObservableCollection<TestResult>();
 
         public MainWindowViewModel()
         {
@@ -155,9 +156,28 @@ namespace TestExplorer.ViewModels
             await RefreshRemoteAssemblies();
         }
 
+        public async void RefreshResultsCommand()
+        {
+            await RefreshKnownResults();
+        }
+
         public void AddAssembliesCommand()
         {
             LocalIsVisible = !LocalIsVisible;
+        }
+
+        public string? SelectedTest
+        {
+            get; set;
+        }
+
+        public void RunTestsCommand()
+        {
+            if (SelectedTest == null) return;
+            if (_director == null) return;
+
+            _ = _director.ExecuteTest(SelectedTest);
+
         }
 
         private async Task RefreshRemoteAssemblies()
@@ -190,6 +210,23 @@ namespace TestExplorer.ViewModels
                 foreach (var a in remote)
                 {
                     KnownTests.Add(a);
+                }
+            }
+        }
+
+        private async Task RefreshKnownResults()
+        {
+            if (_director == null) return;
+
+            KnownResults.Clear();
+
+            var remote = await _director.GetTestResults();
+
+            if (remote != null)
+            {
+                foreach (var a in remote)
+                {
+                    KnownResults.Add(a);
                 }
             }
         }
