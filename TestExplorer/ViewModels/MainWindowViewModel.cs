@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TestExplorer.ViewModels
 {
@@ -18,8 +19,12 @@ namespace TestExplorer.ViewModels
         private string? _connectionStatus = "Not tested.";
         private string? _meadowAddress;
         private RestTestDirector? _director;
+        private string? _transferStatus;
+        private bool _localVisible;
 
         public ObservableCollection<string> AssembliesToSend { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> DeviceAssemblies { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> KnownTests { get; } = new ObservableCollection<string>();
 
         public MainWindowViewModel()
         {
@@ -39,6 +44,33 @@ namespace TestExplorer.ViewModels
             }
         }
 
+        public GridLength Col0Width
+        {
+            get => LocalIsVisible ? GridLength.Star : new GridLength(0);
+        }
+
+        public GridLength Col1Width
+        {
+            get => LocalIsVisible ? new GridLength(80) : new GridLength(0);
+        }
+
+        public GridLength Col4Width
+        {
+            get => LocalIsVisible ? new GridLength(0) : GridLength.Star;
+        }
+
+        public bool LocalIsVisible
+        {
+            get => _localVisible;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _localVisible, value);
+                this.RaisePropertyChanged(nameof(Col0Width));
+                this.RaisePropertyChanged(nameof(Col1Width));
+                this.RaisePropertyChanged(nameof(Col4Width));
+            }
+        }
+
         public bool AddressIsReasonable
         {
             get => IPEndPoint.TryParse(MeadowAddress ?? String.Empty, out IPEndPoint _);
@@ -48,6 +80,12 @@ namespace TestExplorer.ViewModels
         {
             get => _connectionStatus;
             set => this.RaiseAndSetIfChanged(ref _connectionStatus, value);
+        }
+
+        public string? TransferStatus
+        {
+            get => _transferStatus;
+            set => this.RaiseAndSetIfChanged(ref _transferStatus, value);
         }
 
         public string? LocalAssemblyPath
@@ -95,11 +133,64 @@ namespace TestExplorer.ViewModels
                 ConnectionStatus = $"Device: {info.Name} version {info.Version}";
 
                 this.RaisePropertyChanged(nameof(SendEnabled));
+
+                _ = RefreshRemoteAssemblies();
+                _ = RefreshKnownTests();
+
             }
             catch (Exception ex)
             {
                 ConnectionStatus = ex.Message;
                 _director = null;
+            }
+        }
+
+        public async void RefreshTestsCommand()
+        {
+            await RefreshKnownTests();
+        }
+
+        public async void RefreshAssembliesCommand()
+        {
+            await RefreshRemoteAssemblies();
+        }
+
+        public void AddAssembliesCommand()
+        {
+            LocalIsVisible = !LocalIsVisible;
+        }
+
+        private async Task RefreshRemoteAssemblies()
+        {
+            if(_director == null) return;
+
+            DeviceAssemblies.Clear();
+
+            var remote = await _director.GetAssemblies();
+
+            if (remote != null)
+            {
+                foreach (var a in remote)
+                {
+                    DeviceAssemblies.Add(a);
+                }
+            }
+        }
+
+        private async Task RefreshKnownTests()
+        {
+            if (_director == null) return;
+
+            KnownTests.Clear();
+
+            var remote = await _director.GetTestNames();
+
+            if (remote != null)
+            {
+                foreach (var a in remote)
+                {
+                    KnownTests.Add(a);
+                }
             }
         }
 
@@ -113,5 +204,31 @@ namespace TestExplorer.ViewModels
             }
         }
 
+        public async void SendAssemblies()
+        {
+            if(_director == null) return;
+
+            foreach (var asm in AssembliesToSend)
+            {
+                TransferStatus = $"Sending {asm}...";
+
+                var fi = new FileInfo(Path.Combine(LocalAssemblyPath ?? String.Empty, asm));
+                if (fi.Exists)
+                {
+                    try
+                    {
+                        await _director.SendFile(fi);
+                    }
+                    catch (Exception ex)
+                    {
+                        TransferStatus = ex.Message;
+                    }
+                }
+            }
+
+            TransferStatus = $"Done.";
+
+            await RefreshRemoteAssemblies();
+        }
     }
 }

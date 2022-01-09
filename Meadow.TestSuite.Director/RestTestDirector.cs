@@ -96,7 +96,7 @@ namespace Meadow.TestSuite
             }
         }
 
-        public async Task SendFile(FileInfo source, string? destinationName)
+        public async Task SendFile(FileInfo source, string? destinationName = null)
         {
             if (source == null)
             {

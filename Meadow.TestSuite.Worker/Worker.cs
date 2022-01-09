@@ -111,6 +111,7 @@ namespace MeadowApp
 
                     Logger.Info($"Local IP: {Device.WiFiAdapter.IpAddress}");
                     Display?.ShowText(1, $"IP: {Device.WiFiAdapter.IpAddress}");
+                    Display?.ShowText(2, $"Port: 8080"); // TODO: make port configurable (it's hard coded in the listener below)
 
                     Listener = new MeadowNetworkListener(Device.WiFiAdapter.IpAddress, config, Serializer, Logger);
                 }
@@ -242,6 +243,8 @@ namespace MeadowApp
 
             // TODO: make this non-blocking?
             Listener.StartListening();
+
+            Console.WriteLine("Worker Started");
         }
     }
 }

@@ -25,7 +25,6 @@ namespace MeadowApp
             Worker.Configure(cfg);
 
             Worker.Start();
-            // the above blocks, so we never actually get here
 
             Thread.Sleep(Timeout.Infinite);
         }

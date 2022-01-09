@@ -7,6 +7,8 @@ namespace MeadowApp
 {
     public class MeadowNetworkListener : ITestListener
     {
+        public event CommandReceivedHandler CommandReceived;
+
         private MapleServer _server;
         private ILogger _logger;
 
@@ -15,8 +17,6 @@ namespace MeadowApp
             _server = new MapleServer(address, 8080, false, RequestProcessMode.Serial, logger);
             _logger = logger;
         }
-
-        public event CommandReceivedHandler CommandReceived;
 
         public void SendResult(object result)
         {
