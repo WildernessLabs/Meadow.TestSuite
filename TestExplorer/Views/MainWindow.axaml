@@ -22,8 +22,15 @@
             Grid.Row="0">
       <StackPanel Margin="10" Spacing="20" >
         <TextBlock Text="Meadow Address"/>
-        <TextBox />
-        <Button>Test Connection</Button>
+        <TextBox Text="{Binding MeadowAddress}" />
+        <DockPanel>
+          <Button
+            IsEnabled="{Binding AddressIsReasonable}"
+            DockPanel.Dock="Left"
+            Command="{Binding OnTestConnection}"
+            >Test Connection</Button>
+          <TextBlock VerticalAlignment="Center" Text="{Binding ConnectionStatus}" />
+        </DockPanel>
       </StackPanel>
     </Border>
 
@@ -31,7 +38,7 @@
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
         <ColumnDefinition Width="80" />
-        <ColumnDefinition Width="*" />        
+        <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="*" />
@@ -39,12 +46,13 @@
       <Border BorderBrush="Black"
         BorderThickness="2"
         CornerRadius="3"
-        Padding="4"     
-              Margin="10,0,5,10"
-              Grid.Row="0"
+        Padding="4"
+        Margin="10,0,5,10"
+        Grid.Row="0"
         Grid.Column="0">
+        
         <StackPanel
-              VerticalAlignment="Stretch"
+          VerticalAlignment="Stretch"
           >
           <Label>Local</Label>
           <Label>Assembly Path</Label>
@@ -52,15 +60,27 @@
             <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Width="30" Click="BrowseLocalAssemblies">...</Button>
             <TextBox Text="{Binding LocalAssemblyPath}" />
           </DockPanel>
-          <ListBox SelectionMode="Multiple" Items="{Binding Assemblies}" BorderThickness="1" />
+          <ListBox 
+            SelectionMode="Multiple" 
+            Items="{Binding Assemblies}"
+            SelectedItems="{Binding AssembliesToSend}"
+            BorderThickness="1" />
         </StackPanel>
       </Border>
-      <Button HorizontalAlignment="Center" Grid.Column="1" >Send -></Button>
+      
+      <Button 
+        HorizontalAlignment="Center"
+        IsEnabled="{Binding SendEnabled}"
+        Command="{Binding AssembliesToSend}"
+        Grid.Column="1" >
+        Send ->
+      </Button>
+      
       <Border BorderBrush="Black"
         BorderThickness="2"
         CornerRadius="3"
         Padding="4"
-              Margin="5,0,10,10"
+        Margin="5,0,10,10"
         Grid.Column="2">
         <StackPanel Grid.Column="2" >
           <Label>Meadow</Label>
@@ -70,7 +90,7 @@
       </Border>
     </Grid>
 
-</Grid>
+  </Grid>
 
 
 </Window>
