@@ -168,11 +168,15 @@
             Items="{Binding KnownResults}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="{Binding State}" />
+                <StackPanel>
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding State}" Margin="5" FontWeight="Bold" />
+                    <TextBlock Text="{Binding TestID}" VerticalAlignment="Center" />
+                  </StackPanel>
                   <TextBlock Text="{Binding CompletionDate}" />
-                  <TextBlock Text="{Binding RunTime}" />
-                </StackPanel>
+                  <TextBlock Text="{Binding RunTimeSeconds}" />
+                  <ListBox Items="{Binding Output}" />
+                </StackPanel>                  
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>

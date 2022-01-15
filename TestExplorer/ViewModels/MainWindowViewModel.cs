@@ -33,6 +33,8 @@ namespace TestExplorer.ViewModels
             {
                 this.RaisePropertyChanged(nameof(SendEnabled));
             };
+
+            MeadowAddress = "192.168.1.87:8080"; // TODO: get from user settings (also test assembly folder)
         }
 
         public string? MeadowAddress

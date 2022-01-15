@@ -28,6 +28,8 @@ namespace MeadowApp
         internal ITestProvider Provider { get; private set; }
         public Config? Config { get; private set; }
 
+        public bool EnableDebugging { get; set; } = false;
+
         private F7Micro Device { get; }
 
         public Worker(F7Micro device)
@@ -187,6 +189,7 @@ namespace MeadowApp
             try
             {
                 var runner = new TestRunner(Provider, testID);
+                runner.ShowDebug = EnableDebugging;
 
                 Display?.ShowText(4, "Executing");
                 var result = runner.Begin();

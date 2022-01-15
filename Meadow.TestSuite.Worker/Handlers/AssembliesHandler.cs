@@ -8,6 +8,7 @@ namespace MeadowApp
 {
     public class AssembliesHandler : RequestHandlerBase
     {
+        public override bool IsReusable => true;
 
         // TODO: pull from config
         public const int FileBufferSize = 4096;
@@ -15,7 +16,7 @@ namespace MeadowApp
         [HttpGet]
         public IActionResult GetAssemblies()
         {
-            Console.WriteLine("GET Assemblies");
+            MeadowApp.Worker.Logger?.Debug($"REST: AssembliesHandler.GetAssemblies()");
 
             // TODO: include versions            
 
@@ -25,12 +26,12 @@ namespace MeadowApp
         [HttpPut("{name}")]
         public IActionResult PutAssembly(string name)
         {
-            MeadowApp.Worker.Logger?.Info($"PUT assembly '{name}'");
+            MeadowApp.Worker.Logger?.Debug($"REST: AssembliesHandler.PutAssembly({name})");
 
             var destination = MeadowApp.Worker.Config.TestAssemblyFolder;
             if (!Directory.Exists(destination))
             {
-                MeadowApp.Worker.Logger?.Info($"Creating test assembly folder '{destination}'");
+                MeadowApp.Worker.Logger?.Debug($"Creating test assembly folder '{destination}'");
                 Directory.CreateDirectory(destination);
             }
 
@@ -46,7 +47,7 @@ namespace MeadowApp
 
             if (fi.Exists)
             {
-                MeadowApp.Worker.Logger?.Info($"Deleting existing assembly");
+                MeadowApp.Worker.Logger?.Debug($"Deleting existing assembly");
                 fi.Delete();
             }
 
@@ -66,7 +67,7 @@ namespace MeadowApp
                 } while (read > 0);
             }
 
-            MeadowApp.Worker.Logger?.Info($"File size is {size} bytes");
+            MeadowApp.Worker.Logger?.Debug($"File size is {size} bytes");
 
             // tell the framework to load this assembly
             MeadowApp.Worker.Registry.RegisterAssembly(path);
