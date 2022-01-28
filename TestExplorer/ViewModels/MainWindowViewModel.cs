@@ -19,7 +19,7 @@ namespace TestExplorer.ViewModels
         private string? _connectionStatus = "Not tested.";
         private string? _meadowAddress;
         private RestTestDirector? _director;
-        private string? _transferStatus;
+        private string? _status;
         private bool _localVisible;
 
         public ObservableCollection<string> AssembliesToSend { get; } = new ObservableCollection<string>();
@@ -85,10 +85,10 @@ namespace TestExplorer.ViewModels
             set => this.RaiseAndSetIfChanged(ref _connectionStatus, value);
         }
 
-        public string? TransferStatus
+        public string? Status
         {
-            get => _transferStatus;
-            set => this.RaiseAndSetIfChanged(ref _transferStatus, value);
+            get => _status;
+            set => this.RaiseAndSetIfChanged(ref _status, value);
         }
 
         public string? LocalAssemblyPath
@@ -137,6 +137,9 @@ namespace TestExplorer.ViewModels
 
                 this.RaisePropertyChanged(nameof(SendEnabled));
 
+
+                // TODO: start clock thread
+
                 _ = RefreshRemoteAssemblies();
                 _ = RefreshKnownTests();
 
@@ -173,13 +176,40 @@ namespace TestExplorer.ViewModels
             get; set;
         }
 
-        public void RunTestsCommand()
+        public async void SetClockCommand()
+        {
+            if (_director == null) return;
+            Status = $"Setting device clock...";
+            await _director.SetDeviceTime(DateTime.Now);
+            Status = $"Done.";
+        }
+
+        public async void ResetCommand()
+        {
+            if (_director == null) return;
+            Status = $"Resetting device...";
+            await _director.ResetDevice();
+            Status = $"Done.";
+        }
+
+        public async void DebugCommand()
+        {
+            if (_director == null) return;
+            Status = $"Turning on device Debug output...";
+            await _director.SetDebug(true);
+            Status = $"Done.";
+        }
+
+        public async void RunTestsCommand()
         {
             if (SelectedTest == null) return;
             if (_director == null) return;
 
-            _ = _director.ExecuteTest(SelectedTest);
+            Status = $"Starting test...";
 
+            await _director.ExecuteTest(SelectedTest);
+
+            Status = $"Done.";
         }
 
         private async Task RefreshRemoteAssemblies()
@@ -187,6 +217,8 @@ namespace TestExplorer.ViewModels
             if(_director == null) return;
 
             DeviceAssemblies.Clear();
+
+            Status = $"Getting assemblies...";
 
             var remote = await _director.GetAssemblies();
 
@@ -197,6 +229,8 @@ namespace TestExplorer.ViewModels
                     DeviceAssemblies.Add(a);
                 }
             }
+
+            Status = $"Done.";
         }
 
         private async Task RefreshKnownTests()
@@ -204,6 +238,8 @@ namespace TestExplorer.ViewModels
             if (_director == null) return;
 
             KnownTests.Clear();
+
+            Status = $"Getting tests...";
 
             var remote = await _director.GetTestNames();
 
@@ -214,6 +250,8 @@ namespace TestExplorer.ViewModels
                     KnownTests.Add(a);
                 }
             }
+
+            Status = $"Done.";
         }
 
         private async Task RefreshKnownResults()
@@ -221,6 +259,8 @@ namespace TestExplorer.ViewModels
             if (_director == null) return;
 
             KnownResults.Clear();
+
+            Status = $"Getting results...";
 
             var remote = await _director.GetTestResults();
 
@@ -231,6 +271,8 @@ namespace TestExplorer.ViewModels
                     KnownResults.Add(a);
                 }
             }
+
+            Status = $"Done.";
         }
 
         public bool SendEnabled
@@ -249,7 +291,7 @@ namespace TestExplorer.ViewModels
 
             foreach (var asm in AssembliesToSend)
             {
-                TransferStatus = $"Sending {asm}...";
+                Status = $"Sending {asm}...";
 
                 var fi = new FileInfo(Path.Combine(LocalAssemblyPath ?? String.Empty, asm));
                 if (fi.Exists)
@@ -260,12 +302,12 @@ namespace TestExplorer.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        TransferStatus = ex.Message;
+                        Status = ex.Message;
                     }
                 }
             }
 
-            TransferStatus = $"Done.";
+            Status = $"Done.";
 
             await RefreshRemoteAssemblies();
         }

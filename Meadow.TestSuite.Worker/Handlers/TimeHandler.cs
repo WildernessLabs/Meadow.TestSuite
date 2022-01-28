@@ -1,5 +1,6 @@
 ﻿using Meadow.Foundation.Web.Maple.Server;
 using Meadow.Foundation.Web.Maple.Server.Routing;
+using Meadow.TestSuite;
 using System;
 using System.IO;
 
@@ -7,16 +8,6 @@ namespace MeadowApp
 {
     public class TimeHandler : RequestHandlerBase
     {
-        internal class TimeInfo
-        {
-            public TimeInfo()
-            {
-                SystemTime = DateTime.UtcNow;
-            }
-
-            public DateTime SystemTime { get; set; }
-        }
-
         public override bool IsReusable => true;
 
         [HttpGet]

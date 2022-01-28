@@ -29,6 +29,15 @@ namespace MeadowApp
         public IActionResult ToggleDebug()
         {
             var change = !MeadowApp.Worker.EnableDebugging;
+
+            if (this.Context.Request.QueryString["enabled"] != null)
+            {
+                if (bool.TryParse(this.Context.Request.QueryString["enabled"], out bool enable))
+                {
+                    change = enable;
+                }
+            }
+            
             MeadowApp.Worker.EnableDebugging = change;
 
             MeadowApp.Worker?.Logger.Info($"Changed debugging to {change}");

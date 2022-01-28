@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -208,6 +209,39 @@ namespace Meadow.TestSuite
             {
                 throw new Exception($"REST call returned {result.StatusCode}");
             }
+        }
+
+        public async Task ResetDevice()
+        {
+            var path = $"/reset";
+            await Client.PostAsync(path, null);
+        }
+
+        public async Task SetDeviceTime(DateTime time)
+        {
+            var path = $"/time";
+            await Client.PutAsJsonAsync(path, new TimeInfo(time));
+        }
+
+        public async Task SetDebug(bool enable)
+        {
+            var path = $"/debug?enabled={enable}";
+            await Client.PutAsync(path, null);
+        }
+        
+        public async Task<DateTime> GetDeviceTime()
+        {
+            var path = $"/time";
+            var result = await Client.GetAsync(path); if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<TimeInfo>(json, m_options).SystemTime;
+            }
+            else
+            {
+                throw new Exception($"REST call returned {result.StatusCode}");
+            }
+
         }
     }
 }
