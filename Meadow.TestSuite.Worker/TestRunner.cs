@@ -1,4 +1,5 @@
-﻿using Munit;
+﻿using Meadow.Logging;
+using Munit;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -12,11 +13,13 @@ namespace Meadow.TestSuite
 
         public bool ShowDebug { get; set; } = false;
         public TestResult Result { get; private set; }
-        private ITestProvider Provider { get; }
         public bool RunTestsAsync { get; set; } = true;
+        private ITestProvider Provider { get; }
+        private ILogger? Logger { get; }
 
-        internal TestRunner(ITestProvider provider, string testID)
+        internal TestRunner(ITestProvider provider, string testID, ILogger? logger = null)
         {
+            Logger = logger;
             Provider = provider;
             Result = new TestResult(testID);
             Result.ResultID = Guid.NewGuid();
@@ -56,36 +59,45 @@ namespace Meadow.TestSuite
 
             try
             {
-                Output.WriteLineIf(ShowDebug, $" Creating test instance");
+                Logger?.Debug($" Creating test instance");
                 var instance = test.TestConstructor.Invoke(null);
 
                 // inject Device
-                Output.WriteLineIf(ShowDebug, $" Checking Device");
-                if (test.DeviceProperty != null)
+                if (instance is MeadowTestBase { } mt)
                 {
-                    Output.WriteLineIf(ShowDebug, $" Setting Device");
-                    test.DeviceProperty.SetValue(instance, this.Provider.Device);
+                    Logger?.Debug($" Test class is a MeadowTestBase");
+                    mt.Device = this.Provider.Device;
+                    mt.Logger = this.Logger;
+                }
+                else
+                {
+                    Logger?.Debug($"Test class is not a MeadowTestBase. Checking for Device property");
+                    if (test.DeviceProperty != null)
+                    {
+                        Logger?.Debug($" Setting Device");
+                        test.DeviceProperty.SetValue(instance, this.Provider.Device);
+                    }
                 }
 
-                Output.WriteLineIf(ShowDebug, $" Invoking {test?.TestMethod.Name}");
+                Logger?.Debug($" Invoking {test?.TestMethod.Name}");
 
                 test.TestMethod.Invoke(instance, null);
 
-                Output.WriteLineIf(ShowDebug, $" Invoke complete");
+                Logger?.Debug($" Invoke complete");
 
                 // if the test didn't throw, it succeeded
                 Result.State = TestState.Success;
             }
             catch (TargetInvocationException tie)
             {
-                Output.WriteLine($" Test Failure: {tie.InnerException.Message}");
+                Logger.Error($" Test Failure: {tie.InnerException.Message}");
 
                 Result.State = TestState.Failed;
                 Result.Output.Add(tie.InnerException.Message);
             }
             catch (Exception ex)
             {
-                Output.WriteLineIf(ShowDebug, $" {ex.GetType().Name}: {ex.Message}");
+                Logger?.Debug($" {ex.GetType().Name}: {ex.Message}");
 
                 Result.State = TestState.Failed;
                 Result.Output.Add("Unhandled exception");
@@ -94,7 +106,7 @@ namespace Meadow.TestSuite
             finally
             {
                 sw.Stop();
-                Output.WriteLineIf(ShowDebug, $" finally block");
+                Logger?.Debug($" finally block");
                 Result.RunTimeSeconds = sw.Elapsed.TotalSeconds;
                 Result.CompletionDate = DateTime.Now.ToUniversalTime();
 

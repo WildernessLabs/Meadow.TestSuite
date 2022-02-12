@@ -1,8 +1,7 @@
 ﻿using Meadow.Devices;
-using Meadow.Foundation.Web.Maple.Server;
 using Meadow.Hardware;
+using Meadow.Logging;
 using Meadow.TestSuite;
-using Meadow.Units;
 using System;
 using System.IO;
 using System.Net;
@@ -35,7 +34,7 @@ namespace MeadowApp
         public Worker(F7Micro device)
         {
             Logger = new ConsoleLogger();
-            Logger.Loglevel = Loglevel.Info;
+            Logger.Loglevel = Loglevel.Debug;
             Results = new ResultsStore();
 
             Serializer = new CommandJsonSerializer(JsonLibrary.SimpleJson);
@@ -65,10 +64,18 @@ namespace MeadowApp
             }
             else
             {
-                Console.WriteLine("Existing files in Test folder:");
-                foreach (var f in di.GetFiles())
+                var files = di.GetFiles();
+                if (files == null || files.Length == 0)
                 {
-                    Console.WriteLine($"  {f}");
+                    Console.WriteLine("No existing files in Test folder.");
+                }
+                else
+                {
+                    Console.WriteLine("Existing files in Test folder:");
+                    foreach (var f in di.GetFiles())
+                    {
+                        Console.WriteLine($"  {f}");
+                    }
                 }
             }
             Registry = Provider = new WorkerRegistry(Config.TestAssemblyFolder, Device);
@@ -96,10 +103,12 @@ namespace MeadowApp
                 try
                 {
                     Logger.Info($"Initializing WiFi...");
-                    Device.InitWiFiAdapter();
 
                     // TODO: only do this if we're not connected
-                    Device.WiFiAdapter.WiFiConnected += WiFiAdapter_WiFiConnected;
+                    Device.WiFiAdapter.WiFiConnected += (s, e) =>
+                    {
+                        Logger.Info(" WiFi connected");
+                    };
 
                     Logger.Info($" Connecting to WiFi ssid {config.Network.SSID}...");
                     Display?.ShowText(1, $"--> {config.Network.SSID}");
@@ -107,8 +116,15 @@ namespace MeadowApp
 
                     while (!Device.WiFiAdapter.IsConnected)
                     {
-                        Logger.Info("Waiting to connect to AP....");
+                        Logger.Info($"Waiting to connect to AP.... {Device.WiFiAdapter.IpAddress}");
                         Thread.Sleep(1000);
+
+                        // work-around for a 0.6.0.8 bug
+                        if (!Device.WiFiAdapter.IpAddress.Equals(IPAddress.Any))
+                        {
+                            Logger.Warn("IP Address received while IsConnected is still False");
+                            break;
+                        }
                     }
 
                     Logger.Info($"Local IP: {Device.WiFiAdapter.IpAddress}");
@@ -134,7 +150,7 @@ namespace MeadowApp
                     Parity.None,
                     StopBits.One);
 
-                Listener = new MeadowSerialListener(port, Serializer);
+                Listener = new MeadowSerialListener(port, Serializer, Logger);
                 Listener.CommandReceived += Listener_CommandReceived;
             }
         }
@@ -188,7 +204,7 @@ namespace MeadowApp
 
             try
             {
-                var runner = new TestRunner(Provider, testID);
+                var runner = new TestRunner(Provider, testID, Logger);
                 runner.ShowDebug = EnableDebugging;
 
                 Display?.ShowText(4, "Executing");

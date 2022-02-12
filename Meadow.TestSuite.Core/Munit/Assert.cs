@@ -1,8 +1,7 @@
-﻿using Meadow.TestSuite;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
-[assembly:InternalsVisibleTo("App")]
+[assembly: InternalsVisibleTo("App")]
 
 namespace Munit
 {

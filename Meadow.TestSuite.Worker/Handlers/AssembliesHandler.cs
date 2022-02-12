@@ -23,6 +23,34 @@ namespace MeadowApp
             return new JsonResult(MeadowApp.Worker.Registry.GetAssemblies());
         }
 
+        [HttpDelete("{name}")]
+        public IActionResult DeleteFile(string name)
+        {
+            MeadowApp.Worker.Logger?.Debug($"REST: AssembliesHandler.DeleteFile({name})");
+
+            var destination = MeadowApp.Worker.Config.TestAssemblyFolder;
+            if (!Directory.Exists(destination))
+            {
+                MeadowApp.Worker.Logger?.Debug($"Test assembly folder '{destination}' not found");
+                return this.NotFound();
+            }
+
+            var path = Path.Combine(destination, name);
+
+            var fi = new FileInfo(path);
+
+            if (!fi.Exists)
+            {
+                MeadowApp.Worker.Logger?.Debug($"File '{name}' not found");
+                return this.NotFound();
+            }
+
+            MeadowApp.Worker.Logger?.Debug($"Deleting file");
+            fi.Delete();
+
+            return this.Ok();
+        }
+
         [HttpPut("{name}")]
         public IActionResult PutAssembly(string name)
         {

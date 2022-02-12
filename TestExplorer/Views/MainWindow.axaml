@@ -45,7 +45,7 @@
           Grid.Row="1"
           Margin="10,0"
           VerticalAlignment="Center"
-          Text="Time: &lt;Unknown&gt;" />
+          Text="{Binding DeviceTime}" />
 
         <StackPanel 
           Grid.Column="1"

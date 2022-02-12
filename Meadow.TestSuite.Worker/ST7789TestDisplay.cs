@@ -9,15 +9,15 @@ namespace Meadow.TestSuite
     public class ST7789TestDisplay : ITestDisplay
     {
         private St7789 _display;
-        private GraphicsLibrary _canvas;
+        private MicroGraphics _canvas;
 
         public ST7789TestDisplay(F7MicroBase f7)
         {
             _display = new St7789(f7, f7.CreateSpiBus(), f7.Pins.D15, f7.Pins.D11, f7.Pins.D14, 240, 240);
-            _canvas = new GraphicsLibrary(_display);
+            _canvas = new MicroGraphics(_display);
 
             // TODO: this should probably be configureable
-            _canvas.Rotation = GraphicsLibrary.RotationType._180Degrees;
+            _canvas.Rotation = RotationType._180Degrees;
             _canvas.Clear(true);
 
             _canvas.CurrentFont = new Font12x20();

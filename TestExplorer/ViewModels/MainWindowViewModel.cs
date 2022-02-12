@@ -21,6 +21,7 @@ namespace TestExplorer.ViewModels
         private RestTestDirector? _director;
         private string? _status;
         private bool _localVisible;
+        private string? _deviceTime;
 
         public ObservableCollection<string> AssembliesToSend { get; } = new ObservableCollection<string>();
         public ObservableCollection<string> DeviceAssemblies { get; } = new ObservableCollection<string>();
@@ -91,6 +92,12 @@ namespace TestExplorer.ViewModels
             set => this.RaiseAndSetIfChanged(ref _status, value);
         }
 
+        public string? DeviceTime
+        {
+            get => _deviceTime;
+            set => this.RaiseAndSetIfChanged(ref _deviceTime, value);
+        }
+
         public string? LocalAssemblyPath
         {
             get => _assemblyPath;
@@ -137,8 +144,18 @@ namespace TestExplorer.ViewModels
 
                 this.RaisePropertyChanged(nameof(SendEnabled));
 
+                IsConnected = true;
 
                 // TODO: start clock thread
+                _ = Task.Run(async () =>
+                {
+                    while (IsConnected)
+                    {
+                        var time = await _director.GetTime();
+                        DeviceTime = $"{time:HH:mm:ss}";
+                        await Task.Delay(TimeSpan.FromSeconds(5));
+                    }
+                });
 
                 _ = RefreshRemoteAssemblies();
                 _ = RefreshKnownTests();
@@ -150,6 +167,8 @@ namespace TestExplorer.ViewModels
                 _director = null;
             }
         }
+
+        public bool IsConnected { get; private set; } = false;
 
         public async void RefreshTestsCommand()
         {
@@ -289,7 +308,7 @@ namespace TestExplorer.ViewModels
         {
             if(_director == null) return;
 
-            foreach (var asm in AssembliesToSend)
+            foreach (var asm in AssembliesToSend.ToArray()) // copy to an array to prevent error on modification
             {
                 Status = $"Sending {asm}...";
 

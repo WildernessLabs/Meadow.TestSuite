@@ -1,7 +1,7 @@
 ﻿using Meadow.Hardware;
+using Meadow.Logging;
 using Meadow.TestSuite;
 using System;
-using System.Text;
 using System.Threading;
 
 namespace MeadowApp
@@ -10,9 +10,9 @@ namespace MeadowApp
     {
         private ISerialPort Port { get; }
 
-        public const int WriteTimeout = 5000;
+        public static TimeSpan WriteTimeout = TimeSpan.FromSeconds(5);
 
-        public MeadowSerialListener(ISerialPort port, ICommandSerializer serializer)
+        public MeadowSerialListener(ISerialPort port, ICommandSerializer serializer, ILogger logger)
             : base(serializer)
         {
             Port = port;
