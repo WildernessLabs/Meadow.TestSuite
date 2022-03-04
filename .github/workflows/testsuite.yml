@@ -27,7 +27,7 @@ jobs:
       uses: NuGet/setup-nuget@v1.0.5
 
     - name: Restore dependencies
-      run: msbuild main/source/Meadow.Core.sln /t:Restore
+      run: msbuild Meadow.TestSuite.sln /t:Restore
 
     - name: Build Meadow.Core
-      run: msbuild main/source/Meadow.Core.sln /t:Build /p:Configuration=Release
+      run: msbuild Meadow.TestSuite.sln /t:Build /p:Configuration=Release
