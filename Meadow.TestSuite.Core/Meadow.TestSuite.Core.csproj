@@ -19,5 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Meadow.Contracts\Source\Meadow.Contracts\Meadow.Contracts.csproj" />
     <ProjectReference Include="..\..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Web.Maple\Driver\Web.Maple.Server\Meadow.Foundation.Web.Maple.Server.csproj" />
+    <ProjectReference Include="..\..\Meadow.Logging\lib\Meadow.Logging.csproj" />
   </ItemGroup>
 </Project>

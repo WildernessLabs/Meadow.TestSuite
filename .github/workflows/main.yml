@@ -44,6 +44,18 @@ jobs:
           repository: WildernessLabs/Meadow.Foundation
           path: Meadow.Foundation
 
+      - name: Checkout Meadow.Logging side-by-side
+        uses: actions/checkout@v2
+        with:
+          repository: WildernessLabs/Meadow.Logging
+          path: Meadow.Logging
+
+      - name: Checkout Meadow.Tests side-by-side
+        uses: actions/checkout@v2
+        with:
+          repository: WildernessLabs/Meadow.Tests
+          path: Meadow.Tests
+
       - name: Checkout Meadow.Units side-by-side
         uses: actions/checkout@v2
         with:
