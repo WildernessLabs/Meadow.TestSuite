@@ -23,6 +23,32 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout current repo
         uses: actions/checkout@v2
+        with:
+          path: main
+    
+      - name: Checkout Meadow.Contracts side-by-side
+        uses: actions/checkout@v2
+        with:
+          repository: WildernessLabs/Meadow.Contracts
+          path: Meadow.Contracts
+
+      - name: Checkout Meadow.Core side-by-side
+        uses: actions/checkout@v2
+        with:
+          repository: WildernessLabs/Meadow.Core
+          path: Meadow.Core
+      
+      - name: Checkout Meadow.Foundation side-by-side
+        uses: actions/checkout@v2
+        with:
+          repository: WildernessLabs/Meadow.Foundation
+          path: Meadow.Foundation
+
+      - name: Checkout Meadow.Units side-by-side
+        uses: actions/checkout@v2
+        with:
+          repository: WildernessLabs/Meadow.Units
+          path: Meadow.Units
 
       - name: Set default Xamarin SDK versions
         run: |
@@ -39,7 +65,7 @@ jobs:
         uses: NuGet/setup-nuget@v1.0.5
 
       - name: Restore dependencies
-        run: msbuild Meadow.TestSuite.sln /t:Restore
+        run: msbuild main/Meadow.TestSuite.sln /t:Restore
 
       - name: Build Meadow.Core
-        run: msbuild Meadow.TestSuite.sln /t:Build /p:Configuration=Release
+        run: msbuild main/Meadow.TestSuite.sln /t:Build /p:Configuration=Release
