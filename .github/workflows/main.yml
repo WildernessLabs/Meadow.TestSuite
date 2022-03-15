@@ -37,6 +37,7 @@ jobs:
         with:
           repository: WildernessLabs/Meadow.Core
           path: Meadow.Core
+          token: ${{ secrets.CORE_PAT }}
       
       - name: Checkout Meadow.Foundation side-by-side
         uses: actions/checkout@v2
@@ -55,6 +56,7 @@ jobs:
         with:
           repository: WildernessLabs/Meadow.Tests
           path: Meadow.Tests
+          token: ${{ secrets.TESTS_PAT }}
 
       - name: Checkout Meadow.Units side-by-side
         uses: actions/checkout@v2
