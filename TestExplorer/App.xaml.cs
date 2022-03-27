@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Meadow.Workbench.Themes;
 using TestExplorer.ViewModels;
 using TestExplorer.Views;
 
@@ -11,6 +12,8 @@ namespace TestExplorer
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+
+            Styles.Add(new DarkTheme());
         }
 
         public override void OnFrameworkInitializationCompleted()
