@@ -1,4 +1,4 @@
-# Wilderness Labs Meadow.TestSuite (Beta)
+<img src="Design/banner.jpg" style="margin-bottom:10px" />
 
 Meadow.TestSuite is intended to provide a remote-controllable test infrastructure for the Wilderness Labs Meadow.  It provides a mechanism to push test assemblies to a device, enumerate assemblies and test methods, selectively run test methods, and retrieve test results.
 
