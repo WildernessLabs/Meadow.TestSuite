@@ -10,9 +10,9 @@ namespace MeadowApp
         public event CommandReceivedHandler CommandReceived;
 
         private MapleServer _server;
-        private ILogger _logger;
+        private Logger _logger;
 
-        public MeadowNetworkListener(IPAddress address, Config config, ICommandSerializer serializer, ILogger logger)
+        public MeadowNetworkListener(IPAddress address, Config config, ICommandSerializer serializer, Logger logger)
         {            
             _server = new MapleServer(address, 8080, false, RequestProcessMode.Serial, logger);
             _logger = logger;

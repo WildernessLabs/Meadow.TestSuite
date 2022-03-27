@@ -21,7 +21,7 @@ namespace MeadowApp
         public ICommandSerializer Serializer { get; private set; }
         public ITestListener Listener { get; private set; }
         public ITestDisplay? Display { get; private set; }
-        public ILogger Logger { get; }
+        public Logger Logger { get; }
         public IResultsStore Results { get; }
         public ITestRegistry Registry { get; private set; }
         internal ITestProvider Provider { get; private set; }
@@ -29,12 +29,12 @@ namespace MeadowApp
 
         public bool EnableDebugging { get; set; } = false;
 
-        private F7Micro Device { get; }
+        private F7MicroV2 Device { get; }
 
-        public Worker(F7Micro device)
+        public Worker(F7MicroV2 device)
         {
-            Logger = new ConsoleLogger();
-            Logger.Loglevel = Loglevel.Debug;
+            Logger = new Logger(new ConsoleLogProvider());
+            //Logger.AddProvider(new ConsoleLogProvider());
             Results = new ResultsStore();
 
             Serializer = new CommandJsonSerializer(JsonLibrary.SimpleJson);
@@ -55,7 +55,7 @@ namespace MeadowApp
 
             Config = config;
 
-            Console.WriteLine($" Test assemblies are at {Config.TestAssemblyFolder}");
+            Logger.Info($" Test assemblies are at {Config.TestAssemblyFolder}");
 
             var di = new DirectoryInfo(Config.TestAssemblyFolder);
             if (!di.Exists)
@@ -67,11 +67,11 @@ namespace MeadowApp
                 var files = di.GetFiles();
                 if (files == null || files.Length == 0)
                 {
-                    Console.WriteLine("No existing files in Test folder.");
+                    Logger.Warn("No existing files in Test folder.");
                 }
                 else
                 {
-                    Console.WriteLine("Existing files in Test folder:");
+                    Logger.Info("Existing files in Test folder:");
                     foreach (var f in di.GetFiles())
                     {
                         Console.WriteLine($"  {f}");
@@ -85,6 +85,7 @@ namespace MeadowApp
                 switch (config.Display.ToUpper())
                 {
                     case "ST7789":
+                        Logger.Info("Configured for ST7789 Display");
                         Display = new ST7789TestDisplay(Device);
                         break;
                     default:

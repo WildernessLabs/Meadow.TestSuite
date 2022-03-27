@@ -6,6 +6,6 @@ namespace Munit
     public class MeadowTestBase
     {
         public IMeadowDevice Device { get; set; }
-        public ILogger Logger { get; set; }
+        public Logger Logger { get; set; }
     }
 }

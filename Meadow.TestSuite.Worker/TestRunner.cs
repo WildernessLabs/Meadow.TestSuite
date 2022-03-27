@@ -15,9 +15,9 @@ namespace Meadow.TestSuite
         public TestResult Result { get; private set; }
         public bool RunTestsAsync { get; set; } = true;
         private ITestProvider Provider { get; }
-        private ILogger? Logger { get; }
+        private Logger? Logger { get; }
 
-        internal TestRunner(ITestProvider provider, string testID, ILogger? logger = null)
+        internal TestRunner(ITestProvider provider, string testID, Logger? logger = null)
         {
             Logger = logger;
             Provider = provider;

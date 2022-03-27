@@ -12,7 +12,7 @@ namespace MeadowApp
 
         public static TimeSpan WriteTimeout = TimeSpan.FromSeconds(5);
 
-        public MeadowSerialListener(ISerialPort port, ICommandSerializer serializer, ILogger logger)
+        public MeadowSerialListener(ISerialPort port, ICommandSerializer serializer, Logger logger)
             : base(serializer)
         {
             Port = port;
