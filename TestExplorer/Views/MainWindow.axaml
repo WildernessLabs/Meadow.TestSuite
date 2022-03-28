@@ -6,12 +6,13 @@
         xmlns:views="using:Meadow.Workbench.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TestExplorer.Views.MainWindow"
-        Title="TestExplorer">
-  
+        Title="Meadow Workbench">
+
+  <!--
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
-
+-->
   <Grid
     RowDefinitions="150,*,25">
     <Border BorderBrush="DarkGray"
@@ -72,10 +73,35 @@
           VerticalAlignment="Center"
           Text="{Binding ConnectionStatus}" />
       </Grid>
-    </Border>    
-    <views:TestSuiteView 
-      DataContext="{Binding TestSuiteViewModel}" 
-      Grid.Row="1"/>
+    </Border>
+    <Grid
+      RowDefinitions="*"
+      ColumnDefinitions="100, *"
+      Grid.Row="1">
+      <StackPanel 
+        Orientation="Vertical"
+        Grid.Column="0">
+        <Button
+          Command="{Binding ShowTestPanelCommand}"
+          Content="Test" />
+        <Button 
+          Command="{Binding ShowCliPanelCommand}"
+          Content="CLI" />
+      </StackPanel>
+      
+      <views:TestSuiteView 
+        IsVisible="{Binding TestPanelIsVisible}"
+        DataContext="{Binding TestSuiteViewModel}"
+        Grid.Column="1"
+        />
+
+      <views:CliView
+        IsVisible="{Binding CliPanelIsVisible}"
+        DataContext="{Binding CliViewModel}"
+        Grid.Column="1"
+        />
+      
+    </Grid>
     <TextBlock Padding="10,0" Grid.Row="2" Text="{Binding Status}" /> 
   </Grid>
 

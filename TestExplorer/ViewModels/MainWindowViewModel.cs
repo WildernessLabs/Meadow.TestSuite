@@ -8,10 +8,13 @@ namespace Meadow.Workbench;
 public class MainWindowViewModel : ViewModelBase
 {
     public TestSuiteViewModel TestSuiteViewModel { get; }
+    public CliViewModel CliViewModel { get; }
 
     private string? _meadowAddress;
     private string? _status;
     private string? _deviceTime;
+    private bool _testPanelIsVisible;
+    private bool _cliPanelIsVisible;
 
     public MainWindowViewModel()
     {
@@ -21,7 +24,11 @@ public class MainWindowViewModel : ViewModelBase
             Status = s;
         };
 
+        CliViewModel = new CliViewModel();
+
         MeadowAddress = "192.168.1.87:8080"; // TODO: get from user settings (also test assembly folder)
+
+        ShowTestPanelCommand();
     }
 
     public string? MeadowAddress
@@ -95,4 +102,27 @@ public class MainWindowViewModel : ViewModelBase
         Status = $"Done.";
     }
 
+    public bool TestPanelIsVisible
+    {
+        get => _testPanelIsVisible;
+        set => this.RaiseAndSetIfChanged(ref _testPanelIsVisible, value);
+    }
+
+    public void ShowTestPanelCommand()
+    {
+        TestPanelIsVisible = true;
+        CliPanelIsVisible = false;
+    }
+
+    public bool CliPanelIsVisible
+    {
+        get => _cliPanelIsVisible;
+        set => this.RaiseAndSetIfChanged(ref _cliPanelIsVisible, value);
+    }
+
+    public void ShowCliPanelCommand()
+    {
+        TestPanelIsVisible = false;
+        CliPanelIsVisible = true;
+    }
 }
