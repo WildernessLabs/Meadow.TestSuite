@@ -19,6 +19,10 @@
     <Setter Property="CornerRadius" Value="2" />
     <Setter Property="Cursor" Value="Hand" />
   </Style>
+  
+  <Style Selector="Button:pressed">
+    <Setter Property="Background" Value="{DynamicResource ThemeControlDimBrush}" />
+  </Style>
 
   <Style Selector="Window">
     <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />

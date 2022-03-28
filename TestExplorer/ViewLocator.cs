@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Meadow.Workbench;
 using System;
-using TestExplorer.ViewModels;
 
 namespace TestExplorer
 {

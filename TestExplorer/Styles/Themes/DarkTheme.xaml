@@ -7,6 +7,7 @@
     <Color x:Key="ThemeBackgroundColor">#000000</Color>
     <Color x:Key="ThemeForegroundColor">#FFFFFF</Color>
     <Color x:Key="ThemeControlColor">#23ABE3</Color>
+    <Color x:Key="ThemeControlDimColor">#23FFE3</Color>
     <Color x:Key="ThemeControlTextColor">#EF7D3B</Color>
     <Color x:Key="ThemeSelectionBackgroundColor">#EF7D3B</Color>
 
@@ -14,6 +15,7 @@
     <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="{StaticResource ThemeBackgroundColor}" />
     <SolidColorBrush x:Key="ThemeForegroundBrush" Color="{StaticResource ThemeForegroundColor}" />
     <SolidColorBrush x:Key="ThemeControlBrush" Color="{StaticResource ThemeControlColor}" />
+    <SolidColorBrush x:Key="ThemeControlDimBrush" Color="{StaticResource ThemeControlDimColor}" />
     <SolidColorBrush x:Key="ThemeControlTextBrush" Color="{StaticResource ThemeControlTextColor}" />
     <SolidColorBrush x:Key="ThemeSelectionBackgroundBrush" Color="{StaticResource ThemeSelectionBackgroundColor}" />
 

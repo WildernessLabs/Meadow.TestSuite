@@ -1,14 +1,17 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Meadow.Workbench;
 using Meadow.Workbench.Themes;
-using TestExplorer.ViewModels;
 using TestExplorer.Views;
 
 namespace TestExplorer
 {
     public class App : Application
     {
+        public static Window MainWindow { get; set; } = null!;
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -24,6 +27,8 @@ namespace TestExplorer
                 {
                     DataContext = new MainWindowViewModel(),
                 };
+
+                MainWindow = desktop.MainWindow;
             }
 
             base.OnFrameworkInitializationCompleted();

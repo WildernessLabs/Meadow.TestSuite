@@ -1,11 +1,7 @@
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace TestExplorer.ViewModels
+namespace Meadow.Workbench;
+
+public class ViewModelBase : ReactiveObject
 {
-    public class ViewModelBase : ReactiveObject
-    {
-    }
 }

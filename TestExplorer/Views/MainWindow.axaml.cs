@@ -3,9 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
-using ReactiveUI;
-using System.Threading.Tasks;
-using TestExplorer.ViewModels;
+using Meadow.Workbench;
 
 namespace TestExplorer.Views
 {
@@ -22,16 +20,6 @@ namespace TestExplorer.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        public async void BrowseLocalAssemblies(object sender, RoutedEventArgs args)
-        {
-            var ofd = new OpenFolderDialog();
-            var result = await ofd.ShowAsync(this);
-            if (result != null)
-            {
-                (DataContext as MainWindowViewModel).LocalAssemblyPath = result;
-            }
         }
     }
 }
