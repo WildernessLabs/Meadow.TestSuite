@@ -45,7 +45,10 @@ namespace Validation
 
             var success = true;
 
-            var tests = new IPairTest[]
+            var pinTests = new OutputToggleSpeed();
+            success &= pinTests.RunTest(Device, Device.Pins.D00);
+
+            var pairTests = new IPairTest[]
                 {
                     new UniDirectionAB(),
                     new UniDirectionBA(),
@@ -55,11 +58,17 @@ namespace Validation
                     new FallingInterruptBA(),
                     new TwoEdgeInterruptAB(),
                     new TwoEdgeInterruptBA(),
+                    new CounterRisingAB(),
+                    new CounterRisingAB(),
+                    new CounterFallingAB(),
+                    new CounterFallingBA(),
+                    new CounterTwoEdgeAB(),
+                    new CounterTwoEdgeBA(),
                     new PushButtonAB(),
                     new PushButtonBA(),
                 };
 
-            foreach(var test in tests)
+            foreach(var test in pairTests)
             {
                 Resolver.Log.Info($"Running {test.GetType().Name}...");
                 success &= test.RunTest(_pairs);
