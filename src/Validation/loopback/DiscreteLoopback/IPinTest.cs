@@ -1,23 +1,24 @@
 ﻿
 using Meadow;
+using Meadow.Hardware;
 using System;
 using System.Collections.Generic;
 
 namespace Validation
 {
-    public interface IPairTest
+    public interface IPinTest
     {
-        bool RunTest(PinPair pair);
+        bool RunTest(IMeadowDevice device, IPin pin);
 
-        public bool RunTest(IEnumerable<PinPair> pairs)
+        public bool RunTest(IMeadowDevice device, IEnumerable<IPin> pins)
         {
             var success = true;
 
-            foreach(var pair in pairs)
+            foreach(var pin in pins)
             {
                 try
                 {
-                    success &= RunTest(pair);
+                    success &= RunTest(device, pin);
                 }
                 catch(Exception ex)
                 {
