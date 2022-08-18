@@ -55,6 +55,12 @@ namespace Validation
                     new FallingInterruptBA(),
                     new TwoEdgeInterruptAB(),
                     new TwoEdgeInterruptBA(),
+                    new CounterRisingAB(),
+                    new CounterRisingAB(),
+                    new CounterFallingAB(),
+                    new CounterFallingBA(),
+                    new CounterTwoEdgeAB(),
+                    new CounterTwoEdgeBA(),
                     new PushButtonAB(),
                     new PushButtonBA(),
                 };
