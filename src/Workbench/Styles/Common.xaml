@@ -1,0 +1,30 @@
+﻿<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+  </Style>
+  <Style Selector="ListBoxItem:selected">
+    <Setter Property="Background" Value="{DynamicResource ThemeSelectionBackgroundBrush}" />
+  </Style>
+
+  <Style Selector="TextBox">
+    <Setter Property="SelectionBrush" Value="{DynamicResource ThemeSelectionBackgroundBrush}" />
+  </Style>
+  
+  <Style Selector="Button">
+    <Setter Property="Background" Value="{DynamicResource ThemeControlBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource ThemeControlTextBrush}" />
+    <Setter Property="CornerRadius" Value="2" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+  
+  <Style Selector="Button:pressed">
+    <Setter Property="Background" Value="{DynamicResource ThemeControlDimBrush}" />
+  </Style>
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
+  </Style>
+</Styles>

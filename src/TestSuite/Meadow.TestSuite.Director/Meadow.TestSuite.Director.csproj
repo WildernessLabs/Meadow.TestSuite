@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Meadow.TestSuite</RootNamespace>
+    <AssemblyName>Meadow.TestsSuite.Director</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SampleAssets\test_text.txt" />
+    <None Remove="System.IO.Ports" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SampleAssets\test_text.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Program.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Program.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+  </ItemGroup>
+</Project>

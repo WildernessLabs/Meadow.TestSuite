@@ -1,0 +1,52 @@
+{
+  "profiles": {
+    "Get Info": {
+      "commandName": "Project",
+      "commandLineArgs": "info -t 192.168.0.15:8080"
+    },
+    "Assembly List": {
+      "commandName": "Project",
+      "commandLineArgs": "assembly list -t 192.168.0.15:8080"
+    },
+    "File Send": {
+      "commandName": "Project",
+      "commandLineArgs": "file send -t 192.168.0.15:8080 -s \"..\\..\\..\\..\\Test Assemblies\\Tests.Meadow.Core\\bin\\Debug\\netstandard2.1\\Tests.Meadow.Core.dll\""
+    },
+    "File Send AISU": {
+      "commandName": "Project",
+      "commandLineArgs": "file send -t 192.168.0.15:8080 -s \"..\\..\\..\\..\\Test Assemblies\\Tests.AISU\\bin\\Debug\\netstandard2.1\\Tests.AISU.dll\""
+    },
+    "Test List": {
+      "commandName": "Project",
+      "commandLineArgs": "test list -t 192.168.0.15:8080"
+    },
+    "Run LED Test": {
+      "commandName": "Project",
+      "commandLineArgs": "test run Tests.Meadow.Core.LEDTests.LedTestFunction -t 192.168.0.15:8080"
+    },
+    "Run Analog Temp Test": {
+      "commandName": "Project",
+      "commandLineArgs": "test run Tests.AISU.AnalogTempTests.TestAnalogTemps -t 192.168.0.15:8080"
+    },
+    "Get Result By ID": {
+      "commandName": "Project",
+      "commandLineArgs": "test results --id 27eb9df4-bde8-4828-8eb1-ec1ac178e206 -t 192.168.0.15:8080"
+    },
+    "Get Results By Name": {
+      "commandName": "Project",
+      "commandLineArgs": "test results -n Tests.Meadow.Core.LEDTests.LedTestFunction -t 192.168.0.15:8080"
+    },
+    "Get All Results": {
+      "commandName": "Project",
+      "commandLineArgs": "test results -t 192.168.0.15:8080"
+    },
+    "Get Time": {
+      "commandName": "Project",
+      "commandLineArgs": "time -t 192.168.0.15:8080"
+    },
+    "Set Time": {
+      "commandName": "Project",
+      "commandLineArgs": "time set now -t 192.168.0.15:8080"
+    }
+  }
+}
