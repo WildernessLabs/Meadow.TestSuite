@@ -42,8 +42,8 @@
     <PackageReference Include="Teast.Controls.GroupBox" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
-    <ProjectReference Include="..\Meadow.TestSuite.Director\Meadow.TestSuite.Director.csproj" />
+    <ProjectReference Include="..\TestSuite\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
+    <ProjectReference Include="..\TestSuite\Meadow.TestSuite.Director\Meadow.TestSuite.Director.csproj" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaXaml Update="Views\MainWindow.axaml">
