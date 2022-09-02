@@ -20,6 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Meadow.Core\source\Meadow.F7\Meadow.F7.csproj" />
     <ProjectReference Include="..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj" />
-    <ProjectReference Include="..\..\..\..\Meadow.ProjectLab\Source\Meadow.ProjLab\Meadow.ProjLab.csproj" />
+    <ProjectReference Include="..\..\..\..\Meadow.ProjectLab.Samples\Source\Meadow.ProjLab\Meadow.ProjLab.csproj" />
   </ItemGroup>
 </Project>
