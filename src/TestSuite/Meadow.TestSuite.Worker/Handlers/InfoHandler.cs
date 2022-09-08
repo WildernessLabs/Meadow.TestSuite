@@ -1,9 +1,8 @@
-﻿using Meadow.Foundation.Web.Maple.Server;
-using Meadow.Foundation.Web.Maple.Server.Routing;
+﻿using Meadow.Foundation.Web.Maple;
+using Meadow.Foundation.Web.Maple.Routing;
 using Meadow.TestSuite;
 using System;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace MeadowApp
 {
@@ -37,7 +36,7 @@ namespace MeadowApp
                     change = enable;
                 }
             }
-            
+
             MeadowApp.Worker.EnableDebugging = change;
 
             MeadowApp.Worker?.Logger.Info($"Changed debugging to {change}");

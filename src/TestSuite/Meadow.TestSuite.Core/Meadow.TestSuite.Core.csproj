@@ -10,8 +10,6 @@
     <None Remove="System.Text.Json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow.Contracts" Version="0.*" />
-    <PackageReference Include="Meadow.Logging" Version="0.*" />
     <PackageReference Include="System.IO.Ports" Version="5.0.1" />
     <PackageReference Include="System.Text.Json" Version="5.0.2" />
   </ItemGroup>
@@ -19,6 +17,8 @@
     <Compile Remove="CommandProtoBufSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Meadow.Contracts\Source\Meadow.Contracts\Meadow.Contracts.csproj" />
     <ProjectReference Include="..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Web.Maple.MapleServer\Driver\Web.Maple.MapleServer.csproj" />
+    <ProjectReference Include="..\..\..\..\Meadow.Logging\lib\Meadow.Logging.csproj" />
   </ItemGroup>
 </Project>

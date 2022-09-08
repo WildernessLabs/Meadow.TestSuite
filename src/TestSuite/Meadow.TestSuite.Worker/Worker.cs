@@ -4,10 +4,10 @@ using Meadow.Logging;
 using Meadow.TestSuite;
 using System;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("TestSuite.Unit.Tests")]
 
@@ -29,9 +29,9 @@ namespace MeadowApp
 
         public bool EnableDebugging { get; set; } = false;
 
-        private F7MicroV2 Device { get; }
+        private F7FeatherV2 Device { get; }
 
-        public Worker(F7MicroV2 device)
+        public Worker(F7FeatherV2 device)
         {
             Logger = new Logger(new ConsoleLogProvider());
             //Logger.AddProvider(new ConsoleLogProvider());
@@ -43,9 +43,9 @@ namespace MeadowApp
             Device = device;
         }
 
-        public void Configure(Config config)
+        public async Task Configure(Config config)
         {
-            if(config == null)
+            if (config == null)
             {
                 Logger.Warn($"Configuration is null");
                 config = Config.Default;
@@ -103,18 +103,21 @@ namespace MeadowApp
             {
                 try
                 {
+                    var wifi = Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+
                     Logger.Info($"Initializing WiFi...");
 
                     // TODO: only do this if we're not connected
-                    Device.WiFiAdapter.WiFiConnected += (s, e) =>
+                    wifi.NetworkConnected += (s, e) =>
                     {
                         Logger.Info(" WiFi connected");
                     };
 
                     Logger.Info($" Connecting to WiFi ssid {config.Network.SSID}...");
                     Display?.ShowText(1, $"--> {config.Network.SSID}");
-                    Device.WiFiAdapter.Connect(config.Network.SSID, config.Network.Pass);
+                    await wifi.Connect(config.Network.SSID, config.Network.Pass);
 
+                    /*
                     while (!Device.WiFiAdapter.IsConnected)
                     {
                         Logger.Info($"Waiting to connect to AP.... {Device.WiFiAdapter.IpAddress}");
@@ -127,14 +130,15 @@ namespace MeadowApp
                             break;
                         }
                     }
+                    */
 
-                    Logger.Info($"Local IP: {Device.WiFiAdapter.IpAddress}");
-                    Display?.ShowText(1, $"IP: {Device.WiFiAdapter.IpAddress}");
+                    Logger.Info($"Local IP: {wifi.IpAddress}");
+                    Display?.ShowText(1, $"IP: {wifi.IpAddress}");
                     Display?.ShowText(2, $"Port: 8080"); // TODO: make port configurable (it's hard coded in the listener below)
 
-                    Listener = new MeadowNetworkListener(Device.WiFiAdapter.IpAddress, config, Serializer, Logger);
+                    Listener = new MeadowNetworkListener(wifi.IpAddress, config, Serializer, Logger);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Logger.Error($"{ex.Message}");
                 }
@@ -158,7 +162,7 @@ namespace MeadowApp
 
         private void WiFiAdapter_WiFiConnected(object sender, EventArgs e)
         {
-            Logger.Info(" WiFi connected");            
+            Logger.Info(" WiFi connected");
         }
 
         public void IndicateState(TestState state)
@@ -197,7 +201,7 @@ namespace MeadowApp
 
         public TestResult ExecuteTest(string testID)
         {
-            if(Config == null)
+            if (Config == null)
             {
                 Logger.Error($" Failure: Worker not configured");
                 return null;
@@ -221,7 +225,7 @@ namespace MeadowApp
 
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Error($" Failure: {ex.Message}");
                 return null;
@@ -254,9 +258,10 @@ namespace MeadowApp
             }
 
             // wait for a listener (wifi is async)
-            while(Listener == null)
+            var wifi = Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            while (Listener == null)
             {
-                Logger.Info($"{Device.WiFiAdapter.IpAddress}");
+                Logger.Info($"{wifi.IpAddress}");
 
                 Thread.Sleep(1000);
             }

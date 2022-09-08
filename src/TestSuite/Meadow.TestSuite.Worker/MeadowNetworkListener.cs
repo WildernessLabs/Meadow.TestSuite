@@ -1,4 +1,4 @@
-﻿using Meadow.Foundation.Web.Maple.Server;
+﻿using Meadow.Foundation.Web.Maple;
 using Meadow.Logging;
 using Meadow.TestSuite;
 using System.Net;
@@ -13,7 +13,7 @@ namespace MeadowApp
         private Logger _logger;
 
         public MeadowNetworkListener(IPAddress address, Config config, ICommandSerializer serializer, Logger logger)
-        {            
+        {
             _server = new MapleServer(address, 8080, false, RequestProcessMode.Serial, logger);
             _logger = logger;
         }

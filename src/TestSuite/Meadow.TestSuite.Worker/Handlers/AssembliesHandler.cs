@@ -1,7 +1,5 @@
-﻿using Meadow.Foundation.Web.Maple.Server;
-using Meadow.Foundation.Web.Maple.Server.Routing;
-using System;
-using System.Collections.Generic;
+﻿using Meadow.Foundation.Web.Maple;
+using Meadow.Foundation.Web.Maple.Routing;
 using System.IO;
 
 namespace MeadowApp
@@ -65,7 +63,7 @@ namespace MeadowApp
 
             var path = Path.Combine(destination, name);
 
-            if(!Path.HasExtension(path))
+            if (!Path.HasExtension(path))
             {
                 path += ".dll";
             }

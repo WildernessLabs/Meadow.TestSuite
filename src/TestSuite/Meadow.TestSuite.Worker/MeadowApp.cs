@@ -1,28 +1,23 @@
 ﻿using Meadow;
 using Meadow.Devices;
-using Meadow.TestSuite;
-using SimpleJson;
 using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MeadowApp
 {
-    public class MeadowApp : App<F7MicroV2, MeadowApp>
+    public class MeadowApp : App<F7FeatherV2>
     {
         public static Worker Worker { get; private set; }
 
-        public MeadowApp()
+        public override async Task Initialize()
         {
             Console.WriteLine("=== Meadow TestSuite Worker ===");
 
             Worker = new Worker(Device);
             var cfg = LoadConfig();
-            Worker.Configure(cfg);
+            await Worker.Configure(cfg);
 
             Worker.Start();
 
@@ -37,7 +32,7 @@ namespace MeadowApp
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
 
             var fi = new FileInfo(path);
-            if(!fi.Exists)
+            if (!fi.Exists)
             {
                 Console.WriteLine($" ! Configuration file not found at '{fi.FullName}'");
                 return Config.Default;
