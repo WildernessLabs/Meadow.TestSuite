@@ -5,7 +5,7 @@ using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
 using Meadow.Hardware;
 using System;
-using System.Threading;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Validation
@@ -27,7 +27,7 @@ namespace Validation
             return base.Initialize();
         }
 
-        public override Task Run()
+        public override async Task Run()
         {
             _red.State = true;
             _green.State = true;
@@ -41,7 +41,7 @@ namespace Validation
                 // create a display - just doing this verifies SPI
                 _graphics = new MicroGraphics(_projectLab.Display);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Resolver.Log.Error($"Failed creating Display.");
                 success = false;
@@ -49,11 +49,32 @@ namespace Validation
 
             ShowInProgress();
 
-            Thread.Sleep(3000);
+            var failed = new List<string>();
+
+            var tests = new ITest[]
+                {
+                    new WiFiConnectionPositiveTest(),
+                    new I2CBusTest(),
+                    new SpiBusTest()
+                };
+
+            foreach (var test in tests)
+            {
+                Resolver.Log.Info($"Running {test.GetType().Name}...");
+
+                var result = await test.RunTest(Device);
+
+                if (!result)
+                {
+                    failed.Add(test.GetType().Name);
+                }
+
+                success &= result;
+            }
 
             Resolver.Log.Info($"Tests complete.");
 
-            if(success)
+            if (success)
             {
                 ShowSuccess();
             }
@@ -61,10 +82,8 @@ namespace Validation
             {
                 ShowFailed();
                 Resolver.Log.Error("---- FAILED TESTS----");
-                //                Resolver.Log.Error(string.Join("/r/n ", failed));
+                Resolver.Log.Error(string.Join("/r/n ", failed));
             }
-
-            return base.Run();
         }
 
         private void ShowInProgress()
