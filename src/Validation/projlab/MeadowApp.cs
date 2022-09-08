@@ -15,14 +15,14 @@ namespace Validation
         private IDigitalOutputPort _red;
         private IDigitalOutputPort _green;
 
-        private ProjLab _projectLab;
+        private ProjectLab _projectLab;
         private MicroGraphics _graphics;
 
         public override Task Initialize()
         {
             _red = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedRed);
             _green = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedGreen);
-            _projectLab = new ProjLab();
+            _projectLab = new ProjectLab();
 
             return base.Initialize();
         }
@@ -53,16 +53,16 @@ namespace Validation
 
             var tests = new ITest[]
                 {
-                    new WiFiConnectionPositiveTest(),
                     new I2CBusTest(),
-                    new SpiBusTest()
+//                    new WiFiConnectionPositiveTest(),
+//                    new SpiBusTest()
                 };
 
             foreach (var test in tests)
             {
                 Resolver.Log.Info($"Running {test.GetType().Name}...");
 
-                var result = await test.RunTest(Device);
+                var result = await test.RunTest(Device, _projectLab);
 
                 if (!result)
                 {
@@ -96,7 +96,7 @@ namespace Validation
 
         private void ShowSuccess()
         {
-            _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Green, true);
+            _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Lime, true);
             _graphics.Show();
             _green.State = true;
             _red.State = false;

@@ -1,36 +1,15 @@
 ﻿
 using Meadow;
+using Meadow.Devices;
 using Meadow.Hardware;
 using System;
 using System.Threading.Tasks;
 
 namespace Validation
 {
-    public class SpiBusTest : ITest
-    {
-        public Task<bool> RunTest(IMeadowDevice device)
-        {
-
-            // TODO: connect to something on the bus to verify it's working
-
-            return Task.FromResult(false);
-        }
-    }
-
-    public class I2CBusTest : ITest
-    {
-        public Task<bool> RunTest(IMeadowDevice device)
-        {
-
-            // TODO: connect to something on the bus to verify it's working
-
-            return Task.FromResult(false);
-        }
-    }
-
     public class WiFiConnectionPositiveTest : ITest
     {
-        public async Task<bool> RunTest(IMeadowDevice device)
+        public async Task<bool> RunTest(IMeadowDevice device, ProjectLab projectLab)
         {
             var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
 
