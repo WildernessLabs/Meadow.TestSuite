@@ -54,7 +54,7 @@ namespace Validation
             var tests = new ITest[]
                 {
                     new I2CBusTest(),
-//                    new WiFiConnectionPositiveTest(),
+                    new WiFiConnectionPositiveTest(),
 //                    new SpiBusTest()
                 };
 

@@ -12,6 +12,10 @@ namespace Validation
         public async Task<bool> RunTest(IMeadowDevice device, ProjectLab projectLab)
         {
             var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            wifi.NetworkConnected += async (s, e) =>
+                {
+                    Resolver.Log.Info($"Network Connected. IP: {e.IpAddress}");
+                };
 
             if (wifi == null) return false;
 
