@@ -1,4 +1,4 @@
-﻿using Meadow.Devices;
+﻿using Meadow;
 using Meadow.Logging;
 
 namespace Munit
