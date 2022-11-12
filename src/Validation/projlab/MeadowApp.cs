@@ -53,9 +53,10 @@ namespace Validation
 
             var tests = new ITest[]
                 {
-                    new I2CBusTest(),
+//                    new I2CBusTest(),
                     new WiFiConnectionPositiveTest(),
-//                    new SpiBusTest()
+//                    new SpiBusTest(),
+//                    new WiFiConnectionInvalidSsidTest()
                 };
 
             foreach (var test in tests)
@@ -89,6 +90,8 @@ namespace Validation
         private void ShowInProgress()
         {
             _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Yellow, true);
+            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "Running", color: Color.Black, alignment: TextAlignment.Center);
+
             _graphics.Show();
             _green.State = true;
             _red.State = true;

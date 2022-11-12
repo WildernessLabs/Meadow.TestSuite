@@ -3,6 +3,7 @@ using Meadow;
 using Meadow.Devices;
 using Meadow.Hardware;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Validation
@@ -11,28 +12,98 @@ namespace Validation
     {
         public async Task<bool> RunTest(IMeadowDevice device, ProjectLab projectLab)
         {
+            var connectedCount = 0;
+            var disconnectedCount = 0;
+            var completed = false;
+            var success = true;
+
             var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
-            wifi.NetworkConnected += async (s, e) =>
+            if (wifi == null) return false;
+
+            wifi.NetworkConnected += (s, e) =>
                 {
-                    Resolver.Log.Info($"Network Connected. IP: {e.IpAddress}");
+                    connectedCount++;
+                    Resolver.Log.Info($"Network Connected. IP from event: {e.IpAddress} IP from adapter: {wifi.IpAddress}");
+
+                    if (e.IpAddress.Equals(IPAddress.None))
+                    {
+                        Resolver.Log.Error($"event data IP was bad");
+                        success = false;
+                    }
+
+                    if (wifi.IpAddress.Equals(IPAddress.None))
+                    {
+                        Resolver.Log.Error($"adapter IP was bad");
+                        success = false;
+                    }
+
+                    if (!e.IpAddress.Equals(wifi.IpAddress))
+                    {
+                        Resolver.Log.Error($"adapter IP does not match event IP");
+                        success = false;
+                    }
+
+                    completed = true;
                 };
 
-            if (wifi == null) return false;
+            wifi.NetworkDisconnected += (s) =>
+            {
+                disconnectedCount++;
+                Resolver.Log.Info($"Network Disconnected. IP from adapter: {wifi.IpAddress}");
+            };
 
             try
             {
-                await wifi.Connect("BOBS_YOUR_UNCLE", "1234567890");
+                Resolver.Log.Info($"Connecting to valid AP");
+                await wifi.Connect("BOBS_YOUR_UNCLE", "1234567890", TimeSpan.FromSeconds(30));
             }
             catch (Exception ex)
             {
                 Resolver.Log.Error($"Failed to connect: {ex.Message}");
+                success = false;
+                completed = true;
+            }
 
-                return false;
+            var timeout = 30;
+
+            while (!completed)
+            {
+                await Task.Delay(1000);
+                if (timeout-- <= 0) break;
             }
 
             // TODO: add some IP address testing, etc.
 
-            return true;
+            // just in case multiple connects come in
+            await Task.Delay(1000);
+
+            timeout = 30;
+            completed = false;
+
+            if (wifi.IsConnected)
+            {
+                try
+                {
+                    Resolver.Log.Info($"Disconnecting from AP");
+
+                    await wifi.Disconnect(false);
+                }
+                catch (Exception ex)
+                {
+                    Resolver.Log.Error($"Failed to disconnect: {ex.Message}");
+                    success = false;
+                    completed = true;
+                }
+
+                while (!completed)
+                {
+                    await Task.Delay(1000);
+                    if (timeout-- <= 0) break;
+                }
+            }
+
+            success &= connectedCount == 1;
+            return success;
         }
     }
 }

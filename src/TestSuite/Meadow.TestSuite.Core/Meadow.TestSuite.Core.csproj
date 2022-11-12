@@ -17,8 +17,8 @@
     <Compile Remove="CommandProtoBufSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Maple\src\Server\Web.Maple.MapleServer.csproj" />
     <ProjectReference Include="..\..\..\..\Meadow.Contracts\Source\Meadow.Contracts\Meadow.Contracts.csproj" />
-    <ProjectReference Include="..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Web.Maple.MapleServer\Driver\Web.Maple.MapleServer.csproj" />
     <ProjectReference Include="..\..\..\..\Meadow.Logging\lib\Meadow.Logging.csproj" />
   </ItemGroup>
 </Project>
