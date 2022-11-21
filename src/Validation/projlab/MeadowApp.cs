@@ -40,6 +40,8 @@ namespace Validation
             {
                 // create a display - just doing this verifies SPI
                 _graphics = new MicroGraphics(_projectLab.Display);
+                _graphics.Rotation = RotationType._90Degrees;
+                _graphics.CurrentFont = new Font12x20();
             }
             catch (Exception ex)
             {
@@ -90,7 +92,7 @@ namespace Validation
         private void ShowInProgress()
         {
             _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Yellow, true);
-            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "Running", color: Color.Black, alignment: TextAlignment.Center);
+            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "Running", color: Color.Black, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
 
             _graphics.Show();
             _green.State = true;
@@ -100,6 +102,7 @@ namespace Validation
         private void ShowSuccess()
         {
             _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Lime, true);
+            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "PASS", color: Color.White, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
             _graphics.Show();
             _green.State = true;
             _red.State = false;
@@ -108,6 +111,7 @@ namespace Validation
         private void ShowFailed()
         {
             _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Red, true);
+            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "FAIL", color: Color.White, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
             _graphics.Show();
             _green.State = false;
             _red.State = true;
