@@ -6,6 +6,7 @@ using Meadow.Foundation.Graphics;
 using Meadow.Hardware;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Validation
@@ -56,10 +57,23 @@ namespace Validation
             var tests = new ITest[]
                 {
 //                    new I2CBusTest(),
-                    new WiFiConnectionPositiveTest(),
+//                    new WiFiConnectionPositiveTest(),
 //                    new SpiBusTest(),
-//                    new WiFiConnectionInvalidSsidTest()
+//                    new WiFiConnectionInvalidSsidTest(),
+                    new WiFiConnectionInvalidPasscodeTest()
                 };
+
+            var complete = false;
+
+            new Thread(() =>
+            {
+                while (!complete)
+                {
+                    _red.State = !_red.State;
+                    Thread.Sleep(1000);
+                }
+
+            }).Start();
 
             foreach (var test in tests)
             {
@@ -76,6 +90,8 @@ namespace Validation
             }
 
             Resolver.Log.Info($"Tests complete.");
+
+            complete = true;
 
             if (success)
             {
@@ -102,7 +118,7 @@ namespace Validation
         private void ShowSuccess()
         {
             _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Lime, true);
-            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "PASS", color: Color.White, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
+            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "PASS", color: Color.Black, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
             _graphics.Show();
             _green.State = true;
             _red.State = false;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Validation
 {
-    public class WiFiConnectionInvalidSsidTest : ITest
+    public class WiFiConnectionInvalidPasscodeTest : ITest
     {
         public async Task<bool> RunTest(IMeadowDevice device, ProjectLab projectLab)
         {
@@ -28,8 +28,8 @@ namespace Validation
 
             try
             {
-                Resolver.Log.Info($"Connecting to invalid SSID...");
-                await wifi.Connect("INVALID_SSID", "1234567890");
+                Resolver.Log.Info($"Connecting to valid SSID with invalid passcode...");
+                await wifi.Connect("BOBS_YOUR_UNCLE", "BAD_PASSCODE");
             }
             catch (Exception ex)
             {

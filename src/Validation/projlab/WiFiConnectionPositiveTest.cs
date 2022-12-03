@@ -17,6 +17,12 @@ namespace Validation
             var completed = false;
             var success = true;
 
+            if (Resolver.Device.PlatformOS.SelectedNetwork != IPlatformOS.NetworkConnectionType.WiFi)
+            {
+                Resolver.Log.Error($"WiFi is not the selected network adapter. {Resolver.Device.PlatformOS.SelectedNetwork} is selected.");
+                return false;
+            }
+
             var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             if (wifi == null) return false;
 
@@ -87,6 +93,9 @@ namespace Validation
                     Resolver.Log.Info($"Disconnecting from AP");
 
                     await wifi.Disconnect(false);
+
+                    Resolver.Log.Info($"Disconnected from AP");
+                    completed = true;
                 }
                 catch (Exception ex)
                 {
