@@ -21,6 +21,8 @@ namespace Validation
 
         public override Task Initialize()
         {
+            Resolver.Log.Info($"Project Lab Validation Init");
+
             _red = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedRed);
             _green = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedGreen);
             _projectLab = new ProjectLab();
@@ -30,6 +32,8 @@ namespace Validation
 
         public override async Task Run()
         {
+            Resolver.Log.Info($"Project Lab Validation Run");
+
             _red.State = true;
             _green.State = true;
 

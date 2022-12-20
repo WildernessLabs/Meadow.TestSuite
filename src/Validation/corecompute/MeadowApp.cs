@@ -1,7 +1,6 @@
 ﻿
 using Meadow;
 using Meadow.Devices;
-using Meadow.Foundation.Displays.TftSpi;
 using Meadow.Foundation.Graphics;
 using Meadow.Hardware;
 using System;
@@ -15,10 +14,16 @@ namespace Validation
         private IDigitalOutputPort _red;
 
         private MicroGraphics _graphics;
-        private St7789 _display;
+
+        public MeadowApp()
+        {
+            Resolver.Log.Info($"MeadowApp ctor");
+        }
 
         public override Task Initialize()
         {
+            Resolver.Log.Info($"CCM Validation Init");
+
             _red = Device.CreateDigitalOutputPort(Device.Pins.D00);
 
             return base.Initialize();
@@ -26,12 +31,36 @@ namespace Validation
 
         public override Task Run()
         {
+            Resolver.Log.Info($"CCM Validation Run");
+
             _red.State = true;
 
-            Resolver.Log.Info($"Starting validation tests...");
-
             var wired = Device.NetworkAdapters.Primary<IWiredNetworkAdapter>();
+
+            if (wired == null)
+            {
+                Resolver.Log.Info($"Wired Ethernet Adapter is null");
+            }
+            else
+            {
+                Resolver.Log.Info($"IP: {wired.IpAddress}");
+            }
+
             var wifi = Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            if (wifi == null)
+            {
+                Resolver.Log.Info($"WiFi Adapter is null");
+            }
+            else
+            {
+                Resolver.Log.Info($"IP: {wifi.IpAddress}");
+            }
+
+            while (true)
+            {
+                Thread.Sleep(1000);
+                Resolver.Log.Info($"IP: {wifi.IpAddress}");
+            }
 
             var success = true;
 
@@ -41,7 +70,7 @@ namespace Validation
                 //                _display = new St7789(
                 //                _graphics = new MicroGraphics(_projectLab.Display);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Resolver.Log.Error($"Failed creating Display.");
                 success = false;
@@ -53,7 +82,7 @@ namespace Validation
 
             Resolver.Log.Info($"Tests complete.");
 
-            if(success)
+            if (success)
             {
                 ShowSuccess();
             }
