@@ -1,6 +1,4 @@
-﻿
-using Meadow;
-using Meadow.Devices;
+﻿using Meadow.Devices;
 using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
 using Meadow.Hardware;
@@ -9,14 +7,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class MeadowApp : App<F7FeatherV2>
     {
         private IDigitalOutputPort _red;
         private IDigitalOutputPort _green;
 
-        private ProjectLab _projectLab;
+        private ProjectLabTestDevice _testDevice;
         private MicroGraphics _graphics;
 
         public override Task Initialize()
@@ -25,7 +23,7 @@ namespace Validation
 
             _red = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedRed);
             _green = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedGreen);
-            _projectLab = new ProjectLab();
+            _testDevice = new ProjectLabTestDevice(Device, new ProjectLab());
 
             return base.Initialize();
         }
@@ -44,7 +42,7 @@ namespace Validation
             try
             {
                 // create a display - just doing this verifies SPI
-                _graphics = new MicroGraphics(_projectLab.Display);
+                _graphics = new MicroGraphics(_testDevice.ProjectLab.Display);
                 _graphics.Rotation = RotationType._90Degrees;
                 _graphics.CurrentFont = new Font12x20();
             }
@@ -58,13 +56,13 @@ namespace Validation
 
             var failed = new List<string>();
 
-            var tests = new ITest[]
+            var tests = new ITest<ProjectLabTestDevice>[]
                 {
-//                    new I2CBusTest(),
-//                    new WiFiConnectionPositiveTest(),
+//                    new I2CBusTest<ProjectLabTestDevice>(),
+//                    new WiFiConnectionPositiveTest<ProjectLabTestDevice>(),
 //                    new SpiBusTest(),
-//                    new WiFiConnectionInvalidSsidTest(),
-                    new WiFiConnectionInvalidPasscodeTest()
+//                    new WiFiConnectionInvalidSsidTest<ProjectLabTestDevice>(),
+                    new WiFiConnectionInvalidPasscodeTest<ProjectLabTestDevice>()
                 };
 
             var complete = false;
@@ -83,7 +81,7 @@ namespace Validation
             {
                 Resolver.Log.Info($"Running {test.GetType().Name}...");
 
-                var result = await test.RunTest(Device, _projectLab);
+                var result = await test.RunTest(_testDevice);
 
                 if (!result)
                 {
@@ -111,8 +109,8 @@ namespace Validation
 
         private void ShowInProgress()
         {
-            _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Yellow, true);
-            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "Running", color: Color.Black, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
+            _graphics?.DrawRectangle(0, 0, _testDevice.ProjectLab.Display.Width, _testDevice.ProjectLab.Display.Height, Color.Yellow, true);
+            _graphics.DrawText(_testDevice.ProjectLab.Display.Width / 2, _testDevice.ProjectLab.Display.Height / 2, "Running", color: Color.Black, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
 
             _graphics.Show();
             _green.State = true;
@@ -121,8 +119,8 @@ namespace Validation
 
         private void ShowSuccess()
         {
-            _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Lime, true);
-            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "PASS", color: Color.Black, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
+            _graphics?.DrawRectangle(0, 0, _testDevice.ProjectLab.Display.Width, _testDevice.ProjectLab.Display.Height, Color.Lime, true);
+            _graphics.DrawText(_testDevice.ProjectLab.Display.Width / 2, _testDevice.ProjectLab.Display.Height / 2, "PASS", color: Color.Black, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
             _graphics.Show();
             _green.State = true;
             _red.State = false;
@@ -130,8 +128,8 @@ namespace Validation
 
         private void ShowFailed()
         {
-            _graphics?.DrawRectangle(0, 0, _projectLab.Display.Width, _projectLab.Display.Height, Color.Red, true);
-            _graphics.DrawText(_projectLab.Display.Width / 2, _projectLab.Display.Height / 2, "FAIL", color: Color.White, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
+            _graphics?.DrawRectangle(0, 0, _testDevice.ProjectLab.Display.Width, _testDevice.ProjectLab.Display.Height, Color.Red, true);
+            _graphics.DrawText(_testDevice.ProjectLab.Display.Width / 2, _testDevice.ProjectLab.Display.Height / 2, "FAIL", color: Color.White, alignmentH: HorizontalAlignment.Center, alignmentV: VerticalAlignment.Center);
             _graphics.Show();
             _green.State = false;
             _red.State = true;

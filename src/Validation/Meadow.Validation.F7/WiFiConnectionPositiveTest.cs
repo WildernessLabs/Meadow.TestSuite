@@ -1,16 +1,14 @@
-﻿
-using Meadow;
-using Meadow.Devices;
-using Meadow.Hardware;
+﻿using Meadow.Hardware;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Validation
+namespace Meadow.Validation
 {
-    public class WiFiConnectionPositiveTest : ITest
+    public class WiFiConnectionPositiveTest<T> : ITest<T>
+        where T : IDeviceUnderTest
     {
-        public async Task<bool> RunTest(IMeadowDevice device, ProjectLab projectLab)
+        public async Task<bool> RunTest(T device)
         {
             var connectedCount = 0;
             var disconnectedCount = 0;
@@ -23,7 +21,7 @@ namespace Validation
                 return false;
             }
 
-            var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            var wifi = device.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             if (wifi == null) return false;
 
             wifi.NetworkConnected += (s, e) =>

@@ -1,27 +1,26 @@
-﻿
-using Meadow;
-using Meadow.Hardware;
+﻿using Meadow.Hardware;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Validation
+namespace Meadow.Validation
 {
-    public class WiFiWebRequestPositiveTest : ITest
+    public class WiFiWebRequestPositiveTest<T> : ITest<T>
+        where T : IDeviceUnderTest
     {
-        public async Task<bool> RunTest(IF7CoreComputeMeadowDevice device)
+        public async Task<bool> RunTest(T device)
         {
             var success = true;
 
-            if (Resolver.Device.PlatformOS.SelectedNetwork != IPlatformOS.NetworkConnectionType.WiFi)
+            if (device.Device.PlatformOS.SelectedNetwork != IPlatformOS.NetworkConnectionType.WiFi)
             {
                 Resolver.Log.Error($"WiFi is not the selected network adapter. {Resolver.Device.PlatformOS.SelectedNetwork} is selected.");
                 return false;
             }
 
-            var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            var wifi = device.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             if (wifi == null) return false;
 
             if (wifi.IsConnected)

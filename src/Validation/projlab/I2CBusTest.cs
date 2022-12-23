@@ -1,20 +1,19 @@
-﻿using Meadow;
-using Meadow.Devices;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
-namespace Validation
+namespace Meadow.Validation
 {
-    public class I2CBusTest : ITest
+    public class I2CBusTest<T> : ITest<T>
+        where T : ProjectLabTestDevice
     {
-        public async Task<bool> RunTest(IMeadowDevice device, ProjectLab projectLab)
+        public async Task<bool> RunTest(T device)
         {
             // connect to the light sensor on the bus to verify it's working
 
             try
             {
-                projectLab.LightSensor.StartUpdating();
-                var lux = await projectLab.LightSensor.Read();
+                device.ProjectLab.LightSensor.StartUpdating();
+                var lux = await device.ProjectLab.LightSensor.Read();
                 Resolver.Log.Debug($"Lux: {lux}");
             }
             catch (Exception ex)

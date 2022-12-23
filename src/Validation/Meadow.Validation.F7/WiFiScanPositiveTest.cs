@@ -1,22 +1,21 @@
-﻿
-using Meadow;
-using Meadow.Hardware;
+﻿using Meadow.Hardware;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Validation
+namespace Meadow.Validation
 {
-    public class WiFiScanPositiveTest : ITest
+    public class WiFiScanPositiveTest<T> : ITest<T>
+        where T : IDeviceUnderTest
     {
-        public async Task<bool> RunTest(IF7CoreComputeMeadowDevice device)
+        public async Task<bool> RunTest(T device)
         {
             var connectedCount = 0;
             var disconnectedCount = 0;
             var completed = false;
             var success = true;
 
-            var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            var wifi = device.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             if (wifi == null) return false;
 
             wifi.NetworkConnected += (s, e) =>

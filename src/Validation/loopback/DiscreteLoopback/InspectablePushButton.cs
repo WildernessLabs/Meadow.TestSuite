@@ -1,7 +1,7 @@
 ﻿using Meadow.Foundation.Sensors.Buttons;
 using Meadow.Hardware;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class InspectablePushButton : PushButton
     {

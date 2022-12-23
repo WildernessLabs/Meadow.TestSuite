@@ -3,7 +3,7 @@ using Meadow;
 using System;
 using System.Collections.Generic;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public interface IPairTest
     {

@@ -1,12 +1,10 @@
-﻿
-using Meadow;
-using Meadow.Devices;
+﻿using Meadow.Devices;
 using Meadow.Foundation.Graphics;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class MeadowApp : App<F7CoreComputeV2>
     {
@@ -28,11 +26,11 @@ namespace Validation
 
             ShowInProgress();
 
-            var tests = new ITest[]
+            var tests = new ITest<F7TestDevice>[]
                 {
-//                    new WiFiConnectionPositiveTest(),
-                    new WiFiWebRequestPositiveTest(),
-//                    new WiFiScanPositiveTest()
+//                    new WiFiConnectionPositiveTest<F7TestDevice>(),
+                    new WiFiWebRequestPositiveTest<F7TestDevice>(),
+//                    new WiFiScanPositiveTest<F7TestDevice>()
                 };
 
             var complete = false;

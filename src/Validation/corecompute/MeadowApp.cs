@@ -1,13 +1,11 @@
-﻿
-using Meadow;
-using Meadow.Devices;
+﻿using Meadow.Devices;
 using Meadow.Foundation.Graphics;
 using Meadow.Hardware;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class MeadowApp : App<F7CoreComputeV2>
     {

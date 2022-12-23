@@ -5,7 +5,7 @@ using Meadow.Hardware;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class MeadowApp : App<F7FeatherV2>
     {

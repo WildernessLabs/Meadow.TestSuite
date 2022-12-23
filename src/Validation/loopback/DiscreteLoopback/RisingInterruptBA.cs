@@ -1,6 +1,6 @@
 ﻿using Meadow.Hardware;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class RisingInterruptBA : InterruptBase
     {

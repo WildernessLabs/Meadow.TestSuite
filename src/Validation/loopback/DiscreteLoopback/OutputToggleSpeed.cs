@@ -3,7 +3,7 @@ using Meadow;
 using Meadow.Hardware;
 using System.Diagnostics;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class OutputToggleSpeed : IPinTest
     {
