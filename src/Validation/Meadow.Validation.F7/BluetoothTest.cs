@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Meadow.Validation
 {
     public class BluetoothTest<T> : ITest<T>
-        where T : IDeviceUnderTest<IF7MeadowDevice>
+        where T : MeadowF7TestDevice
     {
         Definition bleTreeDefinition;
         CharacteristicBool onOffCharacteristic;

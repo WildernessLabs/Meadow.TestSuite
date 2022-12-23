@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 namespace Meadow.Validation
 {
     public class WiFiAntennaSwitchingTest<T> : ITest<T>
-        where T : IDeviceUnderTest, IF7MeadowDevice
+        where T : MeadowF7TestDevice
     {
-        public async Task<bool> RunTest(T device)
+        public Task<bool> RunTest(T device)
         {
-            var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            var wifi = device.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
 
             // get the current antenna
             Resolver.Log.Info($"Current antenna in use: {wifi.CurrentAntenna}");
@@ -17,10 +17,10 @@ namespace Meadow.Validation
             Resolver.Log.Info($"Switching to external antenna");
             wifi.SetAntenna(AntennaType.External, persist: false);
 
-            if(wifi.CurrentAntenna != AntennaType.External)
+            if (wifi.CurrentAntenna != AntennaType.External)
             {
                 Resolver.Log.Error("Could not switch antenna to external");
-                return false;
+                return Task.FromResult(false);
             }
 
             Resolver.Log.Info($"Switching to onboard antenna");
@@ -28,10 +28,10 @@ namespace Meadow.Validation
             if (wifi.CurrentAntenna != AntennaType.OnBoard)
             {
                 Resolver.Log.Error("Could not switch antenna to onboard");
-                return false;
+                return Task.FromResult(false);
             }
 
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

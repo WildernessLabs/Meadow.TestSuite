@@ -1,13 +1,11 @@
-﻿using Meadow;
+﻿using System;
 using System.IO;
-using System;
 using System.Threading.Tasks;
-using Meadow.Validation;
 
 namespace Meadow.Validation
 {
     public class FileSystemTest<T> : ITest<T>
-        where T : IDeviceUnderTest
+        where T : IDeviceUnderTest<IMeadowDevice>
     {
         public Task<bool> RunTest(T device)
         {

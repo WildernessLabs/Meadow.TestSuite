@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Meadow.Validation
 {
     public class SQLiteTest<T> : ITest<T>
-        where T : IDeviceUnderTest
+        where T : IDeviceUnderTest<IMeadowDevice>
     {
         int InsertCount = 10;
 

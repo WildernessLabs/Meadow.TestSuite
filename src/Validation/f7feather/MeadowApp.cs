@@ -29,19 +29,19 @@ namespace Meadow.Validation
 
             var failed = new List<string>();
 
-            var tests = new ITest<F7FeatherTestDevice>[]
+            var tests = new ITest<MeadowF7TestDevice>[]
             {
-                new BluetoothTest<F7FeatherTestDevice>(),
-                new WiFiAntennaSwitchingTest<F7FeatherTestDevice>(),
-                new FileSystemTest<F7FeatherTestDevice>(),
-                new SQLiteTest<F7FeatherTestDevice>()
+                new BluetoothTest<MeadowF7TestDevice>(),
+                new WiFiAntennaSwitchingTest<MeadowF7TestDevice>(),
+                new FileSystemTest<MeadowF7TestDevice>(),
+                new SQLiteTest<MeadowF7TestDevice>()
             };
 
             foreach (var test in tests)
             {
                 Resolver.Log.Info($"Running {test.GetType().Name}...");
 
-                var result = await test.RunTest(Device);
+                var result = await test.RunTest(new MeadowF7TestDevice(Device));
 
                 if (!result)
                 {
