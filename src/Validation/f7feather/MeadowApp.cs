@@ -1,18 +1,14 @@
-﻿using Meadow;
-using Meadow.Devices;
+﻿using Meadow.Devices;
 using Meadow.Hardware;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using F7Feather.Tests;
-using System.Threading;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class MeadowApp : App<F7FeatherV2>
     {
         private IDigitalOutputPort redLed;
         private IDigitalOutputPort greenLed;
-
 
         public override Task Initialize()
         {
@@ -33,12 +29,12 @@ namespace Validation
 
             var failed = new List<string>();
 
-            var tests = new ITestFeatherF7[]
+            var tests = new ITest<F7FeatherTestDevice>[]
             {
-                new Bluetooth_Basics(),
-                new Antenna_Switiching(),
-                new FileSytem_Basics(),
-                new SQLite_Basics(),
+                new BluetoothTest<F7FeatherTestDevice>(),
+                new WiFiAntennaSwitchingTest<F7FeatherTestDevice>(),
+                new FileSystemTest<F7FeatherTestDevice>(),
+                new SQLiteTest<F7FeatherTestDevice>()
             };
 
             foreach (var test in tests)

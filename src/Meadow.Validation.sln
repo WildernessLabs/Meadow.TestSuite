@@ -49,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Validation.Core", "V
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Validation.F7", "Validation\Meadow.Validation.F7\Meadow.Validation.F7.csproj", "{4A0006D7-1F6B-4AF5-AF9B-9E11472A12C9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "F7Feather", "Validation\f7feather\F7Feather.csproj", "{2177B90B-2DC8-4A7C-B440-D7BB9AA3E73C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "F7Feather_v2", "Validation\f7feather\F7Feather_v2.csproj", "{2177B90B-2DC8-4A7C-B440-D7BB9AA3E73C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

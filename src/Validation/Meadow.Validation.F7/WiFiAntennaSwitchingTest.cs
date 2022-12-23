@@ -1,15 +1,12 @@
-﻿using Meadow;
-using Meadow.Gateways.Bluetooth;
-using Meadow.Hardware;
-using System;
+﻿using Meadow.Hardware;
 using System.Threading.Tasks;
-using Validation;
 
-namespace F7Feather.Tests
+namespace Meadow.Validation
 {
-    internal class Antenna_Switiching : ITestFeatherF7
+    public class WiFiAntennaSwitchingTest<T> : ITest<T>
+        where T : IDeviceUnderTest, IF7MeadowDevice
     {
-        public async Task<bool> RunTest(IF7MeadowDevice device)
+        public async Task<bool> RunTest(T device)
         {
             var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
 

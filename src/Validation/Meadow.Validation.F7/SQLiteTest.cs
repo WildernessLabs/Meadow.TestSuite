@@ -1,16 +1,15 @@
-﻿using F7Feather.Tests.Models;
-using Meadow;
+﻿using Meadow.Validation.Models;
 using SQLite;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Validation;
 
-namespace F7Feather.Tests
+namespace Meadow.Validation
 {
-    internal class SQLite_Basics : ITestFeatherF7
+    public class SQLiteTest<T> : ITest<T>
+        where T : IDeviceUnderTest
     {
         int InsertCount = 10;
 
@@ -18,7 +17,7 @@ namespace F7Feather.Tests
 
         public double SensorValue { get; set; }
 
-        public Task<bool> RunTest(IF7MeadowDevice device)
+        public Task<bool> RunTest(T device)
         {
             // set an initial dummy sensor value
             SensorValue = 42.42;

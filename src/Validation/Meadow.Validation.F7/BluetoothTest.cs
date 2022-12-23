@@ -1,24 +1,23 @@
-﻿using Meadow;
-using Meadow.Gateways.Bluetooth;
+﻿using Meadow.Gateways.Bluetooth;
 using System;
 using System.Threading.Tasks;
-using Validation;
 
-namespace F7Feather.Tests
+namespace Meadow.Validation
 {
-    internal class Bluetooth_Basics : ITestFeatherF7
+    public class BluetoothTest<T> : ITest<T>
+        where T : IDeviceUnderTest<IF7MeadowDevice>
     {
         Definition bleTreeDefinition;
         CharacteristicBool onOffCharacteristic;
 
-        public Task<bool> RunTest(IF7MeadowDevice device)
+        public Task<bool> RunTest(T device)
         {
             Console.WriteLine("Initialize hardware...");
 
             // initialize the bluetooth defnition tree
             Console.WriteLine("Starting the BLE server.");
             bleTreeDefinition = GetDefinition();
-            device.BluetoothAdapter.StartBluetoothServer(bleTreeDefinition);
+            device.Device.BluetoothAdapter.StartBluetoothServer(bleTreeDefinition);
 
             // wire up some notifications on set
             foreach (var characteristic in bleTreeDefinition.Services[0].Characteristics)

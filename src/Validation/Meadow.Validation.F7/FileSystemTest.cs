@@ -2,13 +2,14 @@
 using System.IO;
 using System;
 using System.Threading.Tasks;
-using Validation;
+using Meadow.Validation;
 
-namespace F7Feather.Tests
+namespace Meadow.Validation
 {
-    internal class FileSytem_Basics : ITestFeatherF7
+    public class FileSystemTest<T> : ITest<T>
+        where T : IDeviceUnderTest
     {
-        public Task<bool> RunTest(IF7MeadowDevice device)
+        public Task<bool> RunTest(T device)
         {
             Resolver.Log.Info("Meadow File System Tests");
             // list out the named directories available at MeadowOS.FileSystem.[x]
