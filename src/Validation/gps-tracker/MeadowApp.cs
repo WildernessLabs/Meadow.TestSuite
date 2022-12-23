@@ -48,7 +48,7 @@ namespace Meadow.Validation
             {
                 Resolver.Log.Info($"Running {test.GetType().Name}...");
 
-                var result = await test.RunTest(Device);
+                var result = await test.RunTest(new F7TestDevice(Device));
 
                 if (!result)
                 {
