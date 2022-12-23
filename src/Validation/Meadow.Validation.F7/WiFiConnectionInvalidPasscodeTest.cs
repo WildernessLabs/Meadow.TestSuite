@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Meadow.Validation
 {
     public class WiFiConnectionInvalidPasscodeTest<T> : ITest<T>
-        where T : IDeviceUnderTest
+        where T : IDeviceUnderTest<IMeadowDevice>
     {
         public async Task<bool> RunTest(T device)
         {
