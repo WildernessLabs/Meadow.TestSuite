@@ -1,0 +1,26 @@
+﻿MonoControl:
+    Options: --jit
+
+Coprocessor:
+    AutomaticallyStartNetwork: true
+
+Network:
+    # DefaultInterface: Ethernet
+    Ethernet:
+        #
+        #   Should this be the default interface ?  Need to define what happens if Ethernet and WiFi
+        #   definitions are present and they are both configured as the default interface.
+        #
+        Default: false
+    WiFi:
+        #
+        #   Should this be the default interface ?  Need to define what happens if Ethernet and WiFi
+        #   definitions are present and they are both configured as the default interface.
+        #
+        Default: true
+
+Device:
+    SdStorageSupported: false
+
+#Network:
+#    SelectedNetwork: Ethernet
