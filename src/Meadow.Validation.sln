@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Validation.F7", "Val
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "F7Feather_v2", "Validation\f7feather\F7Feather_v2.csproj", "{2177B90B-2DC8-4A7C-B440-D7BB9AA3E73C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ICs.IOExpanders.Mcp23xxx", "..\..\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\ICs.IOExpanders.Mcp23xxx\Driver\ICs.IOExpanders.Mcp23xxx.csproj", "{A9B1B381-220F-45A0-AD94-9671470D3B46}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -177,6 +179,12 @@ Global
 		{2177B90B-2DC8-4A7C-B440-D7BB9AA3E73C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2177B90B-2DC8-4A7C-B440-D7BB9AA3E73C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2177B90B-2DC8-4A7C-B440-D7BB9AA3E73C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A9B1B381-220F-45A0-AD94-9671470D3B46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9B1B381-220F-45A0-AD94-9671470D3B46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9B1B381-220F-45A0-AD94-9671470D3B46}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A9B1B381-220F-45A0-AD94-9671470D3B46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9B1B381-220F-45A0-AD94-9671470D3B46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9B1B381-220F-45A0-AD94-9671470D3B46}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -203,6 +211,7 @@ Global
 		{338B6E47-7F20-4A73-8CE3-5C11A0414253} = {5D266253-4576-4DE0-B657-4F1910DC6819}
 		{4A0006D7-1F6B-4AF5-AF9B-9E11472A12C9} = {5D266253-4576-4DE0-B657-4F1910DC6819}
 		{2177B90B-2DC8-4A7C-B440-D7BB9AA3E73C} = {CFB76BC3-3AD3-435E-9C94-2534E07B59D4}
+		{A9B1B381-220F-45A0-AD94-9671470D3B46} = {5D95B73B-52D0-44D7-96D9-686785DCCF04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D8BDD17-DE9B-4015-8158-F44165D7BB99}
