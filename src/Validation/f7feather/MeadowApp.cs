@@ -34,7 +34,9 @@ namespace Meadow.Validation
                 new BluetoothTest<MeadowF7TestDevice>(),
                 new WiFiAntennaSwitchingTest<MeadowF7TestDevice>(),
                 new FileSystemTest<MeadowF7TestDevice>(),
-                new SQLiteTest<MeadowF7TestDevice>()
+                new SQLiteTest<MeadowF7TestDevice>(),
+                new WiFiSSLLoopTest<MeadowF7TestDevice>(),
+                new WiFiScanForAccessPointsTest<MeadowF7TestDevice>(),
             };
 
             foreach (var test in tests)
