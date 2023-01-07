@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Meadow.TestSuite
@@ -21,7 +20,7 @@ namespace Meadow.TestSuite
 
         public async Task SendFile(FileInfo source, string? destinationName)
         {
-            if(!source.Exists)
+            if (!source.Exists)
             {
                 throw new FileNotFoundException("Source file not found");
             }
@@ -52,9 +51,13 @@ namespace Meadow.TestSuite
             throw new NotImplementedException();
         }
 
-        public Task<WorkerInfo> GetInfo()
+        public async Task<WorkerInfo> GetInfo()
         {
-            throw new NotImplementedException();
+            var cmd = new GetWorkerInfoCommand();
+
+            var result = await Transport.DeliverCommandAsync(cmd);
+            var assemblies = ProcessResults<WorkerInfo>(result);
+            return assemblies;
         }
 
         public async Task<string[]> GetAssemblies()

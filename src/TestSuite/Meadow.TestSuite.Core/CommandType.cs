@@ -7,6 +7,7 @@
         EnumerateTests,
         ExecuteTests,
         GetTestResults,
-        DeleteAssemblies
+        DeleteAssemblies,
+        GetDutInfo
     }
 }
