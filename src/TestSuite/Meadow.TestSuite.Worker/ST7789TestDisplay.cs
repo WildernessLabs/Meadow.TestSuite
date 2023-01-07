@@ -1,6 +1,6 @@
 ﻿using Meadow.Devices;
 using Meadow.Foundation;
-using Meadow.Foundation.Displays.TftSpi;
+using Meadow.Foundation.Displays;
 using Meadow.Foundation.Graphics;
 
 namespace Meadow.TestSuite

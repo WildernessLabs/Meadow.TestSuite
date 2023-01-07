@@ -28,9 +28,9 @@ namespace Meadow.Validation
 
             var tests = new ITest<F7TestDevice>[]
                 {
-//                    new WiFiConnectionPositiveTest<F7TestDevice>(),
+                    new WiFiConnectionPositiveTest<F7TestDevice>(),
                     new WiFiWebRequestPositiveTest<F7TestDevice>(),
-//                    new WiFiScanPositiveTest<F7TestDevice>()
+                    new WiFiScanPositiveTest<F7TestDevice>()
                 };
 
             var complete = false;
@@ -70,7 +70,7 @@ namespace Meadow.Validation
             {
                 ShowFailed();
                 Resolver.Log.Error("---- FAILED TESTS----");
-                Resolver.Log.Error(string.Join("/r/n ", failed));
+                Resolver.Log.Error(string.Join("\r\n ", failed));
             }
         }
 
