@@ -2,9 +2,10 @@
 using Meadow;
 using Meadow.Devices;
 using Meadow.Hardware;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class MeadowApp : App<F7FeatherV2>
     {
@@ -48,6 +49,8 @@ namespace Validation
             var pinTests = new OutputToggleSpeed();
             success &= pinTests.RunTest(Device, Device.Pins.D00);
 
+            var failed = new List<string>();
+
             var pairTests = new IPairTest[]
                 {
                     new UniDirectionAB(),
@@ -71,7 +74,15 @@ namespace Validation
             foreach(var test in pairTests)
             {
                 Resolver.Log.Info($"Running {test.GetType().Name}...");
-                success &= test.RunTest(_pairs);
+
+                var result = test.RunTest(_pairs);
+
+                if(!result)
+                {
+                    failed.Add(test.GetType().Name);
+                }
+
+                success &= result;
             }
 
             Resolver.Log.Info($"Tests complete.");
@@ -83,6 +94,8 @@ namespace Validation
             else
             {
                 _green.State = false;
+                Resolver.Log.Error("---- FAILED TESTS----");
+                Resolver.Log.Error(string.Join("/r/n ", failed));
             }
 
             return base.Run();

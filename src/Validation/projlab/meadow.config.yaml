@@ -1,0 +1,5 @@
+﻿MonoControl:
+    Options: --jit
+
+Coprocessor:
+    AutomaticallyStartNetwork: true

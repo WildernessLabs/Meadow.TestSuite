@@ -1,0 +1,12 @@
+﻿MonoControl:
+    Options: --jit
+
+Coprocessor:
+    AutomaticallyStartNetwork: false
+
+Network:
+    WiFi:
+        Default: true
+
+Device:
+    SdStorageSupported: false

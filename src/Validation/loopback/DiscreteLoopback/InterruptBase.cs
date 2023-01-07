@@ -4,7 +4,7 @@ using Meadow.Hardware;
 using System;
 using System.Threading;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public abstract class InterruptBase : IPairTest
     {

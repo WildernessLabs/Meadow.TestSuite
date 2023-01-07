@@ -1,4 +1,4 @@
-﻿namespace Validation
+﻿namespace Meadow.Validation
 {
     public class PushButtonAB : PushButtonBase
     {

@@ -2,7 +2,7 @@
 using Meadow;
 using Meadow.Hardware;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public class UniDirectionBA : IPairTest
     {

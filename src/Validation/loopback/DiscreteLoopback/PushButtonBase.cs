@@ -3,7 +3,7 @@ using Meadow;
 using Meadow.Hardware;
 using System.Threading;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public abstract class PushButtonBase : IPairTest
     {

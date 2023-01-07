@@ -4,7 +4,7 @@ using Meadow.Hardware;
 using System;
 using System.Collections.Generic;
 
-namespace Validation
+namespace Meadow.Validation
 {
     public interface IPinTest
     {
