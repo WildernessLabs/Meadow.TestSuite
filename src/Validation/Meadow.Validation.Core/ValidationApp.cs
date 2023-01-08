@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Meadow.Validation
@@ -12,6 +13,7 @@ namespace Meadow.Validation
         public abstract void DisplayTestsRunning();
         public abstract void DisplaySuccess();
         public abstract void DisplayFailure();
+        public virtual void OnExecutionHeartbeat() { }
 
         public override async Task Run()
         {
@@ -19,25 +21,43 @@ namespace Meadow.Validation
 
             Resolver.Log.Info($"Starting validation tests...");
 
+            var failed = new List<string>();
+            var complete = false;
             var success = true;
 
-            var failed = new List<string>();
-
-            foreach (var test in TestsToRun)
+            new Thread(() =>
             {
-                Resolver.Log.Info($"Running {test.GetType().Name}...");
-
-                var result = await test.RunTest(DeviceUnderTest);
-
-                if (!result)
+                while (!complete)
                 {
-                    failed.Add(test.GetType().Name);
+                    OnExecutionHeartbeat();
+
+                    Thread.Sleep(1000);
                 }
 
-                success &= result;
-            }
+            }).Start();
 
-            Resolver.Log.Info($"Tests complete.");
+            try
+            {
+                foreach (var test in TestsToRun)
+                {
+                    Resolver.Log.Info($"Running {test.GetType().Name}...");
+
+                    var result = await test.RunTest(DeviceUnderTest);
+
+                    if (!result)
+                    {
+                        failed.Add(test.GetType().Name);
+                    }
+
+                    success &= result;
+                }
+
+                Resolver.Log.Info($"Tests complete.");
+            }
+            finally
+            {
+                complete = true;
+            }
 
             if (success)
             {
@@ -47,7 +67,7 @@ namespace Meadow.Validation
             {
                 DisplayFailure();
                 Resolver.Log.Error("---- FAILED TESTS----");
-                Resolver.Log.Error(string.Join("/r/n ", failed));
+                Resolver.Log.Error(string.Join("\r\n ", failed));
             }
         }
     }

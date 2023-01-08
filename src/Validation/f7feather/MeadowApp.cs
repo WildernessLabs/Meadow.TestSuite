@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace Meadow.Validation
 {
-    public class MeadowApp : ValidationApp<F7FeatherV2> //  App<F7FeatherV2>
+    public class MeadowApp : ValidationApp<F7FeatherV2>
     {
-        private IDigitalOutputPort redLed;
-        private IDigitalOutputPort greenLed;
+        private IDigitalOutputPort _red;
+        private IDigitalOutputPort _green;
+        private IDigitalOutputPort _blue;
 
         public override Task Initialize()
         {
-            redLed = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedRed);
-            greenLed = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedGreen);
+            _red = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedRed);
+            _green = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedGreen);
+            _blue = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedBlue);
 
             return base.Initialize();
         }
@@ -23,20 +25,28 @@ namespace Meadow.Validation
 
         public override void DisplayTestsRunning()
         {
-            redLed.State = true;
-            greenLed.State = true;
+            _red.State = true;
+            _green.State = true;
         }
 
         public override void DisplaySuccess()
         {
-            redLed.State = false;
-            greenLed.State = true;
+            _red.State = false;
+            _green.State = true;
+            _blue.State = false;
         }
 
         public override void DisplayFailure()
         {
-            redLed.State = true;
-            greenLed.State = false;
+            _red.State = true;
+            _green.State = false;
+            _blue.State = false;
+        }
+
+        public override void OnExecutionHeartbeat()
+        {
+            _blue.State = !_blue.State;
+            base.OnExecutionHeartbeat();
         }
 
         public override IEnumerable<ITest<MeadowTestDevice>> TestsToRun
@@ -46,7 +56,7 @@ namespace Meadow.Validation
                 return new ITest<MeadowF7TestDevice>[]
                 {
                     new ReflectionTest(),
-//                new BluetoothTest<MeadowF7TestDevice>(),
+                new BluetoothTest<MeadowF7TestDevice>(),
 //                new WiFiAntennaSwitchingTest<MeadowF7TestDevice>(),
 //                new FileSystemTest<MeadowF7TestDevice>(),
 //                new SQLiteTest<MeadowF7TestDevice>(),
