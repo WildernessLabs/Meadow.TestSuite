@@ -26,11 +26,11 @@ namespace Meadow.Validation
 
             ShowInProgress();
 
-            var tests = new ITest<F7TestDevice>[]
+            var tests = new ITest<MeadowTestDevice>[]
                 {
-                    new WiFiConnectionPositiveTest<F7TestDevice>(),
-                    new WiFiWebRequestPositiveTest<F7TestDevice>(),
-                    new WiFiScanPositiveTest<F7TestDevice>()
+                    new WiFiConnectionPositiveTest<MeadowTestDevice>(),
+                    new WiFiWebRequestPositiveTest<MeadowTestDevice>(),
+                    new WiFiScanPositiveTest<MeadowTestDevice>()
                 };
 
             var complete = false;
@@ -48,7 +48,7 @@ namespace Meadow.Validation
             {
                 Resolver.Log.Info($"Running {test.GetType().Name}...");
 
-                var result = await test.RunTest(new F7TestDevice(Device));
+                var result = await test.RunTest(new MeadowTestDevice(Device));
 
                 if (!result)
                 {
