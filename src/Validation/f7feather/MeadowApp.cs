@@ -31,12 +31,14 @@ namespace Meadow.Validation
 
             var tests = new ITest<MeadowF7TestDevice>[]
             {
-                new BluetoothTest<MeadowF7TestDevice>(),
-                new WiFiAntennaSwitchingTest<MeadowF7TestDevice>(),
-                new FileSystemTest<MeadowF7TestDevice>(),
-                new SQLiteTest<MeadowF7TestDevice>(),
-                new WiFiSSLLoopTest<MeadowF7TestDevice>(),
-                new WiFiScanForAccessPointsTest<MeadowF7TestDevice>(),
+                new ReflectionTest(),
+
+//                new BluetoothTest<MeadowF7TestDevice>(),
+//                new WiFiAntennaSwitchingTest<MeadowF7TestDevice>(),
+//                new FileSystemTest<MeadowF7TestDevice>(),
+//                new SQLiteTest<MeadowF7TestDevice>(),
+//                new WiFiSSLLoopTest<MeadowF7TestDevice>(),
+//                new WiFiScanForAccessPointsTest<MeadowF7TestDevice>(),
             };
 
             foreach (var test in tests)

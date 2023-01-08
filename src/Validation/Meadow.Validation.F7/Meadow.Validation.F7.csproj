@@ -14,4 +14,9 @@
     <ProjectReference Include="..\..\..\..\Meadow.Logging\Source\Meadow.Logging\lib\Meadow.Logging.csproj" />
     <ProjectReference Include="..\Meadow.Validation.Core\Meadow.Validation.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Validation.Utility.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
