@@ -24,7 +24,7 @@ namespace Meadow.Validation
             _red = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedRed);
             _green = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedGreen);
             _blue = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedBlue);
-            _testDevice = new ProjectLabTestDevice(Device, new ProjectLab());
+            _testDevice = new ProjectLabTestDevice(Device, ProjectLab.CreateProjectLab());
 
             // create a display - just doing this verifies SPI
             _graphics = new MicroGraphics(_testDevice.ProjectLab.Display);
