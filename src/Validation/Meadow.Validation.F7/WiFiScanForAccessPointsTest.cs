@@ -2,12 +2,11 @@
 using Meadow.Hardware;
 using System.Threading.Tasks;
 using System;
-using Meadow.Gateways.Bluetooth;
 
 namespace Meadow.Validation
 {
     public class WiFiScanForAccessPointsTest<T> : ITest<T>
-        where T : MeadowF7TestDevice
+        where T : MeadowTestDevice
     {
         public async Task<bool> RunTest(T device)
         {

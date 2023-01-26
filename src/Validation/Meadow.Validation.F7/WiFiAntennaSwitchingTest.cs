@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Meadow.Validation
 {
     public class WiFiAntennaSwitchingTest<T> : ITest<T>
-        where T : MeadowF7TestDevice
+        where T : MeadowTestDevice
     {
         public Task<bool> RunTest(T device)
         {

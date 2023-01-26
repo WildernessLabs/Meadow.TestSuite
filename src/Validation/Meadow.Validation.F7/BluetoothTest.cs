@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Meadow.Validation
 {
     public class BluetoothTest<T> : ITest<T>
-        where T : MeadowF7TestDevice
+        where T : MeadowTestDevice
     {
         Definition bleTreeDefinition;
         CharacteristicBool onOffCharacteristic;
@@ -17,7 +17,7 @@ namespace Meadow.Validation
             // initialize the bluetooth defnition tree
             Console.WriteLine("Starting the BLE server.");
             bleTreeDefinition = GetDefinition();
-            device.Device.BluetoothAdapter.StartBluetoothServer(bleTreeDefinition);
+            (device as MeadowF7TestDevice).Device.BluetoothAdapter.StartBluetoothServer(bleTreeDefinition);
 
             // wire up some notifications on set
             foreach (var characteristic in bleTreeDefinition.Services[0].Characteristics)

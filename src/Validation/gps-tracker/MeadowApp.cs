@@ -28,9 +28,16 @@ namespace Meadow.Validation
 
             var tests = new ITest<MeadowTestDevice>[]
                 {
-                    new WiFiConnectionPositiveTest<MeadowTestDevice>(),
-                    new WiFiWebRequestPositiveTest<MeadowTestDevice>(),
-                    new WiFiScanPositiveTest<MeadowTestDevice>()
+                  new BluetoothTest<MeadowTestDevice>(),
+                  new WiFiAntennaSwitchingTest<MeadowTestDevice>(),
+                  new FileSystemTest<MeadowTestDevice>(),
+                  new SQLiteTest<MeadowTestDevice>(),
+                  new WiFiSSLLoopTest<MeadowTestDevice>(),
+                  new WiFiScanForAccessPointsTest<MeadowTestDevice>(),
+
+                 //   new WiFiConnectionPositiveTest<MeadowTestDevice>(),
+                 //   new WiFiWebRequestPositiveTest<MeadowTestDevice>(),
+                 //   new WiFiScanPositiveTest<MeadowTestDevice>()
                 };
 
             var complete = false;

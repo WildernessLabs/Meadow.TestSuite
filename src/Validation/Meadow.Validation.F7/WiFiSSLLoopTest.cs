@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Meadow.Validation
 {
     public class WiFiSSLLoopTest<T> : ITest<T>
-        where T : MeadowF7TestDevice
+        where T : MeadowTestDevice
     {
         public async Task<bool> RunTest(T device)
         {
@@ -16,7 +16,7 @@ namespace Meadow.Validation
             var completed = false;
             var success = false;
 
-            var wifi = device.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            var wifi = (device as MeadowF7TestDevice).Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             if (wifi == null) return false;
 
             wifi.NetworkConnected += (s, e) =>

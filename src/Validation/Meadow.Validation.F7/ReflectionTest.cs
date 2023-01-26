@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Meadow.Validation
 {
-    public class ReflectionTest : ITest<MeadowF7TestDevice>
+    public class ReflectionTest : ITest<MeadowTestDevice>
     {
-        public Task<bool> RunTest(MeadowF7TestDevice device)
+        public Task<bool> RunTest(MeadowTestDevice device)
         {
             try
             {

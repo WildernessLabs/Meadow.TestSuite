@@ -1,5 +1,6 @@
 ﻿using Meadow.Devices;
 using Meadow.Hardware;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,17 +54,16 @@ namespace Meadow.Validation
         {
             get
             {
-                return new ITest<MeadowF7TestDevice>[]
+                return new ITest<MeadowTestDevice>[]
                 {
-                    new ReflectionTest(),
-                new BluetoothTest<MeadowF7TestDevice>(),
-//                new WiFiAntennaSwitchingTest<MeadowF7TestDevice>(),
-//                new FileSystemTest<MeadowF7TestDevice>(),
-//                new SQLiteTest<MeadowF7TestDevice>(),
-//                new WiFiSSLLoopTest<MeadowF7TestDevice>(),
-//                new WiFiScanForAccessPointsTest<MeadowF7TestDevice>(),
-                }
-                .Cast<ITest<MeadowTestDevice>>();
+//                  new ReflectionTest(),
+                  new BluetoothTest<MeadowTestDevice>(),
+                  new WiFiAntennaSwitchingTest<MeadowTestDevice>(),
+                  new FileSystemTest<MeadowTestDevice>(),
+                  new SQLiteTest<MeadowTestDevice>(),
+                  new WiFiSSLLoopTest<MeadowTestDevice>(),
+                  new WiFiScanForAccessPointsTest<MeadowTestDevice>(),
+                };
             }
         }
     }
