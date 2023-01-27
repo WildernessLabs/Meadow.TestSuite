@@ -53,7 +53,14 @@ namespace Meadow.Validation
             // just in case multiple connects come in
             await Task.Delay(1000);
 
-            for(int i = 0; i < 100; i++)
+            // Avoid running the requests if wi-fi never connected.
+            if (!wifi.IsConnected)
+            {
+                Resolver.Log.Error("Wi-Fi not connected");
+                return false;
+            }
+
+            for (int i = 0; i < 100; i++)
             {
                 await GetWebPageViaHttpClient("https://postman-echo.com/get?foo1=bar1&foo2=bar2", i);
             }
