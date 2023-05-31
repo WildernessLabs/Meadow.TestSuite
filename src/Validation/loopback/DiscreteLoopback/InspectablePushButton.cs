@@ -5,7 +5,7 @@ namespace Meadow.Validation
 {
     public class InspectablePushButton : PushButton
     {
-        public InspectablePushButton(IDigitalInputPort input)
+        public InspectablePushButton(IDigitalInterruptPort input)
             : base(input)
         {
         }

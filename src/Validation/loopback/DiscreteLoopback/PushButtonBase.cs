@@ -1,6 +1,4 @@
-﻿
-using Meadow;
-using Meadow.Hardware;
+﻿using Meadow.Hardware;
 using System.Threading;
 
 namespace Meadow.Validation
@@ -11,9 +9,9 @@ namespace Meadow.Validation
 
         public bool RunTest(PinPair pair, bool aIsOutput)
         {
-            if(aIsOutput)
+            if (aIsOutput)
             {
-                if(!pair.B.Supports<IDigitalChannelInfo>(c => c.InterruptCapable))
+                if (!pair.B.Supports<IDigitalChannelInfo>(c => c.InterruptCapable))
                 {
                     Resolver.Log.Warn($"PIN {pair.B.Name} does not support interrupts. Skipping.");
                     return true;
@@ -21,16 +19,16 @@ namespace Meadow.Validation
             }
             else
             {
-                if(!pair.A.Supports<IDigitalChannelInfo>(c => c.InterruptCapable))
+                if (!pair.A.Supports<IDigitalChannelInfo>(c => c.InterruptCapable))
                 {
                     Resolver.Log.Warn($"PIN {pair.A.Name} does not support interrupts. Skipping.");
                     return true;
                 }
             }
 
-            using(var output = pair.Device.CreateDigitalOutputPort(aIsOutput ? pair.A : pair.B, false))
-            using(var input = pair.Device.CreateDigitalInputPort(aIsOutput ? pair.B : pair.A, InterruptMode.EdgeBoth, ResistorMode.InternalPullDown))
-            using(var button = new InspectablePushButton(input))
+            using (var output = pair.Device.CreateDigitalOutputPort(aIsOutput ? pair.A : pair.B, false))
+            using (var input = pair.Device.CreateDigitalInterruptPort(aIsOutput ? pair.B : pair.A, InterruptMode.EdgeBoth, ResistorMode.InternalPullDown))
+            using (var button = new InspectablePushButton(input))
             {
                 return TestButton(output, button);
             }

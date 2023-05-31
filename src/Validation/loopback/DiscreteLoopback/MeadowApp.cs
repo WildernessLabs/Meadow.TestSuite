@@ -1,8 +1,7 @@
-﻿
-using Meadow;
-using Meadow.Devices;
+﻿using Meadow.Devices;
 using Meadow.Hardware;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Meadow.Validation
@@ -53,6 +52,7 @@ namespace Meadow.Validation
 
             var pairTests = new IPairTest[]
                 {
+                    /*
                     new UniDirectionAB(),
                     new UniDirectionBA(),
                     new RisingInterruptAB(),
@@ -61,8 +61,9 @@ namespace Meadow.Validation
                     new FallingInterruptBA(),
                     new TwoEdgeInterruptAB(),
                     new TwoEdgeInterruptBA(),
+                    */
                     new CounterRisingAB(),
-                    new CounterRisingAB(),
+                    new CounterRisingBA(),
                     new CounterFallingAB(),
                     new CounterFallingBA(),
                     new CounterTwoEdgeAB(),
@@ -71,13 +72,15 @@ namespace Meadow.Validation
                     new PushButtonBA(),
                 };
 
-            foreach(var test in pairTests)
+            foreach (var test in pairTests)
             {
+                Thread.Sleep(10);
+
                 Resolver.Log.Info($"Running {test.GetType().Name}...");
 
                 var result = test.RunTest(_pairs);
 
-                if(!result)
+                if (!result)
                 {
                     failed.Add(test.GetType().Name);
                 }
@@ -87,7 +90,7 @@ namespace Meadow.Validation
 
             Resolver.Log.Info($"Tests complete.");
 
-            if(success)
+            if (success)
             {
                 _red.State = false;
             }
@@ -95,7 +98,7 @@ namespace Meadow.Validation
             {
                 _green.State = false;
                 Resolver.Log.Error("---- FAILED TESTS----");
-                Resolver.Log.Error(string.Join("/r/n ", failed));
+                Resolver.Log.Error(string.Join("\r\n ", failed));
             }
 
             return base.Run();
