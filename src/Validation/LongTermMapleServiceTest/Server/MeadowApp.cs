@@ -13,8 +13,9 @@ public partial class MeadowApp : App<F7FeatherV2>
 {
     private MapleServer _mapleServer = default!;
 
-    private const string SSID = "Tacke";
-    private const string PASSCODE = "58635863";
+    private const string SSID = "BOBS_YOUR_UNCLE";
+    private const string PASSCODE = "1234567890";
+    private const bool ManualGCCollect = false;
 
     public override Task Initialize()
     {
@@ -25,7 +26,7 @@ public partial class MeadowApp : App<F7FeatherV2>
         Resolver.Services.Add(led);
 
         // add a memory monitor
-        Resolver.Services.Add(new MemoryMonitor(TimeSpan.FromSeconds(30), false));
+        Resolver.Services.Add(new MemoryMonitor(TimeSpan.FromSeconds(30), ManualGCCollect));
 
         var wifi = Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
 

@@ -10,6 +10,7 @@ internal class Program
     private const string MEADOW_ADDRESS = "192.168.100.185";
 
     private bool LogMemoryResults = true;
+    private bool TestSimpleJson = true;
 
     public static async Task Main(string[] _)
     {
@@ -34,7 +35,19 @@ internal class Program
         {
             try
             {
-                var resp = await client.GetAsync("/telemetry");
+                HttpResponseMessage resp;
+
+                if (TestSimpleJson)
+                {
+                    // get device-serialized json
+                    resp = await client.GetAsync("/telemetry");
+                }
+                else
+                {
+                    // get random text, no serialization
+                    resp = await client.GetAsync("/text?length=1024");
+                }
+
                 if (!resp.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"GET returned {resp.StatusCode}");
