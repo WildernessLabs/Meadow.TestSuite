@@ -2,16 +2,16 @@
 
 namespace Meadow.Validation
 {
-    public interface IDeviceUnderTest<T> where T : IMeadowDevice
+    public interface IDeviceUnderTest<T> where T : class, IMeadowDevice
     {
         public T Device { get; }
     }
 
-    public class F7TestDevice : IDeviceUnderTest<IMeadowDevice>
+    public class MeadowTestDevice : IDeviceUnderTest<IMeadowDevice>
     {
         public IMeadowDevice Device { get; }
 
-        public F7TestDevice(IMeadowDevice device)
+        public MeadowTestDevice(IMeadowDevice device)
         {
             Device = device;
         }

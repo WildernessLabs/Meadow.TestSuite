@@ -1,9 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-
-namespace Meadow.TestSuite
+﻿namespace Meadow.TestSuite
 {
+    public class GetWorkerInfoCommand : TestCommand
+    {
+        public GetWorkerInfoCommand()
+        {
+            CommandType = CommandType.GetDutInfo;
+        }
+
+        public override void Execute(IWorker worker)
+        {
+            Result = worker.Registry.GetAssemblies();
+        }
+    }
+
     public class GetAssembliesCommand : TestCommand
     {
         public GetAssembliesCommand()

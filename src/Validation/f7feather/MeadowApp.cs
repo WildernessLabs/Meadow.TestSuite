@@ -1,69 +1,69 @@
 ﻿using Meadow.Devices;
 using Meadow.Hardware;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Meadow.Validation
 {
-    public class MeadowApp : App<F7FeatherV2>
+    public class MeadowApp : ValidationApp<F7FeatherV2>
     {
-        private IDigitalOutputPort redLed;
-        private IDigitalOutputPort greenLed;
+        private IDigitalOutputPort _red;
+        private IDigitalOutputPort _green;
+        private IDigitalOutputPort _blue;
 
         public override Task Initialize()
         {
-            redLed = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedRed);
-            greenLed = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedGreen);
+            _red = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedRed);
+            _green = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedGreen);
+            _blue = Device.CreateDigitalOutputPort(Device.Pins.OnboardLedBlue);
 
             return base.Initialize();
         }
 
-        public override async Task Run()
+        public override MeadowTestDevice DeviceUnderTest => new MeadowF7TestDevice(Device);
+
+        public override void DisplayTestsRunning()
         {
-            redLed.State = true;
-            greenLed.State = true;
+            _red.State = true;
+            _green.State = true;
+        }
 
-            Resolver.Log.Info($"Starting validation tests...");
+        public override void DisplaySuccess()
+        {
+            _red.State = false;
+            _green.State = true;
+            _blue.State = false;
+        }
 
-            var success = true;
+        public override void DisplayFailure()
+        {
+            _red.State = true;
+            _green.State = false;
+            _blue.State = false;
+        }
 
-            var failed = new List<string>();
+        public override void OnExecutionHeartbeat()
+        {
+            _blue.State = !_blue.State;
+            base.OnExecutionHeartbeat();
+        }
 
-            var tests = new ITest<MeadowF7TestDevice>[]
+        public override IEnumerable<ITest<MeadowTestDevice>> TestsToRun
+        {
+            get
             {
-                new BluetoothTest<MeadowF7TestDevice>(),
-                new WiFiAntennaSwitchingTest<MeadowF7TestDevice>(),
-                new FileSystemTest<MeadowF7TestDevice>(),
-                new SQLiteTest<MeadowF7TestDevice>(),
-                new WiFiSSLLoopTest<MeadowF7TestDevice>(),
-                new WiFiScanForAccessPointsTest<MeadowF7TestDevice>(),
-            };
-
-            foreach (var test in tests)
-            {
-                Resolver.Log.Info($"Running {test.GetType().Name}...");
-
-                var result = await test.RunTest(new MeadowF7TestDevice(Device));
-
-                if (!result)
+                return new ITest<MeadowTestDevice>[]
                 {
-                    failed.Add(test.GetType().Name);
-                }
-
-                success &= result;
-            }
-
-            Resolver.Log.Info($"Tests complete.");
-
-            if (success)
-            {
-                redLed.State = false;
-            }
-            else
-            {
-                greenLed.State = false;
-                Resolver.Log.Error("---- FAILED TESTS----");
-                Resolver.Log.Error(string.Join("/r/n ", failed));
+//                  new ReflectionTest(),
+                  new BluetoothTest<MeadowTestDevice>(),
+                  new WiFiAntennaSwitchingTest<MeadowTestDevice>(),
+                  new FileSystemTest<MeadowTestDevice>(),
+                  new SQLiteTest<MeadowTestDevice>(),
+                  new WiFiSSLLoopTest<MeadowTestDevice>(),
+                  new WiFiScanForAccessPointsTest<MeadowTestDevice>(),
+                };
             }
         }
     }

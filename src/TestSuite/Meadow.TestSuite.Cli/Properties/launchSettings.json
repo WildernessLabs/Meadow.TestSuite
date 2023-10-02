@@ -1,5 +1,9 @@
 {
   "profiles": {
+    "Serial Get Info": {
+      "commandName": "Project",
+      "commandLineArgs": "info -t COM8"
+    },
     "Get Info": {
       "commandName": "Project",
       "commandLineArgs": "info -t 192.168.0.15:8080"

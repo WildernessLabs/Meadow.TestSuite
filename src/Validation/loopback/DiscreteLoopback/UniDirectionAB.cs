@@ -1,6 +1,4 @@
-﻿
-using Meadow;
-using Meadow.Hardware;
+﻿using Meadow.Hardware;
 
 namespace Meadow.Validation
 {
@@ -8,8 +6,8 @@ namespace Meadow.Validation
     {
         public bool RunTest(PinPair pair)
         {
-            using(var output = pair.Device.CreateDigitalOutputPort(pair.A, false))
-            using(var input = pair.Device.CreateDigitalInputPort(pair.B, InterruptMode.None, ResistorMode.InternalPullDown))
+            using (var output = pair.Device.CreateDigitalOutputPort(pair.A, false))
+            using (var input = pair.Device.CreateDigitalInterruptPort(pair.B, InterruptMode.None, ResistorMode.InternalPullDown))
             {
                 var success = true;
 

@@ -1,7 +1,7 @@
 ﻿using Meadow;
 using Meadow.Validation;
 
-public class MeadowF7TestDevice : F7TestDevice
+public class MeadowF7TestDevice : MeadowTestDevice
 {
     public new IF7MeadowDevice Device { get; }
 

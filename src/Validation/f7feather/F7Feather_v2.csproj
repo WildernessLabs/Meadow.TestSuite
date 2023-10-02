@@ -25,7 +25,7 @@
     <PackageReference Include="sqlite-net-static" Version="1.8.116" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Meadow.Core\source\Meadow.F7\Meadow.F7.csproj" />
+    <ProjectReference Include="..\..\..\..\Meadow.Core\source\implementations\f7\Meadow.F7\Meadow.F7.csproj" />
     <ProjectReference Include="..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj" />
     <ProjectReference Include="..\Meadow.Validation.Core\Meadow.Validation.Core.csproj" />
     <ProjectReference Include="..\Meadow.Validation.F7\Meadow.Validation.F7.csproj" />

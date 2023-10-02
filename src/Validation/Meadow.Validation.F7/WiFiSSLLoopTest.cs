@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Meadow.Validation
 {
     public class WiFiSSLLoopTest<T> : ITest<T>
-        where T : MeadowF7TestDevice
+        where T : MeadowTestDevice
     {
         public async Task<bool> RunTest(T device)
         {
@@ -16,7 +16,7 @@ namespace Meadow.Validation
             var completed = false;
             var success = false;
 
-            var wifi = device.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            var wifi = (device as MeadowF7TestDevice).Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             if (wifi == null) return false;
 
             wifi.NetworkConnected += (s, e) =>
@@ -53,7 +53,14 @@ namespace Meadow.Validation
             // just in case multiple connects come in
             await Task.Delay(1000);
 
-            for(int i = 0; i < 100; i++)
+            // Avoid running the requests if wi-fi never connected.
+            if (!wifi.IsConnected)
+            {
+                Resolver.Log.Error("Wi-Fi not connected");
+                return false;
+            }
+
+            for (int i = 0; i < 100; i++)
             {
                 await GetWebPageViaHttpClient("https://postman-echo.com/get?foo1=bar1&foo2=bar2", i);
             }
