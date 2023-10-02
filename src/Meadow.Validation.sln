@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Validation.Utility", "Valid
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.F7", "..\..\Meadow.Core\source\implementations\f7\Meadow.F7\Meadow.F7.csproj", "{33064F68-8EE9-424F-93BB-03072083EE15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "F7ManualTests", "Validation\manual\F7ManualTests\F7ManualTests.csproj", "{F6283023-615E-4750-935B-9E32142158C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -193,6 +195,12 @@ Global
 		{33064F68-8EE9-424F-93BB-03072083EE15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33064F68-8EE9-424F-93BB-03072083EE15}.Release|Any CPU.Build.0 = Release|Any CPU
 		{33064F68-8EE9-424F-93BB-03072083EE15}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F6283023-615E-4750-935B-9E32142158C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6283023-615E-4750-935B-9E32142158C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6283023-615E-4750-935B-9E32142158C5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F6283023-615E-4750-935B-9E32142158C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6283023-615E-4750-935B-9E32142158C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6283023-615E-4750-935B-9E32142158C5}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,6 +229,7 @@ Global
 		{A9B1B381-220F-45A0-AD94-9671470D3B46} = {5D95B73B-52D0-44D7-96D9-686785DCCF04}
 		{58668056-049A-4459-B57B-E1CAB77A5EB6} = {CFB76BC3-3AD3-435E-9C94-2534E07B59D4}
 		{33064F68-8EE9-424F-93BB-03072083EE15} = {5D95B73B-52D0-44D7-96D9-686785DCCF04}
+		{F6283023-615E-4750-935B-9E32142158C5} = {CFB76BC3-3AD3-435E-9C94-2534E07B59D4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D8BDD17-DE9B-4015-8158-F44165D7BB99}
