@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+{% if accesspoint and accesspoint.enabled %}
+
+interface=wlan0 # Listening interface
+dhcp-range={{ ip_range.start }},{{ ip_range.end }},255.255.255.0,24h     # Pool of IP addresses served via DHCP
+domain=wlan                                                 # Local wireless DNS domain
+address=/gw.wlan/{{ own_ip }}                                # Alias for this router        
+
+{% endif %}

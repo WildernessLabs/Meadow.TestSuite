@@ -1,0 +1,24 @@
+---
+# *****************************************************************************
+#  Device Settings
+#
+#  Set the hardware adapters here
+#
+#  wifi_adapter - Name of the WiFi adapter
+#  lan_adapter - Name of the wired ethernet adapter
+#  
+wifi_adapter: wlan0
+lan_adapter: eth0
+
+# *****************************************************************************
+#  Static IP settings for the lan_adapter
+#
+#  enabled - set to True to enable static ip configuration
+#  netmask - Subnet mask for the wired network
+#  gateway - IP address of the router
+#
+# Note that the IP address should be set in the host specific variables file.
+#
+lan_static:
+  netmask: 255.255.255.0
+  gateway: 192.168.1.254

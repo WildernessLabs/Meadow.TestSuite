@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+interface eth0
+    static ip_address={{ lan_static.address }}/24
+    static routers={{ lan_static.gateway }}
+    static domain_name_servers={{ lan_static.gateway }}
+
+{% if accesspoint and accesspoint.enabled %}
+
+interface {{ wifi_adapter }}
+static ip_address={{ own_ip }}/24
+nohook wpa_supplicant
+
+{% endif %}
+

@@ -1,0 +1,132 @@
+---
+- name: Update repositories cache and upgrade system
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+    cache_valid_time: 3600
+    autoclean: yes
+    autoremove: yes
+
+- name: Check if a reboot is needed
+  register: reboot_required_file
+  stat:
+    path: /var/run/reboot-required
+    get_md5: no
+
+- name: Reboot if needed
+  ansible.builtin.reboot:
+    msg: "Reboot initiated by Ansible for kernel updates"
+    connect_timeout: 5
+    reboot_timeout: 300
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: uptime
+  when: reboot_required_file.stat.exists
+#
+#   Expand the file system to consume the entire disc.
+#
+- name: Expand the file system
+  ansible.builtin.command: sudo raspi-config --expand-rootfs
+#
+#   Reboot to expand the file system.
+#
+- name: reboot
+  reboot:
+#
+#   Install commonly used software.
+#
+- name: Install tools
+  ansible.builtin.apt:
+    pkg:
+      - zsh
+      - screen
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - build-essential
+      - python3-pip
+      - gnupg
+      - hostapd
+      - dnsmasq
+#
+#   Setup the network adapters.
+#
+#   Task list taken from https://www.raspberrypi.com/documentation/computers/configuration.html#the-raspi-config-command-line-interface
+#
+- name: Configure network interfaces
+  template:
+    src: templates/dhcpcd.conf.j2
+    dest: /etc/dhcpcd.conf
+#
+#   The /etc/hostapd directory does not always exist, we need to make it
+#   if it is missing otherwise the register hostapd step will fail.
+#
+- name: Check /etc/hostapd directory
+  stat:
+    path: '/etc/hostapd'
+  register: hostapd_directory_data
+
+- name: Create /etc/hostapd directory if it doesn't already exist
+  file:
+    path: '/etc/hostapd'
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+  when: not hostapd_directory_data.stat.exists
+
+- name: Register hostapd configuration
+  template:
+    src: templates/hostapd.conf.j2
+    dest: /etc/hostapd/hostapd.conf
+    owner: root
+    group: root
+    mode: '0644'
+#
+- name: Configure DNS masq
+  template:
+    src: templates/dnsmasq.conf.j2
+    dest: /etc/dnsmasq.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable the access point
+  ansible.builtin.command: sudo systemctl unmask hostapd && sudo systemctl enable hostapd
+
+- name: Install the net filter software
+  ansible.builtin.command: sudo DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent
+
+- name: Allow routing through to ethernet
+  ansible.builtin.copy:
+    content: |
+      # Enable IPv4 routing
+      net.ipv4.ip_forward=1
+    dest: /etc/sysctl.d/routed-ap.conf
+    backup: yes
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable routing through the firewall
+  ansible.builtin.command: sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+- name: Allow the firewall rule to be loaded at boot time
+  ansible.builtin.command: sudo netfilter-persistent save
+
+#
+#   Install Docker
+#
+- name: Grab a copy of the docker install script
+  ansible.builtin.command: curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+
+- name: Run the Docker install script
+  ansible.builtin.command: sudo sh /tmp/get-docker.sh
+
+- name: Remove the Docker install script
+  ansible.builtin.command: sudo rm /tmp/get-docker.sh
+#
+# reboot
+#
+- name: reboot
+  reboot:

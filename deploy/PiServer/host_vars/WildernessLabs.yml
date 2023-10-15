@@ -1,0 +1,53 @@
+---
+# *****************************************************************************
+#  Static IP settings for the lan_adapter
+#
+#  Additional configuration for the ethernet adapter.
+#
+#  address - Static IP address for the wired ethernet network.
+#
+lan_static:
+  address: 192.168.1.35
+  netmask: 255.255.255.0
+  gateway: 192.168.1.254
+
+# *****************************************************************************
+#   Wifi Settings
+#
+#   Configuration options for your access point.
+# 
+#   SSID - Name of the wifi networks as it appears in the list of
+#          available networks on client devices
+#   channel - Wifi channel that will be used
+#   security.enabled - set to True to enable WPA-2 encryption
+#   security.psk - password for the network
+#                 (ignored if security.enabled == False)
+#
+accesspoint:
+  enabled: True
+  ssid: WildernessLabs24
+  password: WildernessLabs559)
+  #
+  # Channel 7 for 2.4GHz, 36 for 5GHz.
+  #
+  channel: 7
+  #
+  # a = 5GHz (Pi 3B+ and above), g = 2.4GHz
+  #
+  hw_mode: g
+
+# *****************************************************************************
+#   DHCP Settings
+#
+#   Settings for the local DHCP server associated with the access point.
+#
+ip_base: 192.168.4
+own_ip: "{{ ip_base }}.1"
+ip_range:
+  start: "{{ ip_base }}.20"
+  end: "{{ ip_base }}.220"
+dns_servers: "192.168.1.254 8.8.8.8 4.4.4.4"
+subnet: 255.255.255.0
+network: "{{ ip_base }}.0"
+broadcast: "{{ ip_base }}.255"
+lease_time: 864000  # That's how many seconds are in 10 days
