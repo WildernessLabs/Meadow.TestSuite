@@ -1,0 +1,6 @@
+{
+    "NetworkHttpGetSoakTestConfiguration": {
+      "TestURL": "http://192.168.1.174:8080/small.html",
+      "Iterations": 1000000
+    }
+}
