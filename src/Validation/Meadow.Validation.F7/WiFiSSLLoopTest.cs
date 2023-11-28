@@ -10,8 +10,8 @@ namespace Meadow.Validation
     {
         public async Task<bool> RunTest(T device)
         {
-            string SSID = "";
-            string PASSWORD = "";
+            string SSID = "TELUSDC1E"; // "BunnyMesh";
+            string PASSWORD = "tnrXFa6MVqAU"; //  "zxpvi29wt8";
 
             var completed = false;
             var success = false;
@@ -31,7 +31,9 @@ namespace Meadow.Validation
             try
             {
                 Resolver.Log.Info($"Connecting to valid SSID with valid passcode...");
+
                 await wifi.Connect(SSID, PASSWORD);
+                completed = true;
             }
             catch (Exception ex)
             {
