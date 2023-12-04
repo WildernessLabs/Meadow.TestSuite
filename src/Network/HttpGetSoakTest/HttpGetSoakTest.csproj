@@ -1,0 +1,34 @@
+<Project Sdk="Meadow.Sdk/1.1.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <OutputType>Library</OutputType>
+    <AssemblyName>App</AssemblyName>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="meadow.config.yaml" />
+    <None Remove="Meadow.F7" />
+    <None Remove="Meadow.Units" />
+    <None Remove="Meadow" />
+    <None Remove="Meadow.Contracts" />
+    <None Remove="app.config.yaml" />
+    <None Remove="wifi.config.yaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="meadow.config.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="app.config.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wifi.config.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Meadow.Core\source\Meadow.Core\Meadow.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\Meadow.Contracts\Source\Meadow.Contracts\Meadow.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\..\Meadow.Core\source\implementations\f7\Meadow.F7\Meadow.F7.csproj" />
+  </ItemGroup>
+</Project>
