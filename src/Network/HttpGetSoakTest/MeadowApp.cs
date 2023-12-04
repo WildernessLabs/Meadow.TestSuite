@@ -109,7 +109,6 @@ namespace HttpGetSoakTest
             int counter = 0;
             int modulo = _config.NumberOfRequests switch
             {
-                > 1000 => 1000,
                 > 100 => 100,
                 > 10 => 10,
                 _ => 0
