@@ -42,9 +42,9 @@ namespace ProjectLabTest
             _displayService.UpdateTitle(title);
             _displayService.UpdateText(text);
 
-            _displayService.Log($"Request URI: {_config.RequestUri}");
-            _displayService.Log($"Number of requests: {_config.NumberOfRequests}");
-            _displayService.Log($"Delay between requests: {_config.DelayBetweenRequestsMs} ms");
+            _displayService.Log($"URI: {_config.RequestUri}");
+            _displayService.Log($"Number: {_config.NumberOfRequests}");
+            _displayService.Log($"Delay: {_config.DelayBetweenRequestsMs} ms");
         }
 
         public void Run()
