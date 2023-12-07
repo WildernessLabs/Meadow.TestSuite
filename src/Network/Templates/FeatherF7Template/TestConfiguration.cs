@@ -2,7 +2,7 @@ using Meadow;
 
 namespace ProjectLabTest
 {
-    public class coTestSettings : ConfigurableObject
+    public class TestSettings : ConfigurableObject
     {
         public string RequestUri => GetConfiguredString(nameof(RequestUri), "http://postman-echo.com/get?foo1=bar1");
         public int NumberOfRequests => GetConfiguredInt(nameof(NumberOfRequests), 10000);

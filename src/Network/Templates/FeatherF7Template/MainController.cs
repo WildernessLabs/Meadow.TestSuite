@@ -12,6 +12,8 @@ namespace FeatherF7Test
 {
     internal class MainController
     {
+        TestSettings _config;
+
         F7FeatherBase _device;
 
         IOLEDBoardHardware _hardware;
@@ -25,6 +27,8 @@ namespace FeatherF7Test
 
         public void Initialize()
         {
+            _config = new TestSettings();
+
             _hardware = new OLEDBoardHardware();
             _hardware.Initialize(_device);
 
