@@ -1,0 +1,21 @@
+﻿Lifecycle:
+    RestartOnAppFailure: false
+    AppFailureRestartDelaySeconds: 15
+
+Logging:
+    LogLevel: 
+        Default: "Debug"
+
+HttpGetSoakTest:
+    #
+    #   What should we request?
+    #
+    RequestUri: "http://postman-echo.com/get?foo1=bar1&foo2=bar2"
+    #
+    #   Number of requests to make.
+    #
+    NumberOfRequests: 10
+    #
+    #   Number of milliseconds between requests.
+    #
+    DelayBetweenRequestsMs: 1000
