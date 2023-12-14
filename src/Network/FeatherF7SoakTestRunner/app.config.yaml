@@ -6,16 +6,20 @@ Logging:
     LogLevel: 
         Default: "Debug"
 
-HttpGetSoakTest:
+SoakTest:
+    #
+    #   Name of the test to execute.
+    #
+    TestName: "HttpGetSoakTest"
     #
     #   What should we request?
     #
     RequestUri: "http://postman-echo.com/get?foo1=bar1&foo2=bar2"
     #
-    #   Number of requests to make.
+    #   Number of test cycles.
     #
-    NumberOfRequests: 10
+    NumberOfCycles: 10
     #
-    #   Number of milliseconds between requests.
+    #   Number of milliseconds between cycles.
     #
-    DelayBetweenRequestsMs: 1000
+    DelayBetweenCyclesMs: 1000
