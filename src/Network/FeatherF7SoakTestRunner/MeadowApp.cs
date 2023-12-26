@@ -10,6 +10,7 @@ using SoakTests;
 using SoakTests.Common;
 
 namespace FeatherF7Test;
+
 public class MeadowApp : App<F7FeatherV1>
 // public class MeadowApp : App<F7FeatherV2>
 {
