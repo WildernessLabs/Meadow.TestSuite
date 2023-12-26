@@ -173,7 +173,7 @@ internal class DisplayController
     /// <param addTimestamp="addTimestamp">Add a time stamp to the message?</param>
     public void Log(string message, bool addTimestamp = true)
     {
-        string output = addTimestamp ? $"{DateTime.Now:HH:mm:ss}: {message}" : message;
+        string output = addTimestamp ? $"{DateTime.Now:HH:mm:ss} {message}" : message;
         if (DisplayScreen != null)
         {
             AddText(output);
