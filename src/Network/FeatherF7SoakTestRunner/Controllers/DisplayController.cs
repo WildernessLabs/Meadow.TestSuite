@@ -170,16 +170,20 @@ internal class DisplayController
     /// Show the message on the display with a time stamp.
     /// </summary>
     /// <param name="message">Message to be shown.</param>
-    public void Log(string message)
+    /// <param addTimestamp="addTimestamp">Add a time stamp to the message?</param>
+    public void Log(string message, bool addTimestamp = true)
     {
-        string output = $"{DateTime.Now:HH:mm:ss}: {message}";
+        if (addTimestamp)
+        {
+            message = $"{DateTime.Now:HH:mm:ss}: {message}";
+        }
         if (DisplayScreen != null)
         {
-            AddText(output);
+            AddText(message);
         }
         else
         {
-            ConsoleLog(output);
+            ConsoleLog(message);
         }
     }
 
