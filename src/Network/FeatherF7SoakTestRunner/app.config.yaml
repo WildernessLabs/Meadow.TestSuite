@@ -10,11 +10,12 @@ SoakTest:
     #
     #   Name of the test to execute.
     #
-    TestName: "HttpGetSoakTest"
+    TestName: "SocketSoakTest"
     #
     #   What should we request?
     #
-    RequestUri: "http://postman-echo.com/get?foo1=bar1&foo2=bar2"
+    RequestUri: "http://192.168.1.239"
+    # RequestUri: "http://postman-echo.com/get?foo1=bar1&foo2=bar2"
     #
     #   Number of test cycles.
     #
@@ -22,4 +23,4 @@ SoakTest:
     #
     #   Number of milliseconds between cycles.
     #
-    DelayBetweenCyclesMs: 1000
+    DelayBetweenCyclesMs: 0
