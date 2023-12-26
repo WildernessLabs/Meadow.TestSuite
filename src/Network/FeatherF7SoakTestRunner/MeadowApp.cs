@@ -88,9 +88,9 @@ public class MeadowApp : App<F7FeatherV1>
         while (counter < _config.NumberOfCycles)
         {
             counter++;
-            if ((modulo == 0) || (counter % modulo == 0))
+            if ((modulo == 0) || (counter % modulo == 0) || (counter < 10))
             {
-                _displayService.Log($"{counter}");
+                _displayService.Log($"{counter:N0}");
             }
             _test.Execute();
             if (_config.DelayBetweenCyclesMs > 0)
