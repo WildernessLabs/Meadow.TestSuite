@@ -9,16 +9,20 @@ using Meadow.Foundation.Displays;
 namespace FeatherF7Test.Hardware;
 internal class OLEDBoardHardware : IOLEDBoardHardware
 {
+    /// <summary>
+    /// SSD1306 OLED display to show progress.
+    /// </summary>
     public IGraphicsDisplay Display { get; private set; }
 
-    public Led Led1 { get; private set; }
+    /// <summary>
+    /// LEDS that can be used to indicate test progress / status.
+    /// </summary>
+    public Led[] Leds { get ; private set; }
 
-    public Led Led2 { get; private set; }
-
-    public Led Led3 { get; private set; }
-
-    public Led Led4 { get; private set; }
-
+    /// <summary>
+    /// Initialize the hardware.
+    /// </summary>
+    /// <param name="device">Type of F7 board being used.</param>
     public void Initialize(F7FeatherBase device)
     {
         try
@@ -35,21 +39,40 @@ internal class OLEDBoardHardware : IOLEDBoardHardware
             Display = null;
         }
 
-        Led1 = new Led(device.CreateDigitalOutputPort(device.Pins.D01))
+        Leds = new Led[]
         {
-            IsOn = false
-        };
-        Led2 = new Led(device.CreateDigitalOutputPort(device.Pins.D02))
-        {
-            IsOn = false
-        };
-        Led3 = new Led(device.CreateDigitalOutputPort(device.Pins.D03))
-        {
-            IsOn = false
-        };
-        Led4 = new Led(device.CreateDigitalOutputPort(device.Pins.D04))
-        {
-            IsOn = false
+            new Led(device.CreateDigitalOutputPort(device.Pins.D01))
+            {
+                IsOn = false
+            },
+            new Led(device.CreateDigitalOutputPort(device.Pins.D02))
+            {
+                IsOn = false
+            },
+            new Led(device.CreateDigitalOutputPort(device.Pins.D03))
+            {
+                IsOn = false
+            },
+            new Led(device.CreateDigitalOutputPort(device.Pins.D04))
+            {
+                IsOn = false
+            },
+            new Led(device.CreateDigitalOutputPort(device.Pins.D05))
+            {
+                IsOn = false
+            },
+            new Led(device.CreateDigitalOutputPort(device.Pins.D06))
+            {
+                IsOn = false
+            },
+            new Led(device.CreateDigitalOutputPort(device.Pins.D09))
+            {
+                IsOn = false
+            },
+            new Led(device.CreateDigitalOutputPort(device.Pins.D10))
+            {
+                IsOn = false
+            }
         };
     }
 }
