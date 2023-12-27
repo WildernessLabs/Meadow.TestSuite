@@ -112,15 +112,18 @@ internal class DisplayController
     /// </summary>
     public void Clear()
     {
-        DisplayScreen.BeginUpdate();
-
-        Title.Text = "";
-        for (int index = 0; index < Lines.Length; index++)
+        if (DisplayScreen != null)
         {
-            Lines[index].Text = "";
-        }
+            DisplayScreen.BeginUpdate();
 
-        DisplayScreen.EndUpdate();
+            Title.Text = "";
+            for (int index = 0; index < Lines.Length; index++)
+            {
+                Lines[index].Text = "";
+            }
+
+            DisplayScreen.EndUpdate();
+        }
     }
 
     /// <summary>
