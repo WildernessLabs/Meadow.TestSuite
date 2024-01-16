@@ -48,7 +48,7 @@ class SocketAsyncSoakTest : ISoakTest
     /// <summary>
     /// Execute the test once.
     /// </summary>
-    public async void Execute()
+    public async Task Execute()
     {
         using Socket client = new(_ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
