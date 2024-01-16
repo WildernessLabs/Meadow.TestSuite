@@ -92,7 +92,7 @@ public class MeadowApp : App<F7FeatherV2>
             {
                 _displayService.Log($"{counter:N0}");
             }
-            Console.WriteLine($"Executing test: {counter:N0}");
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss}: Executing test {counter:N0}");
             _test.Execute();
             if (_config.DelayBetweenCyclesMs > 0)
             {
