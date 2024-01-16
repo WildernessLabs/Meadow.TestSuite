@@ -26,10 +26,9 @@ public static class Helpers
     {
         using (HttpClient client = new HttpClient())
         {
-            HttpResponseMessage response = await client.GetAsync(uri);
-
             try
             {
+                HttpResponseMessage response = await client.GetAsync(uri);
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
             }
