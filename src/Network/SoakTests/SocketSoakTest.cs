@@ -48,7 +48,7 @@ class SocketSoakTest : ISoakTest
     /// <summary>
     /// Execute the test once.
     /// </summary>
-    public void Execute()
+    public Task Execute()
     {
         using Socket client = new(_ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -63,6 +63,8 @@ class SocketSoakTest : ISoakTest
 
         client.Shutdown(SocketShutdown.Both);
         client.Close();
+
+        return Task.CompletedTask;
     }
 
     /// <summary>
