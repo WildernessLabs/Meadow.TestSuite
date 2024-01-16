@@ -11,8 +11,8 @@ using SoakTests.Common;
 
 namespace FeatherF7Test;
 
-public class MeadowApp : App<F7FeatherV1>
-// public class MeadowApp : App<F7FeatherV2>
+// public class MeadowApp : App<F7FeatherV1>
+public class MeadowApp : App<F7FeatherV2>
 {
     /// <summary>
     /// OLED hardware object.  This object contains the OLED display and 8 LED objects.
@@ -92,6 +92,7 @@ public class MeadowApp : App<F7FeatherV1>
             {
                 _displayService.Log($"{counter:N0}");
             }
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss}: Executing test {counter:N0}");
             _test.Execute();
             if (_config.DelayBetweenCyclesMs > 0)
             {
