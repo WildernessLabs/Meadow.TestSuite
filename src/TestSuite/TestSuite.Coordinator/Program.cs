@@ -6,7 +6,7 @@ public interface ITestRunner
 
 internal class ConsoleTestAppRunner
 {
-    public ConsoleTestAppRunner(string app Path)
+    public ConsoleTestAppRunner(string appPath)
     {
     }
 
@@ -44,6 +44,7 @@ internal class Program
         Console.WriteLine("Pulling the Project Lab test app...");
 
         Console.WriteLine("Building the Project Lab test app...");
+        success = agent.Build("Meadow.Core/source/Meadow.Core.sln");
 
         Console.WriteLine("Done");
 
