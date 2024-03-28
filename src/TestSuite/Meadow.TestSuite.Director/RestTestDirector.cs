@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -8,240 +7,243 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Meadow.TestSuite
+namespace Meadow.TestSuite;
+
+public class RestTestDirector : ITestDirector
 {
-    public class RestTestDirector : ITestDirector
+    private class WorkerClock
     {
-        private class WorkerClock
+        public DateTime SystemTime { get; set; }
+    }
+
+    private HttpClient Client { get; set; }
+    private IPEndPoint WorkerEndPoint { get; set; }
+    private JsonSerializerOptions m_options;
+
+    public RestTestDirector(string endpoint)
+    {
+        if (!IPEndPoint.TryParse(endpoint, out IPEndPoint ep))
         {
-            public DateTime SystemTime { get; set; }
+            throw new ArgumentException($"Unable to parse Endpoint '{endpoint}'");
         }
 
-        private HttpClient Client { get; set; }
-        private IPEndPoint WorkerEndPoint { get; set; }
-        private JsonSerializerOptions m_options;
+        Init(ep);
+    }
 
-        public RestTestDirector(string endpoint)
+    public RestTestDirector(IPEndPoint ep)
+    {
+        Init(ep);
+    }
+
+    private void Init(IPEndPoint ep)
+    {
+        WorkerEndPoint = ep;
+        Client = new HttpClient();
+        Client.BaseAddress = new Uri($"http://{ep}");
+        m_options = new JsonSerializerOptions
         {
-            if (!IPEndPoint.TryParse(endpoint, out IPEndPoint ep))
-            {
-                throw new ArgumentException($"Unable to parse Endpoint '{endpoint}'");
-            }
+            PropertyNameCaseInsensitive = true
+        };
+        m_options.Converters.Add(new JsonStringEnumConverter());
+    }
 
-            Init(ep);
+    public async Task<WorkerInfo> GetInfo()
+    {
+        var path = "/";
+        var result = await Client.GetAsync(path);
+        if (result.IsSuccessStatusCode)
+        {
+            var json = await result.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<WorkerInfo>(json, m_options);
+        }
+        else
+        {
+            throw new Exception($"REST call returned {result.StatusCode}");
+        }
+    }
+
+    public async Task<DateTime> GetTime()
+    {
+        var path = "/time";
+        var result = await Client.GetAsync(path);
+        if (result.IsSuccessStatusCode)
+        {
+            var json = await result.Content.ReadAsStringAsync();
+            var clock = JsonSerializer.Deserialize<WorkerClock>(json, m_options);
+            return clock.SystemTime;
+        }
+        else
+        {
+            throw new Exception($"REST call returned {result.StatusCode}");
+        }
+    }
+
+    public async Task SetTime(DateTime time)
+    {
+        var dest = $"/time";
+        var c = new WorkerClock
+        {
+            SystemTime = time
+        };
+
+
+        var content = JsonContent.Create(c);
+
+        var result = await Client.PutAsync(dest, content);
+        if (!result.IsSuccessStatusCode)
+        {
+            throw new Exception($"REST call returned {result.StatusCode}");
+        }
+    }
+
+    public async Task SendFile(FileInfo source, string? destinationName = null)
+    {
+        if (source == null)
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+        if (!source.Exists)
+        {
+            throw new ArgumentException($"Source file '{source.FullName}' not found");
         }
 
-        public RestTestDirector(IPEndPoint ep)
+        var dest = $"/assemblies/{destinationName ?? source.Name}";
+        var content = new StreamContent(source.OpenRead());
+
+        var result = await Client.PutAsync(dest, content);
+        if (!result.IsSuccessStatusCode)
         {
-            Init(ep);
+            throw new Exception($"REST call returned {result.StatusCode}");
         }
+    }
 
-        private void Init(IPEndPoint ep)
+    public async Task<string[]> GetAssemblies()
+    {
+        // GET http://{{meadow-address}}:{{meadow-port}}/assemblies
+        var path = "/assemblies";
+        var result = await Client.GetAsync(path);
+        if (result.IsSuccessStatusCode)
         {
-            WorkerEndPoint = ep;
-            Client = new HttpClient();
-            Client.BaseAddress = new Uri($"http://{ep}");
-            m_options = new JsonSerializerOptions
-            {
-                 PropertyNameCaseInsensitive = true
-            };
-            m_options.Converters.Add(new JsonStringEnumConverter());
+            var json = await result.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<string[]>(json);
         }
-
-        public async Task<WorkerInfo> GetInfo()
+        else
         {
-            var path = "/";
-            var result = await Client.GetAsync(path);
-            if (result.IsSuccessStatusCode)
-            {
-                var json = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<WorkerInfo>(json, m_options);
-            }
-            else
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
+            throw new Exception($"REST call returned {result.StatusCode}");
         }
+    }
 
-        public async Task<DateTime> GetTime()
+    public async Task<string[]> GetTestNames()
+    {
+        // GET http://{{meadow-address}}:{{meadow-port}}/tests
+        var path = "/tests";
+        var result = await Client.GetAsync(path);
+        if (result.IsSuccessStatusCode)
         {
-            var path = "/time";
-            var result = await Client.GetAsync(path);
-            if (result.IsSuccessStatusCode)
-            {
-                var json = await result.Content.ReadAsStringAsync();
-                var clock =JsonSerializer.Deserialize<WorkerClock>(json, m_options);
-                return clock.SystemTime;
-            }
-            else
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
+            var json = await result.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<string[]>(json);
         }
-
-        public async Task SetTime(DateTime time)
+        else
         {
-            var dest = $"/time";
-            var c = new WorkerClock
-            {
-                SystemTime = time
-            };
-
-            
-            var content = JsonContent.Create(c);
-
-            var result = await Client.PutAsync(dest, content);
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
+            throw new Exception($"REST call returned {result.StatusCode}");
         }
+    }
 
-        public async Task SendFile(FileInfo source, string? destinationName = null)
+    public async Task<TestResult> ExecuteTest(string testName)
+    {
+        // GET http://{{meadow-address}}:{{meadow-port}}/tests
+        var path = $"/tests/{testName}";
+        var result = await Client.PostAsync(path, null);
+        if (result.IsSuccessStatusCode)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-            if (!source.Exists)
-            {
-                throw new ArgumentException($"Source file '{source.FullName}' not found");
-            }
-
-            var dest = $"/assemblies/{destinationName ?? source.Name}";
-            var content = new StreamContent(source.OpenRead());
-
-            var result = await Client.PutAsync(dest, content);
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
+            var json = await result.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<TestResult>(json, m_options);
         }
-
-        public async Task<string[]> GetAssemblies()
+        else
         {
-            // GET http://{{meadow-address}}:{{meadow-port}}/assemblies
-            var path = "/assemblies";
-            var result = await Client.GetAsync(path);
-            if (result.IsSuccessStatusCode)
-            {
-                var json = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<string[]>(json);
-            }
-            else
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
+            throw new Exception($"REST call returned {result.StatusCode}");
         }
+    }
 
-        public async Task<string[]> GetTestNames()
+    public async Task<TestResult[]> GetTestResults()
+    {
+        var path = "/results";
+        var result = await Client.GetAsync(path);
+        if (result.IsSuccessStatusCode)
         {
-            // GET http://{{meadow-address}}:{{meadow-port}}/tests
-            var path = "/tests";
-            var result = await Client.GetAsync(path);
-            if (result.IsSuccessStatusCode)
-            {
-                var json = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<string[]>(json);
-            }
-            else
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
+            var json = await result.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<TestResult[]>(json, m_options);
         }
+        else
+        {
+            throw new Exception($"REST call returned {result.StatusCode}");
+        }
+    }
 
-        public async Task<TestResult> ExecuteTest(string testName)
+    public async Task<TestResult[]> GetTestResults(string testID)
+    {
+        var path = $"/results/{testID}";
+        var result = await Client.GetAsync(path);
+        if (result.IsSuccessStatusCode)
         {
-            // GET http://{{meadow-address}}:{{meadow-port}}/tests
-            var path = $"/tests/{testName}";
-            var result = await Client.PostAsync(path, null);
-            if (result.IsSuccessStatusCode)
-            {
-                var json = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<TestResult>(json, m_options);
-            }
-            else
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
+            var json = await result.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<TestResult[]>(json, m_options);
         }
+        else
+        {
+            throw new Exception($"REST call returned {result.StatusCode}");
+        }
+    }
 
-        public async Task<TestResult[]> GetTestResults()
+    public async Task<TestResult> GetTestResults(Guid resultID)
+    {
+        var path = $"/results/{resultID}";
+        var result = await Client.GetAsync(path);
+        if (result.IsSuccessStatusCode)
         {
-            var path = "/results";
-            var result = await Client.GetAsync(path);
-            if (result.IsSuccessStatusCode)
-            {
-                var json = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<TestResult[]>(json, m_options);
-            }
-            else
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
+            var json = await result.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<TestResult>(json, m_options);
         }
+        else
+        {
+            throw new Exception($"REST call returned {result.StatusCode}");
+        }
+    }
 
-        public async Task<TestResult[]> GetTestResults(string testID)
-        {
-            var path = $"/results/{testID}";
-            var result = await Client.GetAsync(path);
-            if (result.IsSuccessStatusCode)
-            {
-                var json = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<TestResult[]>(json, m_options);
-            }
-            else
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
-        }
+    public async Task ResetDevice()
+    {
+        var path = $"/reset";
+        await Client.PostAsync(path, null);
+    }
 
-        public async Task<TestResult> GetTestResults(Guid resultID)
-        {
-            var path = $"/results/{resultID}";
-            var result = await Client.GetAsync(path);
-            if (result.IsSuccessStatusCode)
-            {
-                var json = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<TestResult>(json, m_options);
-            }
-            else
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
-        }
+    public async Task SetDeviceTime(DateTime time)
+    {
+        var path = $"/time";
+        await Client.PutAsJsonAsync(path, new TimeInfo(time));
+    }
 
-        public async Task ResetDevice()
-        {
-            var path = $"/reset";
-            await Client.PostAsync(path, null);
-        }
+    public async Task SetDebug(bool enable)
+    {
+        var path = $"/debug?enabled={enable}";
+        await Client.PutAsync(path, null);
+    }
 
-        public async Task SetDeviceTime(DateTime time)
+    public async Task<DateTime> GetDeviceTime()
+    {
+        var path = $"/time";
+        var result = await Client.GetAsync(path); if (result.IsSuccessStatusCode)
         {
-            var path = $"/time";
-            await Client.PutAsJsonAsync(path, new TimeInfo(time));
+            var json = await result.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<TimeInfo>(json, m_options).SystemTime;
         }
+        else
+        {
+            throw new Exception($"REST call returned {result.StatusCode}");
+        }
+    }
 
-        public async Task SetDebug(bool enable)
-        {
-            var path = $"/debug?enabled={enable}";
-            await Client.PutAsync(path, null);
-        }
-        
-        public async Task<DateTime> GetDeviceTime()
-        {
-            var path = $"/time";
-            var result = await Client.GetAsync(path); if (result.IsSuccessStatusCode)
-            {
-                var json = await result.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<TimeInfo>(json, m_options).SystemTime;
-            }
-            else
-            {
-                throw new Exception($"REST call returned {result.StatusCode}");
-            }
-
-        }
+    public Task SendDirectory(DirectoryInfo source, string? destinationDirectory)
+    {
+        throw new NotImplementedException();
     }
 }

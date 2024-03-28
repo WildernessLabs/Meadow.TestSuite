@@ -3,146 +3,150 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Meadow.TestSuite
+namespace Meadow.TestSuite;
+
+public class SerialTestDirector : ITestDirector
 {
-    public class SerialTestDirector : ITestDirector
+    private WorkerSerialTransport Transport { get; }
+    private ICommandSerializer Serializer { get; }
+
+    public string MeadowTestFolder { get; } = "/meadow0/test";
+
+    public SerialTestDirector(ICommandSerializer serializer, WorkerSerialTransport transport)
     {
-        private WorkerSerialTransport Transport { get; }
-        private ICommandSerializer Serializer { get; }
+        Transport = transport;
+        Serializer = serializer;
+    }
 
-        public string MeadowTestFolder { get; } = "/meadow0/test";
-
-        public SerialTestDirector(ICommandSerializer serializer, WorkerSerialTransport transport)
+    public async Task SendFile(FileInfo source, string? destinationName)
+    {
+        if (!source.Exists)
         {
-            Transport = transport;
-            Serializer = serializer;
+            throw new FileNotFoundException("Source file not found");
         }
 
-        public async Task SendFile(FileInfo source, string? destinationName)
+        if (destinationName == string.Empty) destinationName = null;
+
+        var destpath = Path.Combine(MeadowTestFolder, destinationName ?? source.Name)
+            .Replace('\\', '/');
+
+        var payload = Convert.ToBase64String(File.ReadAllBytes(source.FullName));
+        Debug.WriteLine($"Payload is {payload.Length} bytes");
+        var cmd = new UplinkFileCommand
         {
-            if (!source.Exists)
-            {
-                throw new FileNotFoundException("Source file not found");
-            }
+            Destination = destpath,
+            FileData = payload
+        };
 
-            if (destinationName == string.Empty) destinationName = null;
+        await Transport.DeliverCommandAsync(cmd);
+    }
 
-            var destpath = Path.Combine(MeadowTestFolder, destinationName ?? source.Name)
-                .Replace('\\', '/');
+    public Task<DateTime> GetTime()
+    {
+        throw new NotImplementedException();
+    }
 
-            var payload = Convert.ToBase64String(File.ReadAllBytes(source.FullName));
-            Debug.WriteLine($"Payload is {payload.Length} bytes");
-            var cmd = new UplinkFileCommand
-            {
-                Destination = destpath,
-                FileData = payload
-            };
+    public Task SetTime(DateTime time)
+    {
+        throw new NotImplementedException();
+    }
 
-            await Transport.DeliverCommandAsync(cmd);
-        }
+    public async Task<WorkerInfo> GetInfo()
+    {
+        var cmd = new GetWorkerInfoCommand();
 
-        public Task<DateTime> GetTime()
+        var result = await Transport.DeliverCommandAsync(cmd);
+        var assemblies = ProcessResults<WorkerInfo>(result);
+        return assemblies;
+    }
+
+    public async Task<string[]> GetAssemblies()
+    {
+        var cmd = new GetAssembliesCommand();
+        var result = await Transport.DeliverCommandAsync(cmd);
+        var assemblies = ProcessResults<string[]>(result);
+        return assemblies;
+    }
+
+    public async Task<TestResult[]> GetTestResults()
+    {
+        var cmd = new GetResultsCommand();
+        var result = await Transport.DeliverCommandAsync(cmd);
+        return ProcessResults<TestResult[]>(result);
+    }
+
+    public async Task<TestResult[]> GetTestResults(string testID)
+    {
+        var cmd = new GetResultsCommand()
         {
-            throw new NotImplementedException();
-        }
+            TestID = testID
+        };
+        var result = await Transport.DeliverCommandAsync(cmd);
+        return ProcessResults<TestResult[]>(result);
+    }
 
-        public Task SetTime(DateTime time)
+    public async Task<TestResult> GetTestResults(Guid resultID)
+    {
+        var cmd = new GetResultsCommand()
         {
-            throw new NotImplementedException();
-        }
+            ResultID = resultID
+        };
+        var result = await Transport.DeliverCommandAsync(cmd);
+        return ProcessResults<TestResult>(result);
+    }
 
-        public async Task<WorkerInfo> GetInfo()
+    public string DeleteAssemblies()
+    {
+        var cmd = new DeleteFileCommand()
         {
-            var cmd = new GetWorkerInfoCommand();
+            Path = MeadowTestFolder,
+            Pattern = "*"
+        };
 
-            var result = await Transport.DeliverCommandAsync(cmd);
-            var assemblies = ProcessResults<WorkerInfo>(result);
-            return assemblies;
-        }
+        var result = Transport.DeliverCommand(cmd);
+        return ProcessResults<string>(result);
+    }
 
-        public async Task<string[]> GetAssemblies()
+    public async Task<string[]> GetTestNames()
+    {
+        var cmd = new GetTestNamesCommand();
+        var result = await Transport.DeliverCommandAsync(cmd);
+        return ProcessResults<string[]>(result);
+    }
+
+    public async Task<TestResult> ExecuteTest(string testName)
+    {
+        return (await ExecuteTests(testName))[0];
+    }
+
+    public async Task<TestResult[]> ExecuteTests(params string[] testNames)
+    {
+        var cmd = new ExecuteTestsCommand(testNames);
+        var result = await Transport.DeliverCommandAsync(cmd);
+        return ProcessResults<TestResult[]>(result);
+    }
+
+    public TResult ProcessResults<TResult>(byte[] result)
+    {
+        // TODO: run through the serializer to get the result
+        if (result == null)
         {
-            var cmd = new GetAssembliesCommand();
-            var result = await Transport.DeliverCommandAsync(cmd);
-            var assemblies = ProcessResults<string[]>(result);
-            return assemblies;
+            Console.WriteLine("Null result");
+            return default(TResult);
         }
-
-        public async Task<TestResult[]> GetTestResults()
+        else
         {
-            var cmd = new GetResultsCommand();
-            var result = await Transport.DeliverCommandAsync(cmd);
-            return ProcessResults<TestResult[]>(result);
+            return Serializer.Deserialize<TResult>(result);
         }
+    }
 
-        public async Task<TestResult[]> GetTestResults(string testID)
-        {
-            var cmd = new GetResultsCommand()
-            {
-                TestID = testID
-            };
-            var result = await Transport.DeliverCommandAsync(cmd);
-            return ProcessResults<TestResult[]>(result);
-        }
+    public void DiscoverTests()
+    {
 
-        public async Task<TestResult> GetTestResults(Guid resultID)
-        {
-            var cmd = new GetResultsCommand()
-            {
-                ResultID = resultID
-            };
-            var result = await Transport.DeliverCommandAsync(cmd);
-            return ProcessResults<TestResult>(result);
-        }
+    }
 
-        public string DeleteAssemblies()
-        {
-            var cmd = new DeleteFileCommand()
-            {
-                Path = MeadowTestFolder,
-                Pattern = "*"
-            };
-
-            var result = Transport.DeliverCommand(cmd);
-            return ProcessResults<string>(result);
-        }
-
-        public async Task<string[]> GetTestNames()
-        {
-            var cmd = new GetTestNamesCommand();
-            var result = await Transport.DeliverCommandAsync(cmd);
-            return ProcessResults<string[]>(result);
-        }
-
-        public async Task<TestResult> ExecuteTest(string testName)
-        {
-            return (await ExecuteTests(testName))[0];
-        }
-
-        public async Task<TestResult[]> ExecuteTests(params string[] testNames)
-        {
-            var cmd = new ExecuteTestsCommand(testNames);
-            var result = await Transport.DeliverCommandAsync(cmd);
-            return ProcessResults<TestResult[]>(result);
-        }
-
-        public TResult ProcessResults<TResult>(byte[] result)
-        {
-            // TODO: run through the serializer to get the result
-            if (result == null)
-            {
-                Console.WriteLine("Null result");
-                return default(TResult);
-            }
-            else
-            {
-                return Serializer.Deserialize<TResult>(result);
-            }
-        }
-
-        public void DiscoverTests()
-        {
-
-        }
+    public Task SendDirectory(DirectoryInfo source, string? destinationDirectory)
+    {
+        throw new NotImplementedException();
     }
 }

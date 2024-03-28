@@ -32,7 +32,7 @@ namespace MeadowApp
 
                 if (info.SystemTime != DateTime.MinValue)
                 {
-                    MeadowApp.Device.SetClock(info.SystemTime);
+                    MeadowApp.Device.PlatformOS.SetClock(info.SystemTime);
                     return new OkResult();
                 }
 

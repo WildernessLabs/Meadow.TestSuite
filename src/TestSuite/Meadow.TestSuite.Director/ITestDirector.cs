@@ -11,9 +11,11 @@ namespace Meadow.TestSuite
         Task SetTime(DateTime time);
 
         Task SendFile(FileInfo source, string? destinationName);
+        Task SendDirectory(DirectoryInfo source, string? destinationDirectory);
+
         Task<string[]> GetAssemblies();
 
-        Task<string[]> GetTestNames();        
+        Task<string[]> GetTestNames();
         Task<TestResult> ExecuteTest(string testName);
 
         Task<TestResult[]> GetTestResults();

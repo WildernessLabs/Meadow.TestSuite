@@ -1,5 +1,10 @@
 {
   "profiles": {
+    "HCOM directory send": {
+      "commandName": "Project",
+      "commandLineArgs": "file send -t hcom:COM4 -s \"F:\\temp\\testfiles\""
+    },
+
     "Serial Get Info": {
       "commandName": "Project",
       "commandLineArgs": "info -t COM8"

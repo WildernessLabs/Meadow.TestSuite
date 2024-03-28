@@ -16,7 +16,7 @@ namespace Meadow.TestSuite.Cli
         [CommandOption("source", 's', Description = "Local source file", IsRequired = true)]
         public string Source { get; set; }
         [CommandOption("dest", 'd', Description = "Optional destination file name")]
-        public string Destination { get; set; }
+        public string? Destination { get; set; }
 
         public override async ValueTask ExecuteAsync(IConsole console)
         {
@@ -31,6 +31,23 @@ namespace Meadow.TestSuite.Cli
             var fi = new FileInfo(Source);
             if (!fi.Exists)
             {
+                // check to see if it's a directory
+                if (Directory.Exists(Source))
+                {
+                    await director.SendDirectory(new DirectoryInfo(Source), Destination);
+                    return;
+                }
+
+                // check to see if it is a pattern match
+                var sources = Directory.GetFiles(Source);
+                if (sources.Length > 0)
+                {
+                    foreach (var f in Directory.GetFiles(Source))
+                    {
+                        await director.SendFile(new FileInfo(f), Destination);
+                    }
+                }
+
                 console.Output.WriteLine($"Source file '{Source}' not found");
                 return;
             }

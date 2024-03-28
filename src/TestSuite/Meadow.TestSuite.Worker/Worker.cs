@@ -149,7 +149,7 @@ namespace MeadowApp
 
                 Logger.Info(" Creating serial port...");
                 var port = Device.CreateSerialPort(
-                    Device.SerialPortNames.Com4,
+                    Device.PlatformOS.GetSerialPortName("Com4"),
                     9600,
                     8,
                     Parity.None,

@@ -1,7 +1,7 @@
 ﻿using Meadow.Devices;
-using Meadow.Foundation;
 using Meadow.Foundation.Displays;
 using Meadow.Foundation.Graphics;
+using Meadow.Peripherals.Displays;
 
 namespace Meadow.TestSuite
 {
@@ -12,7 +12,7 @@ namespace Meadow.TestSuite
 
         public ST7789TestDisplay(F7FeatherV2 f7)
         {
-            _display = new St7789(f7, f7.CreateSpiBus(), f7.Pins.D15, f7.Pins.D11, f7.Pins.D14, 240, 240);
+            _display = new St7789(f7.CreateSpiBus(), f7.Pins.D15, f7.Pins.D11, f7.Pins.D14, 240, 240);
             _canvas = new MicroGraphics(_display);
 
             // TODO: this should probably be configureable

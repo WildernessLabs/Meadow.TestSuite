@@ -1,118 +1,133 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Meadow.TestSuite;
 
-namespace Meadow.TestSuite
+namespace Meadow.TestSuite;
+
+public class WorkerSerialTransport
 {
+    private SerialPort SerialPort { get; }
+    private ICommandSerializer Serializer { get; }
 
-    public class WorkerSerialTransport
+    public const int ResponseTimeoutSeconds = 120;
+
+    public bool ExternalManageSerialPort { get; set; } = false;
+
+    public WorkerSerialTransport(ICommandSerializer serializer, SerialPort serialPort)
     {
-        private SerialPort SerialPort { get; }
-        private ICommandSerializer Serializer { get; }
+        SerialPort = serialPort;
+    }
 
-        public const int ResponseTimeoutSeconds = 120;
+    public WorkerSerialTransport(ICommandSerializer serializer, string serialPort, int baudRate = 9600)
+    {
+        SerialPort = new SerialPort(serialPort, baudRate);
+    }
 
-        public bool ExternalManageSerialPort { get; set; } = false;
-        
-        public WorkerSerialTransport(ICommandSerializer serializer, SerialPort serialPort)
+    public Task<byte[]?> DeliverCommandAsync(TestCommand command)
+    {
+        return Task.Run(() => DeliverCommand(command));
+    }
+
+    public byte[]? DeliverCommand(TestCommand command)
+    {
+        var data = Serializer.SerializeCommand(command).ToArray();
+
+        if (!SerialPort.IsOpen)
         {
-            SerialPort = serialPort;
+            SerialPort.Open();
         }
 
-        public WorkerSerialTransport(ICommandSerializer serializer, string serialPort, int baudRate = 9600)
+        // chunk the send since meadow has limited resources
+
+        // first send a header with a known delimiter and then the length 
+        var header = new byte[] { 0xaa, 0x55, 0xaa, 0x55 };
+        SerialPort.Write(header, 0, header.Length);
+        var length = BitConverter.GetBytes(data.Length);
+        SerialPort.Write(length, 0, length.Length);
+
+        Debug.WriteLine($"Sending {data.Length} bytes");
+
+        var toWrite = data.Length;
+        var index = 0;
+        var bufferSize = 255;
+
+        var steps = 100f / (toWrite / bufferSize);
+        var progress = 0f;
+
+        var start = Environment.TickCount;
+
+        while (toWrite > 0)
         {
-            SerialPort = new SerialPort(serialPort, baudRate);
+            var c = toWrite > bufferSize ? bufferSize : toWrite;
+
+            SerialPort.Write(data, index, c);
+            index += c;
+            toWrite -= c;
+
+            progress += steps;
+            if (progress > 100)
+            {
+                // cap due to math
+                progress = 100f;
+            }
+
+            Debug.WriteLine($"{progress}%");
+
+            // oddly sometimes (on first run since power?) this delay is required, but once it's worked once, it can be ignored.
+            // no idea yet WTF is going on there.
+            Thread.Sleep(30);
+        }
+        Debug.WriteLine($"100%");
+        var et = Environment.TickCount - start;
+        if (et <= 0)
+        {
+            Debug.WriteLine($"Transfer too fast to measure");
+        }
+        else
+        {
+            var throughput = data.Length * 1000 / et;
+            Debug.WriteLine($"Effective throughput: {throughput}B/sec");
         }
 
-        public Task<byte[]> DeliverCommandAsync(TestCommand command)
+        // TODO: start a timeout - make this configurable
+        SerialPort.ReadTimeout = ResponseTimeoutSeconds * 1000;
+
+        // receive any result
+        // get length
+        var error = false;
+        Array.Clear(length, 0, 4);
+
+        var read = 0;
+        while (read < 4)
         {
-            return Task.Run(() => DeliverCommand(command));
+            try
+            {
+                read += SerialPort.Read(length, read, 4 - read);
+            }
+            catch (TimeoutException)
+            {
+                Console.WriteLine("ERR: Timeout waiting on response");
+                error = true;
+                break;
+            }
         }
 
-        public byte[] DeliverCommand(TestCommand command)
+        if (!error)
         {
-            var data = Serializer.SerializeCommand(command).ToArray();
+            read = 0;
+            var result = new byte[BitConverter.ToInt32(length)];
 
-            if (!SerialPort.IsOpen)
+            while (read < result.Length)
             {
-                SerialPort.Open();
-            }
+                //get data
 
-            // chunk the send since meadow has limited resources
-
-            // first send a header with a known delimiter and then the length 
-            var header = new byte[] { 0xaa, 0x55, 0xaa, 0x55 };
-            SerialPort.Write(header, 0, header.Length);
-            var length = BitConverter.GetBytes(data.Length);
-            SerialPort.Write(length, 0, length.Length);
-
-            Debug.WriteLine($"Sending {data.Length} bytes");
-
-            var toWrite = data.Length;
-            var index = 0;
-            var bufferSize = 255;
-
-            var steps = 100f / (float)(toWrite / bufferSize);
-            var progress = 0f;
-            
-            var start = Environment.TickCount;
-
-            while(toWrite > 0)
-            {
-                var c = toWrite > bufferSize ? bufferSize : toWrite;
-
-                SerialPort.Write(data , index, c);
-                index += c;
-                toWrite -= c;
-
-                progress += steps;
-                if (progress > 100)
-                {
-                    // cap due to math
-                    progress = 100f;
-                }
-
-                Debug.WriteLine($"{progress}%");
-                
-                // oddly sometimes (on first run since power?) this delay is required, but once it's worked once, it can be ignored.
-                // no idea yet WTF is going on there.
-                Thread.Sleep(30);
-            }
-            Debug.WriteLine($"100%");
-            var et = Environment.TickCount - start;
-            if (et <= 0)
-            {
-                Debug.WriteLine($"Transfer too fast to measure");
-            }
-            else
-            {
-                var throughput = data.Length * 1000 / et;
-                Debug.WriteLine($"Effective throughput: {throughput}B/sec");
-            }
-
-            // TODO: start a timeout - make this configurable
-            SerialPort.ReadTimeout = ResponseTimeoutSeconds * 1000;
-
-            // receive any result
-            // get length
-            var error = false;
-            Array.Clear(length, 0, 4);
-
-            var read = 0;
-            while (read < 4)
-            {
                 try
                 {
-                    read += SerialPort.Read(length, read, 4 - read);
+                    read += SerialPort.Read(result, read, result.Length - read);
                 }
                 catch (TimeoutException)
                 {
@@ -124,37 +139,20 @@ namespace Meadow.TestSuite
 
             if (!error)
             {
-                read = 0;
-                var result = new byte[BitConverter.ToInt32(length)];
-
-                while (read < result.Length)
-                {
-                    //get data
-
-                    try
-                    {
-                        read += SerialPort.Read(result, read, result.Length - read);
-                    }
-                    catch (TimeoutException)
-                    {
-                        Console.WriteLine("ERR: Timeout waiting on response");
-                        error = true;
-                        break;
-                    }
-                }
-
-                if (!error)
-                {
-                    return result;
-                }
+                return result;
             }
-
-            if (!ExternalManageSerialPort)
-            {
-                SerialPort.Close();
-            }
-
-            return null;
         }
+
+        if (!ExternalManageSerialPort)
+        {
+            SerialPort.Close();
+        }
+
+        return null;
+    }
+
+    public Task SendDirectory(DirectoryInfo source, string? destinationDirectory)
+    {
+        throw new NotImplementedException();
     }
 }

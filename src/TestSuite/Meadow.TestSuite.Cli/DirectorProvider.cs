@@ -12,7 +12,11 @@ namespace Meadow.TestSuite.Cli
         public ITestDirector GetDirector(string declaration)
         {
             // try to parse to an endpoint
-            if (IPEndPoint.TryParse(declaration, out IPEndPoint ep))
+            if (declaration.StartsWith("hcom:"))
+            {
+                return new HcomTestDirector(declaration);
+            }
+            else if (IPEndPoint.TryParse(declaration, out IPEndPoint ep))
             {
                 Console.WriteLine($"Connecting to DUT using ethernet '{ep.Address}'");
 
