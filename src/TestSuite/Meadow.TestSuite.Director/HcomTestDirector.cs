@@ -1,6 +1,7 @@
 ﻿using Meadow.CLI;
 using Meadow.CLI.Commands.DeviceManagement;
 using Meadow.Hcom;
+using Meadow.Package;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -13,16 +14,25 @@ public class HcomTestDirector : ITestDirector
     private readonly string _route;
 
     private static MeadowConnectionManager ConnectionManager { get; }
+    private IPackageManager PackageManager { get; }
 
     private readonly IMeadowConnection _connection;
+    private readonly DirectoryInfo _testSourceRootFolder;
 
     static HcomTestDirector()
     {
         ConnectionManager = new MeadowConnectionManager(new SettingsManager());
     }
 
-    public HcomTestDirector(string hcomRoute = "/dev/ttyACM0")
+    public HcomTestDirector(string testSourceRootFolder, string hcomRoute = "/dev/ttyACM0")
     {
+        _testSourceRootFolder = new DirectoryInfo(testSourceRootFolder);
+
+        if (!_testSourceRootFolder.Exists)
+        {
+            throw new Exception("Invalid source directory");
+        }
+
         if (hcomRoute.StartsWith("hcom:"))
         {
             _route = hcomRoute[5..];
@@ -31,19 +41,90 @@ public class HcomTestDirector : ITestDirector
         {
             _route = hcomRoute;
         }
-
-        var connection = ConnectionManager.GetConnectionForRoute(_route);
-        if (connection == null)
-        {
-            throw new Exception();
-        }
-        _connection = connection;
     }
 
-    public Task<TestResult> ExecuteTest(string testName)
+    public Task<string[]> GetTestNames()
     {
-        throw new NotImplementedException();
+        return Task.FromResult(
+            new string[]
+            {
+                "TestA",
+                "TestB"
+            }
+        );
     }
+
+    public async Task<TestResult> ExecuteTest(string testName)
+    {
+        // TODO: build a a "test run" file
+
+        // build and push the test
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo()
+            {
+                UseShellExecute = false,
+                FileName = "meadow",
+                Arguments = $"app run \"{testName}\"",
+                WorkingDirectory = _testSourceRootFolder.FullName,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+            }
+        };
+
+        process.OutputDataReceived += (s, e) =>
+        {
+            if (e.Data != null)
+            {
+                var d = e.Data.TrimEnd();
+
+                // this avoids printing garbage like the spinner
+                if (d.Length > 1)
+                {
+                    Console.WriteLine(e.Data);
+                }
+
+                if (d == "Initializing OS...")
+                {
+                    // the device os is up - start capturing?
+                }
+                else if (d.StartsWith(">>>"))
+                {
+                    // this is a test output!
+                }
+            }
+        };
+
+        process.ErrorDataReceived += (s, e) =>
+        {
+            if (e.Data != null)
+            {
+                Console.WriteLine($"ERR: {e.Data}");
+            }
+        };
+
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+
+        await process.WaitForExitAsync();
+
+        var result = new TestResult
+        {
+            State = TestState.Inconclusive
+        };
+
+        if (process.ExitCode != 0)
+        {
+            result.Output.Add($"app run returned {process.ExitCode}");
+            return result;
+        }
+
+        // TODO: start a listener to wait for completion
+
+        return result;
+    }
+
 
     public Task<string[]> GetAssemblies()
     {
@@ -51,11 +132,6 @@ public class HcomTestDirector : ITestDirector
     }
 
     public Task<WorkerInfo> GetInfo()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<string[]> GetTestNames()
     {
         throw new NotImplementedException();
     }
@@ -117,5 +193,20 @@ public class HcomTestDirector : ITestDirector
     public Task SetTime(DateTime time)
     {
         throw new NotImplementedException();
+    }
+
+    public Task<bool> BuildTest(TestTarget target, string projectFilepath)
+    {
+        try
+        {
+            PackageManager.BuildApplication(projectFilepath);
+            //            PackageManager.TrimApplication(projectFilepath);
+
+            return Task.FromResult(true);
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(false);
+        }
     }
 }

@@ -11,6 +11,11 @@ namespace Meadow.TestSuite.Cli
 
         public ITestDirector GetDirector(string declaration)
         {
+            return GetTestDirector(declaration);
+        }
+
+        public static ITestDirector GetTestDirector(string declaration)
+        {
             // try to parse to an endpoint
             if (declaration.StartsWith("hcom:"))
             {

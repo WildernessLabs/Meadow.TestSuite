@@ -102,6 +102,9 @@ public class MeadowStackBuildAgent
             return false;
         }
 
+        // fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +refs/heads/develop*:refs/remotes/origin/develop* +refs/tags/develop*:refs/tags/develop*
+        // checkout --progress --force -B develop refs/remotes/origin/develop
+
         // git fetch origin
         // git switch -c test origin/test
         var process = new Process
@@ -109,7 +112,7 @@ public class MeadowStackBuildAgent
             StartInfo = new ProcessStartInfo()
             {
                 FileName = "git",
-                Arguments = $"fetch origin",
+                Arguments = $"fetch --no-tags --prune --no-recurse-submodules --depth=1 origin",
                 WorkingDirectory = Path.Combine(_root.FullName, repo),
             }
         };

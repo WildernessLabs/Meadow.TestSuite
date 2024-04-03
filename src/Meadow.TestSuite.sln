@@ -58,7 +58,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Tooling.Core", "..\.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HcomBulkTest", "HcomBulkTest", "{A09D82F8-C702-4E3E-BCBD-F9B0CC343704}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectLabBaseTests", "ProjectLabBaseTests\ProjectLabBaseTests.csproj", "{258FC413-F82A-47FB-91FC-AFEB5C1FC8F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectLabBaseTests", "ProjectLabBaseTests\ProjectLabBaseTests.csproj", "{258FC413-F82A-47FB-91FC-AFEB5C1FC8F3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.ProjectLab", "..\..\Meadow.ProjectLab\Source\Meadow.ProjectLab\Meadow.ProjectLab.csproj", "{4F50F9B7-F510-4DD3-B13D-DBF6E288A9EC}"
 EndProject
