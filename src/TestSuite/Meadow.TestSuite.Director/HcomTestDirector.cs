@@ -3,8 +3,10 @@ using Meadow.CLI.Commands.DeviceManagement;
 using Meadow.Hcom;
 using Meadow.Package;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Meadow.TestSuite;
@@ -18,6 +20,10 @@ public class HcomTestDirector : ITestDirector
 
     private readonly IMeadowConnection _connection;
     private readonly DirectoryInfo _testSourceRootFolder;
+
+    private List<TestResult> _results = new();
+    private TestResult? _activeTest = null;
+    private CancellationTokenSource _testCompletionTokenSource = new();
 
     static HcomTestDirector()
     {
@@ -57,6 +63,18 @@ public class HcomTestDirector : ITestDirector
     public async Task<TestResult> ExecuteTest(string testName)
     {
         // TODO: build a a "test run" file
+        var routeproc = new Process
+        {
+            StartInfo = new ProcessStartInfo()
+            {
+                UseShellExecute = false,
+                FileName = "meadow",
+                Arguments = $"config route \"{_route}\""
+            }
+        };
+
+        routeproc.Start();
+        routeproc.WaitForExit();
 
         // build and push the test
         var process = new Process
@@ -69,6 +87,7 @@ public class HcomTestDirector : ITestDirector
                 WorkingDirectory = _testSourceRootFolder.FullName,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
+                RedirectStandardInput = true,
             }
         };
 
@@ -76,13 +95,17 @@ public class HcomTestDirector : ITestDirector
         {
             if (e.Data != null)
             {
-                var d = e.Data.TrimEnd();
+                var d = e.Data
+                .Replace("stdout>", string.Empty)
+                .Trim();
 
                 // this avoids printing garbage like the spinner
                 if (d.Length > 1)
                 {
                     Console.WriteLine(e.Data);
                 }
+
+                // TODO: look for app termination and cancel if it happens
 
                 if (d == "Initializing OS...")
                 {
@@ -91,6 +114,60 @@ public class HcomTestDirector : ITestDirector
                 else if (d.StartsWith(">>>"))
                 {
                     // this is a test output!
+                    var testInfo = d.Substring(3).TrimEnd('<').Trim();
+
+                    if (testInfo == "START TEST SET")
+                    {
+                        Console.WriteLine("Starting new test set");
+                        _results.Clear();
+                    }
+                    else if (testInfo == "END TEST SET")
+                    {
+                        _testCompletionTokenSource.Cancel();
+                    }
+                    else if (testInfo.StartsWith("BEGIN:"))
+                    {
+                        _activeTest = new TestResult
+                        {
+                            TestID = testInfo[6..].Trim(),
+                            State = TestState.Running
+                        };
+                        Console.WriteLine($"Starting test {_activeTest.TestID}");
+                    }
+                    else if (testInfo == "SUCCESS")
+                    {
+                        if (_activeTest == null)
+                        {
+                        }
+                        else
+                        {
+                            _activeTest.State = TestState.Success;
+                            _results.Add(_activeTest);
+                            Console.WriteLine($"test {_activeTest.TestID} succeeded");
+                        }
+                    }
+                    else if (testInfo == "FAIL")
+                    {
+                        if (_activeTest == null)
+                        {
+                        }
+                        else
+                        {
+                            _activeTest.State = TestState.Failed;
+                            _results.Add(_activeTest);
+                            Console.WriteLine($"test {_activeTest.TestID} failed");
+                        }
+                    }
+                    else
+                    {
+                        if (_activeTest == null)
+                        {
+                        }
+                        else
+                        {
+                            _activeTest.Output.Add(testInfo);
+                        }
+                    }
                 }
             }
         };
@@ -107,17 +184,47 @@ public class HcomTestDirector : ITestDirector
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
 
-        await process.WaitForExitAsync();
+        try
+        {
+            await process.WaitForExitAsync(_testCompletionTokenSource.Token);
+        }
+        catch (TaskCanceledException)
+        {
+            // this is expected!
+        }
+
+        Console.WriteLine($"Received {_results.Count} test results:");
+        foreach (var r in _results)
+        {
+            Console.WriteLine($"  {r.TestID}: {r.State}");
+        }
+
 
         var result = new TestResult
         {
             State = TestState.Inconclusive
         };
 
-        if (process.ExitCode != 0)
+        if (process.HasExited && process.ExitCode != 0)
         {
+            if (process.ExitCode == 8)
+            {
+                Console.WriteLine("Process is already open (close the active console)");
+            }
+            else
+            {
+                Console.WriteLine($"app run returned {process.ExitCode}");
+            }
+
+            // typically happens when there was a problem running
             result.Output.Add($"app run returned {process.ExitCode}");
             return result;
+        }
+        else
+        {
+            // the test app ran and we're in the middle of a "listen"
+            // this sends a <CTRL-C>
+            process.StandardInput.Write("\x3");
         }
 
         // TODO: start a listener to wait for completion

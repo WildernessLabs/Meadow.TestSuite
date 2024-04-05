@@ -24,21 +24,26 @@ public class MeadowApp : App<F7CoreComputeV2>
 
     public override async Task Run()
     {
-        Resolver.Log.Info(">>> TEST A STARTED <<<");
+        Resolver.Log.Info(">>> START TEST SET <<<");
 
-        Resolver.Log.Info(">>> TEST INFO First Test Running <<<");
+        Resolver.Log.Info(">>> BEGIN: TEST A <<<");
+
+        Resolver.Log.Info(">>> First Test Running <<<");
         await Task.Delay(5000);
 
-        Resolver.Log.Info(">>> TEST SUCCEEDED <<<");
+        Resolver.Log.Info(">>> SUCCESS <<<");
 
 
 
-        Resolver.Log.Info(">>> TEST B STARTED");
+        Resolver.Log.Info(">>> BEGIN: TEST B <<<");
 
-        Resolver.Log.Info(">>> TEST INFO First Test Running <<<");
+        Resolver.Log.Info(">>> Second Started Running <<<");
         await Task.Delay(5000);
+        Resolver.Log.Info(">>> Second Finished with error: foo <<<");
 
-        Resolver.Log.Info(">>> TEST FAILED <<<");
+        Resolver.Log.Info(">>> FAIL <<<");
+
+        Resolver.Log.Info(">>> END TEST SET <<<");
     }
 
 }
