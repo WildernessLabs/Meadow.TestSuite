@@ -119,6 +119,11 @@ public class SerialTestDirector : ITestDirector
         return (await ExecuteTests(testName))[0];
     }
 
+    public async Task<TestResult[]> ExecuteTests(string testName)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<TestResult[]> ExecuteTests(params string[] testNames)
     {
         var cmd = new ExecuteTestsCommand(testNames);

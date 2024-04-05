@@ -53,12 +53,10 @@ internal class Program
         var director = new HcomTestDirector("F:/repos/wilderness/Meadow.TestSuite/src", "hcom:COM5");
         var names = await director.GetTestNames();
 
-        var result = await director.ExecuteTest("ProjectLabBaseTests");
+        var result = await director.ExecuteTests("ProjectLabBaseTests");
 
         //        await director.BuildTest(TestTarget.MeadowF7, "Meadow.TestSuite/src/ProjectLabBaseTests/ProjectLabBaseTests.csproj");
 
         Console.WriteLine("Done");
-
-        var l = Console.ReadLine();
     }
 }

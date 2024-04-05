@@ -149,6 +149,11 @@ public class RestTestDirector : ITestDirector
         }
     }
 
+    public async Task<TestResult[]> ExecuteTests(string testName)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<TestResult> ExecuteTest(string testName)
     {
         // GET http://{{meadow-address}}:{{meadow-port}}/tests

@@ -17,6 +17,7 @@ namespace Meadow.TestSuite
 
         Task<string[]> GetTestNames();
         Task<TestResult> ExecuteTest(string testName);
+        Task<TestResult[]> ExecuteTests(string testName = "*");
 
         Task<TestResult[]> GetTestResults();
         Task<TestResult[]> GetTestResults(string testID);

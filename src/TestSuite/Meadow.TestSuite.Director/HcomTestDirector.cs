@@ -62,6 +62,11 @@ public class HcomTestDirector : ITestDirector
 
     public async Task<TestResult> ExecuteTest(string testName)
     {
+        throw new NotImplementedException();
+    }
+
+    public async Task<TestResult[]> ExecuteTests(string testName)
+    {
         // TODO: build a a "test run" file
         var routeproc = new Process
         {
@@ -200,11 +205,6 @@ public class HcomTestDirector : ITestDirector
         }
 
 
-        var result = new TestResult
-        {
-            State = TestState.Inconclusive
-        };
-
         if (process.HasExited && process.ExitCode != 0)
         {
             if (process.ExitCode == 8)
@@ -217,8 +217,13 @@ public class HcomTestDirector : ITestDirector
             }
 
             // typically happens when there was a problem running
+            var result = new TestResult
+            {
+                State = TestState.Inconclusive
+            };
             result.Output.Add($"app run returned {process.ExitCode}");
-            return result;
+
+            _results.Add(result);
         }
         else
         {
@@ -229,7 +234,7 @@ public class HcomTestDirector : ITestDirector
 
         // TODO: start a listener to wait for completion
 
-        return result;
+        return _results.ToArray();
     }
 
 
