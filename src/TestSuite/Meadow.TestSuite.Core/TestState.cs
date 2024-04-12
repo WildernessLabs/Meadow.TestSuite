@@ -1,11 +1,10 @@
-﻿namespace Meadow.TestSuite
+﻿namespace Meadow.TestSuite;
+
+public enum TestState
 {
-    public enum TestState
-    {
-        NotRun,
-        Running,
-        Inconclusive,
-        Success,
-        Failed
-    }
+    NotRun,
+    Running,
+    Inconclusive,
+    Success,
+    Failed
 }

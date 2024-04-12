@@ -24,7 +24,7 @@ namespace Meadow.TestSuite
 
         public TestResult[] GetResults(string testID)
         {
-            return m_results.Values.Where(r => string.Compare(r.TestID, testID, true) == 0).ToArray();
+            return m_results.Values.Where(r => string.Compare(r.TestName, testID, true) == 0).ToArray();
         }
 
         public TestResult[] GetResults()

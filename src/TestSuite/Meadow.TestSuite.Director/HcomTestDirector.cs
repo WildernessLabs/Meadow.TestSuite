@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,6 +24,9 @@ public class HcomTestDirector : ITestDirector
 
     private List<TestResult> _results = new();
     private TestResult? _activeTest = null;
+    private string? _activeHardware;
+    private string? _activeOs;
+    private string? _activeCore;
     private CancellationTokenSource _testCompletionTokenSource = new();
 
     static HcomTestDirector()
@@ -134,10 +138,14 @@ public class HcomTestDirector : ITestDirector
                     {
                         _activeTest = new TestResult
                         {
-                            TestID = testInfo[6..].Trim(),
+                            TestName = testInfo[6..].Trim(),
+                            StartedTimestamp = DateTime.UtcNow,
+                            TargetPlatform = _activeHardware ?? "Unknown",
+                            MeadowOSVersion = _activeOs ?? "Unknown",
+                            TestRunBy = Assembly.GetEntryAssembly()?.GetName().Name ?? "Automation",
                             State = TestState.Running
                         };
-                        Console.WriteLine($"Starting test {_activeTest.TestID}");
+                        Console.WriteLine($"Starting test {_activeTest.TestName}");
                     }
                     else if (testInfo == "SUCCESS")
                     {
@@ -147,8 +155,9 @@ public class HcomTestDirector : ITestDirector
                         else
                         {
                             _activeTest.State = TestState.Success;
+                            _activeTest.CompletedTimestamp = DateTime.UtcNow;
                             _results.Add(_activeTest);
-                            Console.WriteLine($"test {_activeTest.TestID} succeeded");
+                            Console.WriteLine($"test {_activeTest.TestName} succeeded");
                         }
                     }
                     else if (testInfo == "FAIL")
@@ -159,18 +168,34 @@ public class HcomTestDirector : ITestDirector
                         else
                         {
                             _activeTest.State = TestState.Failed;
+                            _activeTest.CompletedTimestamp = DateTime.UtcNow;
                             _results.Add(_activeTest);
-                            Console.WriteLine($"test {_activeTest.TestID} failed");
+                            Console.WriteLine($"test {_activeTest.TestName} failed");
                         }
                     }
                     else
                     {
-                        if (_activeTest == null)
+                        if (testInfo.StartsWith("HARDWARE:"))
                         {
+                            _activeHardware = testInfo.Substring(9).Trim();
+                        }
+                        else if (testInfo.StartsWith("OS:"))
+                        {
+                            _activeOs = testInfo.Substring(3).Trim();
+                        }
+                        else if (testInfo.StartsWith("CORE:"))
+                        {
+                            _activeCore = testInfo.Substring(5).Trim();
                         }
                         else
                         {
-                            _activeTest.Output.Add(testInfo);
+                            if (_activeTest == null)
+                            {
+                            }
+                            else
+                            {
+                                _activeTest.Output.Add(testInfo);
+                            }
                         }
                     }
                 }
@@ -201,7 +226,7 @@ public class HcomTestDirector : ITestDirector
         Console.WriteLine($"Received {_results.Count} test results:");
         foreach (var r in _results)
         {
-            Console.WriteLine($"  {r.TestID}: {r.State}");
+            Console.WriteLine($"  {r.TestName}: {r.State}");
         }
 
 

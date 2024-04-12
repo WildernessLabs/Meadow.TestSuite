@@ -82,9 +82,9 @@ namespace Meadow.TestSuite.Cli
                     console.Output.WriteLine($"Results");
                     console.Output.WriteLine($"Completed  | State    | Run Time | ID ");
 
-                    foreach (var result in results.OrderByDescending(r => r.CompletionDate))
+                    foreach (var result in results.OrderByDescending(r => r.CompletedTimestamp))
                     {
-                        console.Output.WriteLine($"{result.CompletionDate:HH:mm:ss}   | {result.State,-8} | {string.Format("{0:0.##}", result.RunTimeSeconds),-8} | {result.ResultID} ");
+                        console.Output.WriteLine($"{result.CompletedTimestamp:HH:mm:ss}   | {result.State,-8} | {string.Format("{0:0.##}", result.RunTimeSeconds),-8} | {result.ResultID} ");
                     }
                 }
             }

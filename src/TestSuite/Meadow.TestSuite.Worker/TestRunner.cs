@@ -27,7 +27,7 @@ namespace Meadow.TestSuite
 
         public TestResult Begin()
         {
-            var test = Provider.GetTest(Result.TestID);
+            var test = Provider.GetTest(Result.TestName);
             if (test == null)
             {
                 Result.State = TestState.Failed;
@@ -81,6 +81,7 @@ namespace Meadow.TestSuite
 
                 Logger?.Debug($" Invoking {test?.TestMethod.Name}");
 
+                Result.StartedTimestamp = DateTime.UtcNow;
                 test.TestMethod.Invoke(instance, null);
 
                 Logger?.Debug($" Invoke complete");
@@ -107,8 +108,7 @@ namespace Meadow.TestSuite
             {
                 sw.Stop();
                 Logger?.Debug($" finally block");
-                Result.RunTimeSeconds = sw.Elapsed.TotalSeconds;
-                Result.CompletionDate = DateTime.Now.ToUniversalTime();
+                Result.CompletedTimestamp = DateTime.UtcNow;
 
                 ExecutionComplete?.Invoke(this, EventArgs.Empty);
             }

@@ -89,6 +89,9 @@ public class MeadowStackBuildAgent
                 WorkingDirectory = Path.Combine(_root.FullName, repo),
             }
         };
+
+        Console.WriteLine($"==> {process.StartInfo.WorkingDirectory}${process.StartInfo.FileName} {process.StartInfo.Arguments}");
+
         process.Start();
         process.WaitForExit();
 
@@ -116,6 +119,9 @@ public class MeadowStackBuildAgent
                 WorkingDirectory = Path.Combine(_root.FullName, repo),
             }
         };
+
+        Console.WriteLine($"==> {process.StartInfo.WorkingDirectory}${process.StartInfo.FileName} {process.StartInfo.Arguments}");
+
         process.Start();
         process.WaitForExit();
 
@@ -133,6 +139,9 @@ public class MeadowStackBuildAgent
                 WorkingDirectory = Path.Combine(_root.FullName, repo),
             }
         };
+
+        Console.WriteLine($"==> {process.StartInfo.WorkingDirectory}${process.StartInfo.FileName} {process.StartInfo.Arguments}");
+
         process.Start();
         process.WaitForExit();
         if (process.ExitCode != 0)
@@ -149,6 +158,9 @@ public class MeadowStackBuildAgent
                 WorkingDirectory = Path.Combine(_root.FullName, repo),
             }
         };
+
+        Console.WriteLine($"==> {process.StartInfo.WorkingDirectory}${process.StartInfo.FileName} {process.StartInfo.Arguments}");
+
         process.Start();
         process.WaitForExit();
         return process.ExitCode == 0;
@@ -165,6 +177,9 @@ public class MeadowStackBuildAgent
                 WorkingDirectory = _root.FullName,
             }
         };
+
+        Console.WriteLine($"==> {process.StartInfo.WorkingDirectory}${process.StartInfo.FileName} {process.StartInfo.Arguments}");
+
         process.Start();
         process.WaitForExit();
         return process.ExitCode == 0;

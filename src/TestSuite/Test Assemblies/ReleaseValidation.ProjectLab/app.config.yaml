@@ -1,0 +1,5 @@
+Lifecycle:
+    RestartOnAppFailure: true
+Logging:
+    LogLevel:
+        Default: Debug
