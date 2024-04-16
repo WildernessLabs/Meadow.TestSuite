@@ -32,7 +32,6 @@ namespace F7ManualTests
                 output.State = false;
                 await Task.Delay(1000);
             }
-
         }
 
         private void OnInputChanged(object sender, DigitalPortResult e)

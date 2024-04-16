@@ -4,3 +4,5 @@
 Lifecycle:
   RestartOnAppFailure: false
   AppFailureRestartDelaySeconds: 60
+Deploy:
+  NoLink: [ Validation.Utility ]

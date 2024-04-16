@@ -1,13 +1,11 @@
 ﻿using Meadow.Devices;
 using Meadow.Hardware;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Meadow.Validation
 {
-    public class MeadowApp : ValidationApp<F7FeatherV2>
+    public class MeadowApp : ValidationApp<F7FeatherV1>
     {
         private IDigitalOutputPort _red;
         private IDigitalOutputPort _green;
@@ -56,7 +54,7 @@ namespace Meadow.Validation
             {
                 return new ITest<MeadowTestDevice>[]
                 {
-//                  new ReflectionTest(),
+                  new ReflectionTest(),
                   new BluetoothTest<MeadowTestDevice>(),
                   new WiFiAntennaSwitchingTest<MeadowTestDevice>(),
                   new FileSystemTest<MeadowTestDevice>(),

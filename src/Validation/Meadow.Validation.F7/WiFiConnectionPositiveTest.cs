@@ -50,7 +50,7 @@ namespace Meadow.Validation
                     completed = true;
                 };
 
-            wifi.NetworkDisconnected += (s) =>
+            wifi.NetworkDisconnected += (s, e) =>
             {
                 disconnectedCount++;
                 Resolver.Log.Info($"Network Disconnected. IP from adapter: {wifi.IpAddress}");

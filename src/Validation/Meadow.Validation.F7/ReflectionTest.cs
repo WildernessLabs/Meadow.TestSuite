@@ -11,7 +11,7 @@ namespace Meadow.Validation
         {
             try
             {
-                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Validation.Utility.dll");
+                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Validation.Utility.dat");
                 Resolver.Log.Info($"Loading assembly '{path}'...");
                 var assembly = Assembly.LoadFrom(path);
 
@@ -28,7 +28,7 @@ namespace Meadow.Validation
                 {
                     Resolver.Log.Info($"    {module.Name}");
 
-                    if (module.Name == "Validation.Utility.dll")
+                    if (module.Name == "Validation.Utility.dat")
                     {
                         m = module;
                     }
@@ -36,7 +36,7 @@ namespace Meadow.Validation
 
                 if (m == null)
                 {
-                    Resolver.Log.Error("Did not find module 'Validation.Utility.dll'");
+                    Resolver.Log.Error("Did not find module 'Validation.Utility.dat'");
                     return Task.FromResult(false);
                 }
 

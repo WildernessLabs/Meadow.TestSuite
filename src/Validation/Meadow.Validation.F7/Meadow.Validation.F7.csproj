@@ -13,7 +13,7 @@
     <ProjectReference Include="..\Meadow.Validation.Core\Meadow.Validation.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Validation.Utility.dll">
+    <None Update="Validation.Utility.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
