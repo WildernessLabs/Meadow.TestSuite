@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -23,8 +24,9 @@ namespace Meadow.Validation
 
                 Module? m = null;
 
-                Resolver.Log.Info("Validation.Utility.dll contains modules:");
-                foreach (var module in assembly.GetModules())
+                var modules = assembly.GetModules();
+                Resolver.Log.Info($"Validation.Utility.dll contains {modules.Count()} modules:");
+                foreach (var module in modules)
                 {
                     Resolver.Log.Info($"    {module.Name}");
 
@@ -54,10 +56,10 @@ namespace Meadow.Validation
                     return Task.FromResult(false);
                 }
 
-                var methods = m.GetMethods(BindingFlags.Instance | BindingFlags.Public);
+                var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public);
 
                 MethodInfo? add = null;
-                Resolver.Log.Info("TestClass type contains methods:");
+                Resolver.Log.Info($"TestClass type contains {methods.Count()} methods:");
                 foreach (var method in methods)
                 {
                     Resolver.Log.Info($"    {method.Name}");
