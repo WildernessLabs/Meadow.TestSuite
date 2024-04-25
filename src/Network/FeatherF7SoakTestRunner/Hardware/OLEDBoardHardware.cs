@@ -1,10 +1,8 @@
-﻿using System;
-using FeatherF7Test.Hardware;
-using Meadow;
-using Meadow.Devices;
-using Meadow.Foundation.Graphics;
-using Meadow.Foundation.Leds;
+﻿using Meadow.Devices;
 using Meadow.Foundation.Displays;
+using Meadow.Foundation.Leds;
+using Meadow.Peripherals.Displays;
+using System;
 
 namespace FeatherF7Test.Hardware;
 internal class OLEDBoardHardware : IOLEDBoardHardware
@@ -12,12 +10,12 @@ internal class OLEDBoardHardware : IOLEDBoardHardware
     /// <summary>
     /// SSD1306 OLED display to show progress.
     /// </summary>
-    public IGraphicsDisplay Display { get; private set; }
+    public IPixelDisplay Display { get; private set; }
 
     /// <summary>
     /// LEDS that can be used to indicate test progress / status.
     /// </summary>
-    public Led[] Leds { get ; private set; }
+    public Led[] Leds { get; private set; }
 
     /// <summary>
     /// Initialize the hardware.

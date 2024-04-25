@@ -1,6 +1,6 @@
 ﻿using Meadow.Devices;
-using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Leds;
+using Meadow.Peripherals.Displays;
 
 namespace FeatherF7Test.Hardware;
 internal interface IOLEDBoardHardware
@@ -8,7 +8,7 @@ internal interface IOLEDBoardHardware
     /// <summary>
     /// Display used to show progress.
     /// </summary>
-    public IGraphicsDisplay Display { get; }
+    public IPixelDisplay Display { get; }
 
     /// <summary>
     /// LEDs that can be used to indicate test progress / status.

@@ -1,8 +1,7 @@
-﻿using Meadow.Foundation;
-using Meadow;
+﻿using Meadow;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
-
+using Meadow.Peripherals.Displays;
 using System;
 
 namespace FeatherF7Test.Services;
@@ -68,7 +67,7 @@ internal class DisplayController
     /// Create a new instance of the DisplayController class.
     /// </summary>
     /// <param name="display">Display to be used.</param>
-    public DisplayController(IGraphicsDisplay display)
+    public DisplayController(IPixelDisplay display)
     {
         if (display != null)
         {
