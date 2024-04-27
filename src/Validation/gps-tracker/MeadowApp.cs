@@ -33,6 +33,7 @@ namespace Meadow.Validation
                   new FileSystemTest<MeadowTestDevice>(),
                   new SQLiteTest<MeadowTestDevice>(),
                   new WiFiSSLLoopTest<MeadowTestDevice>(),
+                  new WiFiSSLStaticHttpClientLoopTest<MeadowTestDevice>(),
                   new WiFiScanForAccessPointsTest<MeadowTestDevice>(),
 
                  //   new WiFiConnectionPositiveTest<MeadowTestDevice>(),
