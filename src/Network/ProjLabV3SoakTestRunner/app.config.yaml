@@ -1,0 +1,26 @@
+Lifecycle:
+    RestartOnAppFailure: false
+    AppFailureRestartDelaySeconds: 15
+
+Logging:
+    LogLevel: 
+        Default: "Debug"
+
+SoakTest:
+    #
+    #   Name of the test to execute.
+    #
+    TestName: "HttpGetSoakTest"
+    #
+    #   What should we request?
+    #
+    # RequestUri: "http://192.168.1.239"
+    RequestUri: "https://postman-echo.com/get?foo1=bar1&foo2=bar2"
+    #
+    #   Number of test cycles.
+    #
+    NumberOfCycles: 10000
+    #
+    #   Number of milliseconds between cycles.
+    #
+    DelayBetweenCyclesMs: 0

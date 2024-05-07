@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjLabV3SoakTestRunner", "ProjLabV3SoakTestRunner.csproj", "{9CDB3939-A044-4864-B75B-A6F52A29A58B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoakTests", "..\SoakTests\SoakTests.csproj", "{B3B8B86C-C50C-4E35-9EB0-D23F392F68F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CDB3939-A044-4864-B75B-A6F52A29A58B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CDB3939-A044-4864-B75B-A6F52A29A58B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CDB3939-A044-4864-B75B-A6F52A29A58B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CDB3939-A044-4864-B75B-A6F52A29A58B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {83C86CF0-E597-4FD2-BD0A-D9CE9BC6FD59}
+	EndGlobalSection
+EndGlobal
