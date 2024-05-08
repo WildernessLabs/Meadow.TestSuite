@@ -52,9 +52,6 @@ public class MeadowApp : App<F7CoreComputeV2>
 
         _displayService = new DisplayController(_projectLab.Display);
 
-        Helpers.WaitForNetworkConnection(Device);
-        _onboardLed.SetColor(Color.Green);
-
         _test = RegisteredTests.GetTest(_config.TestName);
         if (_test == null)
         {
@@ -69,6 +66,11 @@ public class MeadowApp : App<F7CoreComputeV2>
             
         }
         _displayService.UpdateTitle(_config.TestName);
+        _displayService.Log("Connecting to network...");
+
+        Helpers.WaitForNetworkConnection(Device);
+        _onboardLed.SetColor(Color.Green);
+
         _test.Initialize(_config);
 
         return base.Initialize();
