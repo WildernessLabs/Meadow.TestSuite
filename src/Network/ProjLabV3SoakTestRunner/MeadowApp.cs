@@ -3,6 +3,7 @@ using Meadow.Devices;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Peripherals.Displays;
+using Meadow.Peripherals.Leds;
 using ProjectLabTest.Services;
 using System;
 using System.Threading;
@@ -19,6 +20,11 @@ public class MeadowApp : App<F7CoreComputeV2>
     /// Hardware we are running on.
     /// </summary>
     private IProjectLabHardware _projectLab;
+
+    /// <summary>
+    /// Onboard LED used for status indication.
+    /// </summary>
+    IRgbPwmLed _onboardLed;
 
     /// <summary>
     /// IL9341 display used to show test progress.
@@ -41,20 +47,23 @@ public class MeadowApp : App<F7CoreComputeV2>
 
         _projectLab = ProjectLab.Create();
 
+        _onboardLed = _projectLab.RgbLed;
+        _onboardLed.SetColor(Color.White);
+
         _displayService = new DisplayController(_projectLab.Display);
 
         Helpers.WaitForNetworkConnection(Device);
+        _onboardLed.SetColor(Color.Green);
 
         _test = RegisteredTests.GetTest(_config.TestName);
         if (_test == null)
         {
+            _onboardLed.SetColor(Color.Red);
             _displayService.UpdateTitle("ERROR");
-            _displayService.Log($"{_config.TestName}", false);
-            _displayService.Log("not found.", false);
+            _displayService.Log($"{_config.TestName} not found", false);
             Console.WriteLine($"Test '{_config.TestName}' not found.");
             while (true)
             {
-                // Add red LED code here.
                 Thread.Sleep(500);
             }
             
@@ -91,7 +100,14 @@ public class MeadowApp : App<F7CoreComputeV2>
             {
                 Thread.Sleep(_config.DelayBetweenCyclesMs);
             }
-            // Add Blue LED code here.
+            if ((counter % 2) == 0)
+            {
+                _onboardLed.SetColor(Color.Blue);
+            }
+            else
+            {
+                _onboardLed.SetColor(Color.Black);
+            }
         }
         _test.Teardown();
 
