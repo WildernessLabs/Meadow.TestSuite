@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using SoakTests.Common;
 
 namespace SoakTests;
@@ -25,7 +26,7 @@ class HttpGetSoakTest : ISoakTest
     /// <summary>
     /// Execute the test once.
     /// </summary>
-    public async void Execute()
+    public async Task Execute()
     {
         await Helpers.GetWebPageViaHttpClient(_config.RequestUri);
     }

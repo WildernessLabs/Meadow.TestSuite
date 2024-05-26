@@ -28,9 +28,10 @@ public static class Helpers
         {
             try
             {
+                ConsoleLog($"Starting request to {uri}...");
                 HttpResponseMessage response = await client.GetAsync(uri);
                 response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
+                ConsoleLog("Request completed successfully.");
             }
             catch (TaskCanceledException)
             {

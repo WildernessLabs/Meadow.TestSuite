@@ -1,3 +1,6 @@
+using System;
+using System.Threading.Tasks;
+
 namespace SoakTests;
 
 public interface ISoakTest
@@ -10,7 +13,7 @@ public interface ISoakTest
     /// <summary>
     /// Execute the test synchronously.
     /// </summary>
-    void Execute();
+    Task Execute();
 
     /// <summary>
     /// Tear down the test restoring the system to a state where other tests can be run.

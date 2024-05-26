@@ -72,7 +72,7 @@ public class MeadowApp : App<F7FeatherV2>
     /// <summary>
     /// Run the specified test the specified number of times.
     /// </summary>
-    public override Task Run()
+    public override async Task Run()
     {
         //
         //  Now some variables used to show progress.
@@ -93,7 +93,7 @@ public class MeadowApp : App<F7FeatherV2>
                 _displayService.Log($"{counter:N0}");
             }
             Console.WriteLine($"{DateTime.Now:HH:mm:ss}: Executing test {counter:N0}");
-            _test.Execute();
+            await _test.Execute();
             if (_config.DelayBetweenCyclesMs > 0)
             {
                 Thread.Sleep(_config.DelayBetweenCyclesMs);
@@ -106,7 +106,5 @@ public class MeadowApp : App<F7FeatherV2>
         Console.WriteLine("Done.");
 
         Thread.Sleep(Timeout.Infinite);
-
-        return Task.CompletedTask;
     }
 }
