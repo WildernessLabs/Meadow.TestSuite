@@ -52,6 +52,64 @@ public static class Helpers
         Console.WriteLine($"{DateTime.Now:HH:mm:ss}: {message}");
     }
 
+    public static void WaitForNetworkConnection(F7CoreComputeV2 device)
+    {
+        SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
+
+        if (device.PlatformOS.SelectedNetwork == IPlatformOS.NetworkConnectionType.Ethernet)
+        {
+            WaitForEthernetConnection(semaphore, device);
+        }
+        else
+        {
+            WaitForWiFiConnection(semaphore, device);
+        }
+        semaphore.Wait();
+        ConsoleLog("Network connection established.");
+
+        static void WaitForWiFiConnection(SemaphoreSlim semaphore, F7CoreComputeV2 device)
+        {
+            ConsoleLog($"Connecting to router via WiFi.");
+            var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            if (wifi.IsConnected)
+            {
+                ConsoleLog("WiFi already connected.");
+                ConsoleLog($"IP Address: {wifi.IpAddress}");
+                semaphore.Release();
+            }
+            else
+            {
+                wifi.NetworkConnected += (s, e) =>
+                {
+                    ConsoleLog("WiFi connected.");
+                    ConsoleLog($"IP Address: {wifi.IpAddress}");
+                    semaphore.Release();
+                };
+            }
+        }
+
+        static void WaitForEthernetConnection(SemaphoreSlim semaphore, F7CoreComputeV2 device)
+        {
+            ConsoleLog($"Connecting to router via wired ethernet.");
+            var ethernet = device.NetworkAdapters.Primary<IWiredNetworkAdapter>();
+            if (ethernet.IsConnected)
+            {
+                ConsoleLog("Ethernet already connected.");
+                ConsoleLog($"IP Address: {ethernet.IpAddress}");
+                semaphore.Release();
+            }
+            else
+            {
+                ethernet.NetworkConnected += (s, e) =>
+                {
+                    ConsoleLog("Ethernet connected.");
+                    ConsoleLog($"IP Address: {ethernet.IpAddress}");
+                    semaphore.Release();
+                };
+            }
+        }
+    }
+
     /// <summary>
     /// Wait for the network connection to be established.  This method can be used for
     /// both wired and wireless connections. 
