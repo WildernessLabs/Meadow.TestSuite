@@ -89,7 +89,7 @@ namespace ProjectLabTest
             Thread.Sleep(Timeout.Infinite);
         }
 
-                /// <summary>
+        /// <summary>
         /// Get the specified resource from the network.
         /// </summary>
         /// <param name="uri">Network resource to request.</param>
