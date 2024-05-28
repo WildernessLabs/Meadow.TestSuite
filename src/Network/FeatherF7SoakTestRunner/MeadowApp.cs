@@ -1,28 +1,34 @@
-﻿using FeatherF7Test.Hardware;
-using FeatherF7Test.Services;
-using Meadow;
+﻿using Meadow;
 using Meadow.Devices;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Meadow.Foundation.Displays;
+using Meadow.Foundation.Leds;
+using Meadow.Hardware;
+using Meadow.Peripherals.Displays;
+using Meadow.Peripherals.Leds;
+using Meadow.Units;
+
+using DisplayControllers;
 using SoakTests;
 using SoakTests.Common;
 
 namespace FeatherF7Test;
 
-// public class MeadowApp : App<F7FeatherV1>
-public class MeadowApp : App<F7FeatherV2>
+public class MeadowApp : App<F7FeatherV1>
+// public class MeadowApp : App<F7FeatherV2>
 {
-    /// <summary>
-    /// OLED hardware object.  This object contains the OLED display and 8 LED objects.
-    /// </summary>
-    IOLEDBoardHardware _hardware;
-
     /// <summary>
     /// SSD1306 OLED display to show progress.
     /// </summary>
-    DisplayController _displayService;
+    IDisplayController _display;
+
+    /// <summary>
+    /// IPixelDisplay object that implements the hardware interface.
+    /// </summary>
+    IPixelDisplay _displayHardware;
 
     /// <summary>
     /// Soak test configuration, this is read from the app.config.yaml file.
@@ -34,6 +40,37 @@ public class MeadowApp : App<F7FeatherV2>
     /// </summary>
     ISoakTest _test;
 
+    private void SetupHardware()
+    {
+        var spiBus = Device.CreateSpiBus(
+            Device.Pins.SCK,
+            Device.Pins.COPI,
+            Device.Pins.CIPO,
+            new Frequency(48000, Frequency.UnitType.Kilohertz));
+
+        var chipSelectPort = Device.CreateDigitalOutputPort(Device.Pins.D05);
+        var dcPort = Device.CreateDigitalOutputPort(Device.Pins.D14);
+        var resetPort = Device.CreateDigitalOutputPort(Device.Pins.D15);
+
+        Thread.Sleep(50);
+
+        var display = new Ili9341(
+            spiBus: spiBus,
+            chipSelectPort: chipSelectPort,
+            dataCommandPort: dcPort,
+            resetPort: resetPort,
+            width: 240, height: 320,
+            colorMode: ColorMode.Format16bppRgb565)
+        {
+            SpiBusMode = SpiClockConfiguration.Mode.Mode3,
+            SpiBusSpeed = new Frequency(48000, Frequency.UnitType.Kilohertz)
+        };
+
+        ((Ili9341) display).SetRotation(RotationType._270Degrees);
+
+        _displayHardware = display;
+    }
+
     /// <summary>
     /// Configure the application and run the test named in the app.config.yaml file.
     /// </summary>
@@ -41,29 +78,27 @@ public class MeadowApp : App<F7FeatherV2>
     {
         _config = new SoakTestSettings();
 
-        _hardware = new OLEDBoardHardware();
-        _hardware.Initialize(Device);
+        SetupHardware();
 
-        _displayService = new DisplayController(_hardware.Display);
-        _displayService.Clear();
+        _display = new ILI9341DisplayController(_displayHardware);
+        _display.Clear();
 
-        Helpers.WaitForNetworkConnection(Device);
+        SoakTests.Common.Helpers.WaitForNetworkConnection(Device);
 
         _test = RegisteredTests.GetTest(_config.TestName);
         if (_test == null)
         {
-            _displayService.UpdateTitle("ERROR");
-            _displayService.Log($"{_config.TestName}", false);
-            _displayService.Log("not found.", false);
+            _display.UpdateTitle("ERROR");
+            _display.Log($"{_config.TestName}", false);
+            _display.Log("not found.", false);
             Console.WriteLine($"Test '{_config.TestName}' not found.");
             while (true)
             {
-                _hardware.Leds[7].IsOn = !_hardware.Leds[7].IsOn;
                 Thread.Sleep(500);
             }
             
         }
-        _displayService.UpdateTitle(_config.TestName);
+        _display.UpdateTitle(_config.TestName);
         _test.Initialize(_config);
 
         return Task.CompletedTask;
@@ -90,7 +125,7 @@ public class MeadowApp : App<F7FeatherV2>
             counter++;
             if ((modulo == 0) || (counter % modulo == 0) || (counter < 10))
             {
-                _displayService.Log($"{counter:N0}");
+                _display.Log($"{counter:N0}");
             }
             Console.WriteLine($"{DateTime.Now:HH:mm:ss}: Executing test {counter:N0}");
             await _test.Execute();
@@ -98,11 +133,10 @@ public class MeadowApp : App<F7FeatherV2>
             {
                 Thread.Sleep(_config.DelayBetweenCyclesMs);
             }
-            _hardware.Leds[0].IsOn = !_hardware.Leds[0].IsOn;
         }
         _test.Teardown();
 
-        _displayService.Log("Done.");
+        _display.Log("Done.");
         Console.WriteLine("Done.");
 
         Thread.Sleep(Timeout.Infinite);

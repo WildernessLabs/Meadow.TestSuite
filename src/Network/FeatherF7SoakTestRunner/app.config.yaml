@@ -8,13 +8,16 @@ Logging:
 
 SoakTest:
     #
+    #   Name of the display to be used to show progress.
+    #
+    DisplayName: "ILI9341"
+    #
     #   Name of the test to execute.
     #
     TestName: "HttpGetSoakTest"
     #
     #   What should we request?
     #
-    # RequestUri: "http://192.168.1.239"
     RequestUri: "https://postman-echo.com/get?foo1=bar1&foo2=bar2"
     #
     #   Number of test cycles.

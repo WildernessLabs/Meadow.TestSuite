@@ -4,9 +4,9 @@ using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Peripherals.Displays;
 using System;
 
-namespace FeatherF7Test.Services;
+namespace DisplayControllers;
 
-internal class DisplayController
+internal class SSD1306DisplayController: IDisplayController
 {
     /// <summary>
     /// Number of lines to allocate for the title.
@@ -67,7 +67,7 @@ internal class DisplayController
     /// Create a new instance of the DisplayController class.
     /// </summary>
     /// <param name="display">Display to be used.</param>
-    public DisplayController(IPixelDisplay display)
+    public SSD1306DisplayController(IPixelDisplay display)
     {
         if (display != null)
         {
@@ -108,7 +108,7 @@ internal class DisplayController
     }
 
     /// <summary>
-    /// Clear the display.
+    /// Clear the entire display including the header and footer.
     /// </summary>
     public void Clear()
     {
@@ -127,11 +127,26 @@ internal class DisplayController
     }
 
     /// <summary>
+    /// Clear the lines of text from the display.  The title will be left alone.
+    /// </summary>
+    public void ClearText()
+    {
+        DisplayScreen.BeginUpdate();
+
+        for (int index = 0; index < Lines.Length; index++)
+        {
+            Lines[index].Text = "";
+        }
+
+        DisplayScreen.EndUpdate();
+    }
+
+    /// <summary>
     /// Add a line of text to the bottom of the displayed lines.  The display will
     /// be scrolled up one line if the bottom line is already full.
     /// </summary>
     /// <param name="text">Line of text to add to the displayed text.</param>
-    private void AddText(string text)
+    public void AddText(string text)
     {
         DisplayScreen.BeginUpdate();
 
@@ -170,6 +185,35 @@ internal class DisplayController
     }
 
     /// <summary>
+    /// Update the footer line on the display.
+    /// </summary>
+    /// <remarks>
+    /// The SSD1306 display does not have a footer line as the display
+    /// if too small so we just att the text to the display.
+    /// </remarks> 
+    public void UpdateFooter(string footer)
+    {
+        AddText(footer);
+    }
+
+    public void UpdateText(string[] lines)
+    {
+        if (lines.Length > Lines.Length)
+        {
+            throw new ArgumentException($"Too many lines of text.  Maximum is {Lines.Length}.");
+        }
+
+        DisplayScreen.BeginUpdate();
+
+        for (int index = 0; index < Lines.Length; index++)
+        {
+            Lines[index].Text = lines[index];
+        }
+
+        DisplayScreen.EndUpdate();
+    }
+
+    /// <summary>
     /// Show the message on the display with a time stamp.
     /// </summary>
     /// <param name="message">Message to be shown.</param>
@@ -186,7 +230,7 @@ internal class DisplayController
             ConsoleLog(output);
         }
     }
-
+    
     /// <summary>
     /// Send a message to the console.
     /// </summary>
@@ -194,7 +238,7 @@ internal class DisplayController
     /// This method is provided for when the display is not available.
     /// </remarks>
     /// <param name="message">Message to display.</param>
-    private void ConsoleLog(string message)
+    public void ConsoleLog(string message)
     {
         Console.WriteLine(message);
     }
