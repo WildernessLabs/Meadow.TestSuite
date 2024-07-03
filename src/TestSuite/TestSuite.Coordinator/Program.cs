@@ -14,6 +14,10 @@ internal class ConsoleTestAppRunner
 
 }
 
+public class ModbusStatusReporter
+{
+}
+
 internal class Program
 {
     private static readonly string[] CoreRepositoryStack =

@@ -1,5 +1,4 @@
 ﻿using Meadow.Devices;
-using Meadow.Hardware;
 using Munit;
 using System;
 using System.Collections.Generic;
@@ -23,7 +22,7 @@ namespace Meadow.TestSuite
             Device = device;
         }
 
-        public TestInfo GetTest(string id)
+        public TestInfo? GetTest(string id)
         {
             lock (m_cache)
             {
@@ -40,13 +39,13 @@ namespace Meadow.TestSuite
             var di = new DirectoryInfo(assemblyPath);
             if (!di.Exists) return;
 
-            foreach(var file in di.GetFiles("*.dll"))
+            foreach (var file in di.GetFiles("*.dll"))
             {
                 try
                 {
                     RegisterAssembly(file.FullName);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine($"Unable to register '{file.Name}': {ex.Message}");
                 }
@@ -55,7 +54,7 @@ namespace Meadow.TestSuite
 
         public void Clear()
         {
-            lock(m_cache)
+            lock (m_cache)
             {
                 m_cache.Clear();
             }
@@ -105,16 +104,16 @@ namespace Meadow.TestSuite
             foreach (var t in asm.GetTypes())
             {
                 // we have very simple rules here - don't build complex test types
-                if(t.IsClass && !t.IsAbstract)
+                if (t.IsClass && !t.IsAbstract)
                 {
                     var ctor = t.GetConstructor(Type.EmptyTypes);
-                    if(ctor == null)
+                    if (ctor == null)
                     {
                         Console.WriteLine($" {t.Name} has no public parameterless constructor. Skipping.");
                     }
                     else
                     {
-                        var methods = t.GetMethods().Where(m => 
+                        var methods = t.GetMethods().Where(m =>
                             m.GetCustomAttribute<FactAttribute>() != null
                             && m.GetParameters().Length == 0);
 
@@ -131,7 +130,7 @@ namespace Meadow.TestSuite
                                 Console.WriteLine($" {t.Name} has Device property");
                             }
 
-                            foreach(var method in methods)
+                            foreach (var method in methods)
                             {
                                 var info = new TestInfo
                                 {
@@ -142,7 +141,7 @@ namespace Meadow.TestSuite
                                     TestConstructor = ctor,
                                     DeviceProperty = device
                                 };
-                                if(m_cache.ContainsKey(info.ID))
+                                if (m_cache.ContainsKey(info.ID))
                                 {
                                     Console.WriteLine($" Test {info.ID} already known. Replacing.");
                                     m_cache[info.ID] = info;
@@ -203,7 +202,7 @@ namespace Meadow.TestSuite
             if (testPath.Contains('*'))
             {
                 var start = testPath.Substring(0, testPath.IndexOf('*'));
-                if(string.IsNullOrEmpty(start))
+                if (string.IsNullOrEmpty(start))
                 {
                     // request for "all"
                     return GetTestNames();
@@ -213,7 +212,7 @@ namespace Meadow.TestSuite
                     return m_cache
                         .Values
                         .Where(v => v.ID.StartsWith(start, StringComparison.InvariantCultureIgnoreCase))
-                        .Select( v=> v.ID)
+                        .Select(v => v.ID)
                         .ToArray();
                 }
             }
@@ -224,7 +223,7 @@ namespace Meadow.TestSuite
                     var t = m_cache
                         .Values
                         .FirstOrDefault(v => v.ID == testPath);
-                    if(t == null)
+                    if (t == null)
                     {
                         return new string[] { };
                     }

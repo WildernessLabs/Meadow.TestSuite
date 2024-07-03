@@ -5,6 +5,20 @@ using Munit;
 
 namespace ReleaseValidation.ProjectLab;
 
+public class ConnectorTests
+{
+    [Fact]
+    public void ConnectorValidation()
+    {
+        var projlab = Meadow.Devices.ProjectLab.Create();
+
+        Assert.NotNull(projlab);
+
+        Assert.NotNull(projlab.GroveAnalog.Pins.D0);
+        Assert.NotNull(projlab.GroveAnalog.Pins.D1);
+    }
+}
+
 public class AnalogTests
 {
     [Fact]

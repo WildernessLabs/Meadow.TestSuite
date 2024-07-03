@@ -1,5 +1,4 @@
 ﻿using Meadow.Devices;
-using Meadow.Hardware;
 
 namespace Meadow.TestSuite
 {
@@ -7,6 +6,6 @@ namespace Meadow.TestSuite
     {
         F7MicroBase Device { get; }
 
-        TestInfo GetTest(string id);
+        TestInfo? GetTest(string id);
     }
 }

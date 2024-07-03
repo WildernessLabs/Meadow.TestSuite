@@ -58,7 +58,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.ProjectLab", "..\..\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSuite.Coordinator", "TestSuite\TestSuite.Coordinator\TestSuite.Coordinator.csproj", "{926D4E42-8E82-4A53-A821-A7942863FA2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReleaseValidation.ProjectLab", "TestSuite\Test Assemblies\ReleaseValidation.ProjectLab\ReleaseValidation.ProjectLab.csproj", "{F010A590-B7B2-46B7-8EAB-FFC585C20B04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReleaseValidation.ProjectLab", "TestSuite\Test Assemblies\ReleaseValidation.ProjectLab\ReleaseValidation.ProjectLab.csproj", "{F010A590-B7B2-46B7-8EAB-FFC585C20B04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.TestRecorder.Client", "TestSuite\Meadow.TestRecorder.Client\Meadow.TestRecorder.Client.csproj", "{0E24B15F-1FED-40E8-93C5-B3CBA607EA57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -214,6 +216,12 @@ Global
 		{F010A590-B7B2-46B7-8EAB-FFC585C20B04}.ProjectRefs|Any CPU.Build.0 = Debug|Any CPU
 		{F010A590-B7B2-46B7-8EAB-FFC585C20B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F010A590-B7B2-46B7-8EAB-FFC585C20B04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E24B15F-1FED-40E8-93C5-B3CBA607EA57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E24B15F-1FED-40E8-93C5-B3CBA607EA57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E24B15F-1FED-40E8-93C5-B3CBA607EA57}.ProjectRefs|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E24B15F-1FED-40E8-93C5-B3CBA607EA57}.ProjectRefs|Any CPU.Build.0 = Debug|Any CPU
+		{0E24B15F-1FED-40E8-93C5-B3CBA607EA57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E24B15F-1FED-40E8-93C5-B3CBA607EA57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

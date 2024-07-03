@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>App</AssemblyName>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="config.json">
