@@ -54,13 +54,15 @@ namespace Meadow.Validation
             {
                 return new ITest<MeadowTestDevice>[]
                 {
-                  new ReflectionTest(),
-                  new BluetoothTest<MeadowTestDevice>(),
-                  new WiFiAntennaSwitchingTest<MeadowTestDevice>(),
-                  new FileSystemTest<MeadowTestDevice>(),
-                  new SQLiteTest<MeadowTestDevice>(),
-                  new WiFiSSLLoopTest<MeadowTestDevice>(),
-                  new WiFiScanForAccessPointsTest<MeadowTestDevice>(),
+                    new JsonTest<MeadowTestDevice>(),
+                    new ReflectionTest(),
+                    new BluetoothTest<MeadowTestDevice>(),
+                    new WiFiAntennaSwitchingTest<MeadowTestDevice>(),
+                    new FileSystemTest<MeadowTestDevice>(),
+                    new SQLiteTest<MeadowTestDevice>(),
+                    new WiFiSSLLoopTest<MeadowTestDevice>(),
+                    new WiFiScanForAccessPointsTest<MeadowTestDevice>(),
+                    new SleepTest<MeadowTestDevice>(),
                 };
             }
         }
