@@ -43,6 +43,8 @@ public class MeadowApp : App<F7CoreComputeV2>
 
     public override Task Initialize()
     {
+        Helpers.DeviceUnderTest = Device;
+
         _config = new SoakTestSettings();
 
         _projectLab = ProjectLab.Create();
@@ -67,9 +69,6 @@ public class MeadowApp : App<F7CoreComputeV2>
         }
         _displayService.UpdateTitle(_config.TestName);
         _displayService.Log("Connecting to network...");
-
-        Helpers.WaitForNetworkConnection(Device);
-        _onboardLed.SetColor(Color.Green);
 
         _test.Initialize(_config);
 
@@ -112,6 +111,8 @@ public class MeadowApp : App<F7CoreComputeV2>
             }
         }
         _test.Teardown();
+
+        _onboardLed.SetColor(Color.Green);
 
         _displayService.Log("Done.");
         Console.WriteLine("Done.");

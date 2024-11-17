@@ -77,7 +77,7 @@ CoProcessor:
     #
     #   Should we start the network using stored WiFi credentials.
     #
-    AutomaticallyStartNetwork: true
+    AutomaticallyStartNetwork: false
 #
 # Internal debug options.
 #
@@ -91,3 +91,7 @@ InternalDebug:
     #   Valid values: 1-4
     #
     TraceLevel: 2
+    #
+    #   Should we copy the application output to the UART (COM1) ?
+    #
+    CopyApplicationOutputToUart: false

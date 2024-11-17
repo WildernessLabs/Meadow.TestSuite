@@ -91,3 +91,7 @@ InternalDebug:
     #   Valid values: 1-4
     #
     TraceLevel: 2
+    #
+    #   Should we copy the application output to the UART (COM1) ?
+    #
+    CopyApplicationOutputToUart: false

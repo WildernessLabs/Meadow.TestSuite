@@ -19,6 +19,16 @@ namespace SoakTests.Common;
 public static class Helpers
 {
     /// <summary>
+    /// Device under test.
+    /// </summary>
+    /// <remarks>
+    /// This property is from the main application class and is set to enable the <i>>Device</i> object
+    /// to be accessed from test classes.
+    /// </remarks>
+    /// <value>Device object from the main application.</value>
+    public static IMeadowDevice DeviceUnderTest { get; set; }
+
+    /// <summary>
     /// Get the specified resource from the network.
     /// </summary>
     /// <param name="uri">Network resource to request.</param>
@@ -48,12 +58,33 @@ public static class Helpers
     /// Show the message passed in on the console with a time stamp.
     /// </summary>
     /// <param name="message">Message to be shown.</param>
-    private static void ConsoleLog(string message)
+    public static void ConsoleLog(string message)
     {
         Console.WriteLine($"{DateTime.Now:HH:mm:ss}: {message}");
     }
 
-    public static void WaitForNetworkConnection(F7CoreComputeV2 device)
+    public static void WaitForNetworkConnection()
+    {
+        switch (DeviceUnderTest.Information.Platform)
+        {
+            case MeadowPlatform.F7FeatherV1:
+                ConsoleLog("F7FeatherV1 - implement me.");
+                break;
+            case MeadowPlatform.F7FeatherV2:
+                F7FeatherV2 device = (F7FeatherV2) DeviceUnderTest;
+                WaitForNetworkConnection(device);
+                break;
+            case MeadowPlatform.F7CoreComputeV2:
+                F7CoreComputeV2 coreCompute = (F7CoreComputeV2) DeviceUnderTest;
+                WaitForNetworkConnection(coreCompute);
+                break;
+            default:
+                ConsoleLog("Unknown device type.");
+                break;
+        }
+    }
+
+    private static void WaitForNetworkConnection(F7CoreComputeV2 device)
     {
         SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
 

@@ -43,6 +43,8 @@ class SocketAsyncSoakTest : ISoakTest
         _ipEndPoint = Helpers.GetEndpoint(_config.RequestUri);
 
         _encodedRequest = Encoding.UTF8.GetBytes($"GET {uri.AbsolutePath} HTTP/1.1\n\n");
+
+        Helpers.WaitForNetworkConnection();
     }
 
     /// <summary>

@@ -10,7 +10,7 @@ SoakTest:
     #
     #   Name of the test to execute.
     #
-    TestName: "HttpGetSoakTest"
+    TestName: "ScanForAccessPointsSoakTest"
     #
     #   What should we request?
     #
@@ -19,7 +19,7 @@ SoakTest:
     #
     #   Number of test cycles.
     #
-    NumberOfCycles: 10000
+    NumberOfCycles: 5
     #
     #   Number of milliseconds between cycles.
     #
