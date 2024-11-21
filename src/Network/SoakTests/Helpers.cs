@@ -14,10 +14,20 @@ using Meadow.Hardware;
 namespace SoakTests.Common;
 
 /// <summary>
-/// 
+/// Helper class for the tests.
 /// </summary>
 public static class Helpers
 {
+    /// <summary>
+    /// Device under test.
+    /// </summary>
+    /// <remarks>
+    /// This property is from the main application class and is set to enable the <i>>Device</i> object
+    /// to be accessed from test classes.
+    /// </remarks>
+    /// <value>Device object from the main application.</value>
+    public static IMeadowDevice DeviceUnderTest { get; set; }
+
     /// <summary>
     /// Get the specified resource from the network.
     /// </summary>
@@ -48,98 +58,39 @@ public static class Helpers
     /// Show the message passed in on the console with a time stamp.
     /// </summary>
     /// <param name="message">Message to be shown.</param>
-    private static void ConsoleLog(string message)
+    public static void ConsoleLog(string message)
     {
         Console.WriteLine($"{DateTime.Now:HH:mm:ss}: {message}");
     }
 
-    public static void WaitForNetworkConnection(F7CoreComputeV2 device)
-    {
-        SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
-
-        if (device.PlatformOS.SelectedNetwork == IPlatformOS.NetworkConnectionType.Ethernet)
-        {
-            WaitForEthernetConnection(semaphore, device);
-        }
-        else
-        {
-            WaitForWiFiConnection(semaphore, device);
-        }
-        semaphore.Wait();
-        ConsoleLog("Network connection established.");
-
-        static void WaitForWiFiConnection(SemaphoreSlim semaphore, F7CoreComputeV2 device)
-        {
-            ConsoleLog($"Connecting to router via WiFi.");
-            var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
-            if (wifi.IsConnected)
-            {
-                ConsoleLog("WiFi already connected.");
-                ConsoleLog($"IP Address: {wifi.IpAddress}");
-                semaphore.Release();
-            }
-            else
-            {
-                wifi.NetworkConnected += (s, e) =>
-                {
-                    ConsoleLog("WiFi connected.");
-                    ConsoleLog($"IP Address: {wifi.IpAddress}");
-                    semaphore.Release();
-                };
-            }
-        }
-
-        static void WaitForEthernetConnection(SemaphoreSlim semaphore, F7CoreComputeV2 device)
-        {
-            ConsoleLog($"Connecting to router via wired ethernet.");
-            var ethernet = device.NetworkAdapters.Primary<IWiredNetworkAdapter>();
-            if (ethernet.IsConnected)
-            {
-                ConsoleLog("Ethernet already connected.");
-                ConsoleLog($"IP Address: {ethernet.IpAddress}");
-                semaphore.Release();
-            }
-            else
-            {
-                ethernet.NetworkConnected += (s, e) =>
-                {
-                    ConsoleLog("Ethernet connected.");
-                    ConsoleLog($"IP Address: {ethernet.IpAddress}");
-                    semaphore.Release();
-                };
-            }
-        }
-    }
-
     /// <summary>
-    /// Wait for the network connection to be established.  This method can be used for
-    /// both wired and wireless connections. 
+    /// Wait for a network connection to be established.
     /// </summary>
-    /// <param name="device">F7 Feather base class.</param>
-    public static void WaitForNetworkConnection(F7FeatherBase device)
+    public static void WaitForNetworkConnection()
     {
         SemaphoreSlim semaphore = new SemaphoreSlim(0, 1);
 
-        if (device.PlatformOS.SelectedNetwork == IPlatformOS.NetworkConnectionType.Ethernet)
+        if (DeviceUnderTest.PlatformOS.SelectedNetwork == IPlatformOS.NetworkConnectionType.Ethernet)
         {
-            WaitForEthernetConnection(semaphore, device);
+            WaitForEthernetConnection(semaphore);
         }
         else
         {
-            WaitForWiFiConnection(semaphore, device);
+            WaitForWiFiConnection(semaphore);
         }
         semaphore.Wait();
         ConsoleLog("Network connection established.");
 
+        #region ----------- Internal Methods (WaitForNetworkConnection) ------------
+
         /// <summary>
-        /// Wait for a WiFi connection to be established.
+        /// Wait for a WiFi connection.
         /// </summary>
-        /// <param name="semaphore">Semaphore used to signal to the caller that the connection has been established.</param>
-        /// <param name="device">F7 Feather base class.</param>
-        static void WaitForWiFiConnection(SemaphoreSlim semaphore, F7FeatherBase device)
+        /// <param name="semaphore">Semaphore used by the caller to indicate that a connection has been established.</param>
+        static void WaitForWiFiConnection(SemaphoreSlim semaphore)
         {
             ConsoleLog($"Connecting to router via WiFi.");
-            var wifi = device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            var wifi = DeviceUnderTest.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             if (wifi.IsConnected)
             {
                 ConsoleLog("WiFi already connected.");
@@ -158,14 +109,13 @@ public static class Helpers
         }
 
         /// <summary>
-        /// Wait for a wired ethernet connection to be established.
+        /// Wait for an ethernet connection.
         /// </summary>
-        /// <param name="semaphore">Semaphore used to signal to the caller that the connection has been established.</param>
-        /// <param name="device">F7 Feather base class.</param>
-        static void WaitForEthernetConnection(SemaphoreSlim semaphore, F7FeatherBase device)
+        /// <param name="semaphore">Semaphore used by the caller to indicate that a connection has been established.</param>
+        static void WaitForEthernetConnection(SemaphoreSlim semaphore)
         {
             ConsoleLog($"Connecting to router via wired ethernet.");
-            var ethernet = device.NetworkAdapters.Primary<IWiredNetworkAdapter>();
+            var ethernet = DeviceUnderTest.NetworkAdapters.Primary<IWiredNetworkAdapter>();
             if (ethernet.IsConnected)
             {
                 ConsoleLog("Ethernet already connected.");
@@ -182,6 +132,7 @@ public static class Helpers
                 };
             }
         }
+        #endregion ---------- Internal Methods (WaitForNetworkConnection) ----------
     }
 
     /// <summary>

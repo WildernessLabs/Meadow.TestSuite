@@ -39,6 +39,8 @@ public class MeadowApp : App<F7FeatherV2>
     /// </summary>
     public override Task Initialize()
     {
+        Helpers.DeviceUnderTest = Device;
+
         _config = new SoakTestSettings();
 
         _hardware = new OLEDBoardHardware();
@@ -46,8 +48,6 @@ public class MeadowApp : App<F7FeatherV2>
 
         _displayService = new DisplayController(_hardware.Display);
         _displayService.Clear();
-
-        Helpers.WaitForNetworkConnection(Device);
 
         _test = RegisteredTests.GetTest(_config.TestName);
         if (_test == null)
