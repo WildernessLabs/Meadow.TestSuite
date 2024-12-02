@@ -60,6 +60,7 @@ fn test_on_off_characteristic(characteristic: &BluetoothGATTCharacteristic) {
             panic!("Failed to write value: {off}, read {value}");
         }
         counter += 1;
+        thread::sleep(Duration::from_millis(MILLISECONDS_DELAY));
     }
 
     println!(" - PASS");
@@ -76,6 +77,7 @@ fn test_boolean_characteristic(characteristic: &BluetoothGATTCharacteristic) {
             Err(_e) => counter += 1,
             _ => panic!("Failed managed to write read-only boolean value")
         };
+        thread::sleep(Duration::from_millis(MILLISECONDS_DELAY));
     }
 
     println!(" - PASS");
@@ -95,6 +97,7 @@ fn test_number_characteristic(characteristic: &BluetoothGATTCharacteristic) {
             panic!("Failed to write value: {counter}");
         }
         counter += 1;
+        thread::sleep(Duration::from_millis(MILLISECONDS_DELAY));
     }
 
     println!(" - PASS");
@@ -119,6 +122,7 @@ fn test_text_characteristic(characteristic: &BluetoothGATTCharacteristic) {
             panic!("Text does not match, '{value}' and '{read_value}'.");
         }
         counter += 1;
+        thread::sleep(Duration::from_millis(MILLISECONDS_DELAY));
     }
 
     println!(" - PASS");
@@ -138,7 +142,6 @@ fn execute_tests(session: &BluetoothSession, characteristics: Vec<String>) {
             NUMBER_UUID => test_number_characteristic(&characteristic),
             TEXT_UUID => test_text_characteristic(&characteristic),
             _ => ()
-            // _ => panic!("Unknown characteristic: {:?}", uuid)
         }
     }
 }
