@@ -77,7 +77,7 @@ CoProcessor:
     #
     #   Should we start the network using stored WiFi credentials.
     #
-    AutomaticallyStartNetwork: true
+    AutomaticallyStartNetwork: false
 #
 # Internal debug options.
 #
