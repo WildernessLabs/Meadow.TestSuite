@@ -1,6 +1,6 @@
 use core::{panic, str};
 use regex::Regex;
-use std::thread;
+use std::{thread, env};
 use std::time::Duration;
 use lazy_static::lazy_static;
 use blurz::{
@@ -19,11 +19,23 @@ const UUID_REGEX: &str = r"([0-9a-f]{8})-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}";
 /// UUID of the on/off characteristic.
 const ON_OFF_UUID: &str = "016e99d6-8a61-11eb-8dcd-0242ac1300ff";
 
+/// Text name for the on/off characteristic test.
+const ON_OFF_NAME: &str = "onoff";
+
 /// UUID of the boolean characteristic.
 const BOOLEAN_UUID: &str = "017e99d6-8a61-11eb-8dcd-0242ac1300aa";
 
+/// Text name for the boolean characteristic test.
+const BOOLEAN_NAME: &str = "boolean";
+
 /// UUID of the number characteristic.
 const NUMBER_UUID: &str = "018e99d6-8a61-11eb-8dcd-0242ac1300bb";
+
+/// Text for the number characteristic test.
+const NUMBER_NAME: &str = "number";
+
+/// Text for the text characteristic test.
+const TEXT_NAME: &str = "text";
 
 /// UUID of the text characteristic.
 const TEXT_UUID: &str = "019e99d6-8a61-11eb-8dcd-0242ac1300cc";
@@ -129,7 +141,7 @@ fn test_text_characteristic(characteristic: &BluetoothGATTCharacteristic) {
 }
 
 /// Find the characteristics for the service with the GAT_SERVICE_ID and execute the tests.
-fn execute_tests(session: &BluetoothSession, characteristics: Vec<String>) {
+fn execute_tests(session: &BluetoothSession, characteristics: Vec<String>, arguments: &Vec<String>) {
     for characteristic_path in characteristics {
         let characteristic = BluetoothGATTCharacteristic::new(session, characteristic_path.clone());
         lazy_static! {
@@ -137,13 +149,31 @@ fn execute_tests(session: &BluetoothSession, characteristics: Vec<String>) {
         }
         let uuid = characteristic.get_uuid().unwrap();
         match uuid.as_str() {
-            ON_OFF_UUID => test_on_off_characteristic(&characteristic),
-            BOOLEAN_UUID => test_boolean_characteristic(&characteristic),
-            NUMBER_UUID => test_number_characteristic(&characteristic),
-            TEXT_UUID => test_text_characteristic(&characteristic),
+            ON_OFF_UUID => if command_line_contains(arguments, ON_OFF_NAME) {
+                test_on_off_characteristic(&characteristic)
+            },
+            BOOLEAN_UUID => if command_line_contains(arguments, BOOLEAN_NAME) {
+                test_boolean_characteristic(&characteristic)
+            },
+            NUMBER_UUID => if command_line_contains(arguments, NUMBER_NAME) {
+                test_number_characteristic(&characteristic)
+            },
+            TEXT_UUID => if command_line_contains(arguments, TEXT_NAME) {
+                test_text_characteristic(&characteristic)
+            },
             _ => ()
         }
     }
+}
+
+/// Check to see if the specified command line argument is in the list of arguments.
+fn command_line_contains(arguments: &Vec<String>, look_for: &str) -> bool {
+    for arg in arguments {
+        if (arg == look_for) || (arg == "all")  {
+            return true;
+        }
+    }
+    false
 }
 
 /// Find the characteristics for service with the GAT_SERVICE_ID
@@ -188,6 +218,7 @@ fn find_characteristics(bt_session: &BluetoothSession, device_path: String) -> V
 
 /// Find the Meadow device with the name "Meadow F7" and return the BluetoothSession and device path
 fn find_meadow() -> (BluetoothSession, String) {
+    println!("Searching for Meadow device.");
     let mut counter = 0;
 
     let bt_session = BluetoothSession::create_session(None).unwrap();
@@ -196,7 +227,10 @@ fn find_meadow() -> (BluetoothSession, String) {
         panic!("Failed to power adapter");
     }
     let discover_session = BluetoothDiscoverySession::create_session(&bt_session, adapter.get_id()).unwrap();
-    while counter < 240 {
+    while counter < 250 {
+        if (counter != 0) && ((counter % 50) == 0) {
+            println!("    - Count {counter}");
+        }
         if let Err(_error) = discover_session.start_discovery() {
             panic!("Failed to start discovery");
         }
@@ -222,8 +256,9 @@ fn find_meadow() -> (BluetoothSession, String) {
 /// Main program loop for testing the Bluetooth functionality on a Meadow F7 board.
 fn main() {
     println!("Bluetooth Test Driver");
-    let (bt_session, device_path) = find_meadow();
+    let arguments: Vec<String> = env::args().collect();
 
+    let (bt_session, device_path) = find_meadow();
     let characteristics = find_characteristics(&bt_session, device_path.clone());
-    execute_tests(&bt_session, characteristics);
+    execute_tests(&bt_session, characteristics, &arguments);
 }
