@@ -37,6 +37,10 @@ The <tests to run> option will control which of the Bluetooth characteristics to
 
 So `cargo run -- number` will run the number characteristic tests.
 
+### Bluetooth and WiFi
+
+At the time of writing, WiFi must be disabled in order for the Bluetooth test to run.
+
 ### Service Cannot be Found
 
 This message may be generated the first time the Rust application is run.  This can be fixed by re-running the application.
