@@ -31,10 +31,14 @@ public class MeadowApp : ProjectLabCoreComputeApp
         return base.Initialize();
     }
 
-    private void OnNetworkConnected(INetworkAdapter sender, NetworkConnectionEventArgs args)
+    private async void OnNetworkConnected(INetworkAdapter sender, NetworkConnectionEventArgs args)
     {
         Resolver.Log.Info($"Network connected!");
 
+        Resolver.Log.Info($"setting device time...");
+        await Hardware.ComputeModule.PlatformOS.NtpClient.Synchronize();
+
+        // 
         // the fact we connected means WiFi works, so we might as well report that as a test success
         _testService.AddTestInfo(new TestInfo("Manual WiFi Connect", TestResult.Pass));
 

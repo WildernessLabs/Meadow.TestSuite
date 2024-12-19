@@ -1,0 +1,11 @@
+﻿Lifecycle:
+    RestartOnAppFailure: false
+Logging:
+    LogLevel:
+        Default: Debug
+TestRecorder:
+    User: 0oagp2r6ieYLnkxsz5d7
+    Password: aXVgSZznJlO9ETOw4cKkUas-9CAzYcsExFmnMD7oib8uuMeg2M7WE73Tdh12m2hA
+    WiFi:
+        Ssid: interwebs
+        Passphrase: 1234567890
