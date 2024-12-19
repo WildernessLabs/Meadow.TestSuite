@@ -1,87 +1,63 @@
-<img src="Design/banner.jpg" style="margin-bottom:10px" />
+# Meadow Test and Validation
 
-Meadow.TestSuite is intended to provide a remote-controllable test infrastructure for the Wilderness Labs Meadow.  It provides a mechanism to push test assemblies to a device, enumerate assemblies and test methods, selectively run test methods, and retrieve test results.
+(updated 19 Dec 2024)
 
-A goal is to provide a API that at least feels like xUnit, or a subset of xUnit, to facilitate easier test creation.  Direct use of xUnit, at least right now, is not a goal since the tests must be run on-device and control has to be handled by a meadow-specific transport layer.
+This repository contains all of the Meadow Test and Validation tools, libraries, etc.  These can be broken down into several categories.
 
-[Using a Raspberry Pi as the Test Director](doc/raspi.md)
+## Workbench
 
-[Running the TestDirector from a Container](deploy/readme.md)
+`Meadow.Workbench` is a cross-platform (Avalonia) app that provides a UI around the Meadow CLI features. Among other things, it provides the ability to manage the local firmware builds, flash firmware files, manage a connected device's file system, and view device output logging.
 
-[Hardware Setup](doc/setup.md)
+## TestSuite
 
-[Using TestSuite](doc/usage.md)
+TestSuite is envisioned to be a hardware-in-the-loop test infrastructure.  
 
-[Authoring TestSuite Tests](doc/authoring-tests.md)
+[Much more detail can be found in the TestSuite ReadMe.](doc/test-suite-readme.md)
 
-[TestSuite Worker REST API](doc/rest-api.md)
+It consists of 2 parts:
 
-[TestSuite Worker Configuration](doc/config.md)
+### Test Director
 
-[TestSuite Implementation Details](doc/implementation.md)
+The Director manages running tests, getting results, etc.  It would run on a development or host machine and it's job it to determine what tests are available, what should be run, what results exist, etc.
 
-## Beta Notes
+The Director communicates with a Worker over either Serial or Ethernet.
 
-Currently the Beta source has references to local projects for the full source of Meadow Core and Meadow Foundation since we're using it to find and fix bugs in both and it makes things a bit easier internally. If you don't have the source for those, however, it leads to compile errors like this:
+### Test Worker
 
-```
-Error	NU1104	Unable to find project '...\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj'. Check that the project reference is valid and that the project file exists.	Tests.Meadow.Foundation	{My Repo Folder}\Source\Repos\Meadow.TestSuite\Tests.Meadow.Foundation\Tests.Meadow.Foundation.csproj
-```
+The Worker runs on target hardware - the device under test (DUT).  The Worker can load an assembly that contains tests.  It can enumerate those tests back to the Director.  It can also execute tests and managed the results.
 
-This is solved by changing from the local project reference to using the Nuget packages instead.
+Test Assemblies look and feel like xUnit tests (they are called "mUnit").
 
-### Update `Meadow.TestSuite.Worker.csproj`
+Work stalled on TestSuite because Mono at the time had serious problems with loading test assemblies via reflection, and while the plumbing all seemed to work, getting actual tests to run was painful.
 
-Old:
-```
-<Project Sdk="Meadow.Sdk/1.1.0">
-  ...
-  <ItemGroup>
-    <ProjectReference Include="..\..\Meadow.Core\source\Meadow.Core\Meadow.Core.csproj" />
-    <ProjectReference Include="..\..\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj" />
-    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
-  </ItemGroup>
-</Project>
-```
-New:
-```
-<Project Sdk="Meadow.Sdk/1.1.0">
-  ...
-  <ItemGroup>
-    <PackageReference Include="Meadow" Version="0.18.0" />
-    <PackageReference Include="Meadow.Foundation" Version="0.20.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
-  </ItemGroup>
-</Project>
-```
+## Validation
 
-### Update `Tests.Meadow.Core.csproj` and `Tests.Meadow.Foundation.csproj`
+This folder is a mess and contains things that were part of a more "product-like" thing called `Meadow.Validation` and just ad-hoc validation apps.
 
-Old (similar to):
-```
-<Project Sdk="Meadow.Sdk/1.1.0">
-  ...
-  <ItemGroup>
-    <PackageReference Include="Meadow.Foundation" Version="0.*" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Meadow.Core\source\Meadow.Core\Meadow.Core.csproj" />
-    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
-  </ItemGroup>
-</Project>
-```
-New:
-```
-<Project Sdk="Meadow.Sdk/1.1.0">
-  ...
-  <ItemGroup>
-    <PackageReference Include="Meadow" Version="0.18.0" />
-    <PackageReference Include="Meadow.Foundation" Version="0.*.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Meadow.TestSuite.Core\Meadow.TestSuite.Core.csproj" />
-  </ItemGroup>
-</Project>
-```
+### Meadow.Validation
+Since TestSuite was not working well due to Reflection issues on device, `Meadow.Validation` was created.  Validation tests are designed as applications that simply run right on the DUT, with no overall coordination.
+
+Meadow.Validation has some structure to allow you to define a `MeadowTestDevice` and then define `ITest` implementations for that hardware.
+
+In here you will find some tests for broader coverage as well as device-specific things such as:
+
+| name | purpose |
+| --- | --- |
+| F7Feather_v2 | This contains a set of automated tests for the broader OS capabilities.  File system, WiFi, SQLite, Bluetooth, etc.  It's a reasonable example of how to author tests for Validation |
+| DiscreteLoopback_v2 | These app is designed to plug into a breadboard (with the idea tha specific hardware would be created for just this test).  The breadboard has loopback jumpers for almost all pins (the pin count is odd, so one is missing).  It then runs automated tests for inputs, outputs, interrupts, PushButtons, toggle speed, etc.  It's a very complete and robust test for I/O on the Feather. |
+
+### LongTermMapleServiceTest
+
+This is an app that, like the name suggests, is designed to do long-run testing of Maple to help test some 1.x issues we had with memory and reliability
+
+### Meadow.Validation.ProjectLab
+
+This is another stand-alone application that is an example of how you might create an extensible, ever-growing set of tests for a DUT.
+
+`Meadow.Validation.ProjectLab` allow you to follow an interface and create new tests that plug into a test framework.  These tests are generally designed to be **user interactive**.  For example, it might ask the user to "press the UP button" and it will validate that the action occurred as expected.
+
+One newer feature of `Meadow.Validation.ProjectLab` is that upon completing a run of tests, it provides the option of publishing the test results to Meadow.Cloud to allow a record of test run history to be generated.  The cloud endpoint and a simple web interface to browse results already exists.
+
+### Network
+
+The network foder contains a lot of long-running soak tests for validation issues that we've run across in the past

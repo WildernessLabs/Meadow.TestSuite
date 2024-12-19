@@ -1,5 +1,6 @@
 ﻿using Meadow;
 using Meadow.Devices;
+using Meadow.Foundation.Displays;
 using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Validation;
 using System;
@@ -45,6 +46,8 @@ public class TestService
 
     private void Initialize()
     {
+        (_hardware.Display as Ili9341).InvertDisplay(false);
+
         _display = new DisplayService(
             new DisplayScreen(
                 _hardware.Display,

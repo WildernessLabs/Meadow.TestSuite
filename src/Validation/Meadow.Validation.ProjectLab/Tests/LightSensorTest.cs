@@ -1,4 +1,5 @@
-﻿using Meadow.Devices;
+﻿using Meadow;
+using Meadow.Devices;
 using System.Threading.Tasks;
 
 namespace Validation;
@@ -14,6 +15,10 @@ public class LightSensorTest : TestDescriptor
     {
         Task.Run(async () =>
         {
+            Resolver.Log.Info("Light sensor test");
+
+            await Task.Delay(1000);
+
             while (!TestComplete)
             {
                 var read = await Hardware.LightSensor.Read();

@@ -15,6 +15,8 @@ public class DigitalInputLowTest : TestDescriptor
     {
         Task.Run(async () =>
         {
+            await Task.Delay(1000);
+
             using var in1 = Hardware.IOTerminal.Pins.A1.CreateDigitalInputPort(Meadow.Hardware.ResistorMode.InternalPullUp);
             using var in2 = Hardware.IOTerminal.Pins.D2.CreateDigitalInputPort(Meadow.Hardware.ResistorMode.InternalPullUp);
             using var in3 = Hardware.IOTerminal.Pins.D3.CreateDigitalInputPort(Meadow.Hardware.ResistorMode.InternalPullUp);
