@@ -21,6 +21,8 @@ class HttpGetSoakTest : ISoakTest
     public void Initialize(SoakTestSettings config)
     {
         _config = config;
+
+        Helpers.WaitForNetworkConnection();
     }
 
     /// <summary>

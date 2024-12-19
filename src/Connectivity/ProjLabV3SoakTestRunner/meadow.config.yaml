@@ -5,7 +5,7 @@ Device:
     #
     #   Name of the device on the network.
     #
-    Name: F7SoakTestRunner
+    Name: ProjLabTemplate
     #
     #   Is there an SD Card socket present on this device.
     #
@@ -17,12 +17,12 @@ Device:
 #
 # Control how mono will start and operate.
 #
-MonoControl:
+# MonoControl:
     #
     #   Options to pass to Mono via the command line.
     #
     # Options: --debug --trace=N:System.Net.Http.ConnectHelper
-    Options: --debug
+    # Options: --debug
 #
 #   Network configuration.
 #
@@ -77,7 +77,7 @@ CoProcessor:
     #
     #   Should we start the network using stored WiFi credentials.
     #
-    AutomaticallyStartNetwork: true
+    AutomaticallyStartNetwork: false
 #
 # Internal debug options.
 #
@@ -91,3 +91,7 @@ InternalDebug:
     #   Valid values: 1-4
     #
     TraceLevel: 2
+    #
+    #   Should we copy the application output to the UART (COM1) ?
+    #
+    CopyApplicationOutputToUart: false

@@ -11,6 +11,9 @@ public static class RegisteredTests
         new HttpGetSoakTest(),
         new SocketSoakTest(),
         new SocketAsyncSoakTest(),
+        new ScanForAccessPointsSoakTest(),
+        new PingSoakTest(),
+        new BluetoothTest(),
     };
 
     /// <summary>

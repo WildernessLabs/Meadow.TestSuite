@@ -1,7 +1,10 @@
-﻿using FeatherF7Test.Hardware;
-using FeatherF7Test.Services;
-using Meadow;
+﻿using Meadow;
 using Meadow.Devices;
+using Meadow.Foundation.Graphics;
+using Meadow.Foundation.Graphics.MicroLayout;
+using Meadow.Peripherals.Displays;
+using Meadow.Peripherals.Leds;
+using ProjectLabTest.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,18 +12,22 @@ using System.Threading.Tasks;
 using SoakTests;
 using SoakTests.Common;
 
-namespace FeatherF7Test;
+namespace ProjLabV3SoakTestRunner;
 
-// public class MeadowApp : App<F7FeatherV1>
-public class MeadowApp : App<F7FeatherV2>
+public class MeadowApp : App<F7CoreComputeV2>
 {
     /// <summary>
-    /// OLED hardware object.  This object contains the OLED display and 8 LED objects.
+    /// Hardware we are running on.
     /// </summary>
-    IOLEDBoardHardware _hardware;
+    private IProjectLabHardware _projectLab;
 
     /// <summary>
-    /// SSD1306 OLED display to show progress.
+    /// Onboard LED used for status indication.
+    /// </summary>
+    IRgbPwmLed _onboardLed;
+
+    /// <summary>
+    /// IL9341 display used to show test progress.
     /// </summary>
     DisplayController _displayService;
 
@@ -34,45 +41,41 @@ public class MeadowApp : App<F7FeatherV2>
     /// </summary>
     ISoakTest _test;
 
-    /// <summary>
-    /// Configure the application and run the test named in the app.config.yaml file.
-    /// </summary>
     public override Task Initialize()
     {
+        Helpers.DeviceUnderTest = Device;
+
         _config = new SoakTestSettings();
 
-        _hardware = new OLEDBoardHardware();
-        _hardware.Initialize(Device);
+        _projectLab = ProjectLab.Create();
 
-        _displayService = new DisplayController(_hardware.Display);
-        _displayService.Clear();
+        _onboardLed = _projectLab.RgbLed;
+        _onboardLed.SetColor(Color.White);
 
-        Helpers.WaitForNetworkConnection(Device);
+        _displayService = new DisplayController(_projectLab.Display);
 
         _test = RegisteredTests.GetTest(_config.TestName);
         if (_test == null)
         {
+            _onboardLed.SetColor(Color.Red);
             _displayService.UpdateTitle("ERROR");
-            _displayService.Log($"{_config.TestName}", false);
-            _displayService.Log("not found.", false);
+            _displayService.Log($"{_config.TestName} not found", false);
             Console.WriteLine($"Test '{_config.TestName}' not found.");
             while (true)
             {
-                _hardware.Leds[7].IsOn = !_hardware.Leds[7].IsOn;
                 Thread.Sleep(500);
             }
             
         }
         _displayService.UpdateTitle(_config.TestName);
+        _displayService.Log("Connecting to network...");
+
         _test.Initialize(_config);
 
-        return Task.CompletedTask;
+        return base.Initialize();
     }
 
-    /// <summary>
-    /// Run the specified test the specified number of times.
-    /// </summary>
-    public override async Task Run()
+    public override Task Run()
     {
         //
         //  Now some variables used to show progress.
@@ -93,18 +96,29 @@ public class MeadowApp : App<F7FeatherV2>
                 _displayService.Log($"{counter:N0}");
             }
             Console.WriteLine($"{DateTime.Now:HH:mm:ss}: Executing test {counter:N0}");
-            await _test.Execute();
+            _test.Execute();
             if (_config.DelayBetweenCyclesMs > 0)
             {
                 Thread.Sleep(_config.DelayBetweenCyclesMs);
             }
-            _hardware.Leds[0].IsOn = !_hardware.Leds[0].IsOn;
+            if ((counter % 2) == 0)
+            {
+                _onboardLed.SetColor(Color.Blue);
+            }
+            else
+            {
+                _onboardLed.SetColor(Color.Black);
+            }
         }
         _test.Teardown();
+
+        _onboardLed.SetColor(Color.Green);
 
         _displayService.Log("Done.");
         Console.WriteLine("Done.");
 
         Thread.Sleep(Timeout.Infinite);
+
+        return base.Run();
     }
 }

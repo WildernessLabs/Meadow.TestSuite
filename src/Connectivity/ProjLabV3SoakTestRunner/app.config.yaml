@@ -10,7 +10,7 @@ SoakTest:
     #
     #   Name of the test to execute.
     #
-    TestName: "HttpGetSoakTest"
+    TestName: "BluetoothTest"
     #
     #   What should we request?
     #
