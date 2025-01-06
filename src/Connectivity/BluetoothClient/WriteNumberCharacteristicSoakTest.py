@@ -60,7 +60,14 @@ async def main(args: argparse.Namespace):
                         try:
                             bytes = counter.to_bytes(4, byteorder = 'little')
                             await client.write_gatt_char(char.uuid, bytes)
-                            response = await client.read_gatt_char(NUMBER_FIELD_UUID)
+                            attempt = 0
+                            while True:
+                                response = await client.read_gatt_char(char.uuid)
+                                if counter == int.from_bytes(response, byteorder = 'little'):
+                                    break
+                                attempt += 1
+                                if attempt > 10:
+                                    break
                             if counter != int.from_bytes(response, byteorder = 'little'):
                                 logger.error('    [Read] %s, Error: Value mismatch (Iteration %d)', char, counter)
                                 break
