@@ -1,7 +1,7 @@
 ﻿using Meadow.Devices;
-using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
 using Meadow.Hardware;
+using Meadow.Peripherals.Displays;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
