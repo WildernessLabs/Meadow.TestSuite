@@ -1,0 +1,93 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35521.163
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepoMonitor", "RepoMonitor.csproj", "{99864373-D2E7-4A71-AA34-097990B6C4B4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5D188242-1B08-4BC0-8E4E-374DEC3FB14B}"
+	ProjectSection(SolutionItems) = preProject
+		config.json = config.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.CLI", "..\..\..\Meadow.CLI\Source\v2\Meadow.Cli\Meadow.CLI.csproj", "{C708437F-30E1-432C-8961-45733AEE661D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ref", "_ref", "{8A2211D1-CF4F-4CFF-8323-0E4CE8796D34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.Dfu", "..\..\..\Meadow.CLI\Source\v2\Meadow.Dfu\Meadow.Dfu.csproj", "{2C89B034-5D02-4E5D-A775-87B199935ACF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.HCom", "..\..\..\Meadow.CLI\Source\v2\Meadow.Hcom\Meadow.HCom.csproj", "{E8F1AB6D-F6A4-439F-8B46-E79AB794EC24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.Linker", "..\..\..\Meadow.CLI\Source\v2\Meadow.Linker\Meadow.Linker.csproj", "{087872F6-514D-42FD-A7A8-56F24C25975C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.Tooling.Core", "..\..\..\Meadow.CLI\Source\v2\Meadow.Tooling.Core\Meadow.Tooling.Core.csproj", "{C58A539A-F1A5-4115-A8BA-AA01069AFED0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.UsbLib", "..\..\..\Meadow.CLI\Source\v2\Meadow.UsbLib\Meadow.UsbLib.csproj", "{5FBC725D-D4D6-4309-A561-95BD045D85D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorTests", "..\MonitorTests\MonitorTests.csproj", "{5044DAB4-42E8-4248-B602-19051A640D65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.SoftwareManager", "..\..\..\Meadow.CLI\Source\v2\Meadow.SoftwareManager\Meadow.SoftwareManager.csproj", "{6C04388A-A686-487E-902F-62DE30B4E099}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.Cloud.Client", "..\..\..\Meadow.CLI\Source\v2\Meadow.Cloud.Client\Meadow.Cloud.Client.csproj", "{A5A9328F-4EDE-41AF-BC96-668DD2DFD73B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99864373-D2E7-4A71-AA34-097990B6C4B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99864373-D2E7-4A71-AA34-097990B6C4B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99864373-D2E7-4A71-AA34-097990B6C4B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99864373-D2E7-4A71-AA34-097990B6C4B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C708437F-30E1-432C-8961-45733AEE661D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C708437F-30E1-432C-8961-45733AEE661D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C708437F-30E1-432C-8961-45733AEE661D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C708437F-30E1-432C-8961-45733AEE661D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C89B034-5D02-4E5D-A775-87B199935ACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C89B034-5D02-4E5D-A775-87B199935ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C89B034-5D02-4E5D-A775-87B199935ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C89B034-5D02-4E5D-A775-87B199935ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8F1AB6D-F6A4-439F-8B46-E79AB794EC24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8F1AB6D-F6A4-439F-8B46-E79AB794EC24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8F1AB6D-F6A4-439F-8B46-E79AB794EC24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8F1AB6D-F6A4-439F-8B46-E79AB794EC24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{087872F6-514D-42FD-A7A8-56F24C25975C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{087872F6-514D-42FD-A7A8-56F24C25975C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{087872F6-514D-42FD-A7A8-56F24C25975C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{087872F6-514D-42FD-A7A8-56F24C25975C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C58A539A-F1A5-4115-A8BA-AA01069AFED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C58A539A-F1A5-4115-A8BA-AA01069AFED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C58A539A-F1A5-4115-A8BA-AA01069AFED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C58A539A-F1A5-4115-A8BA-AA01069AFED0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FBC725D-D4D6-4309-A561-95BD045D85D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FBC725D-D4D6-4309-A561-95BD045D85D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FBC725D-D4D6-4309-A561-95BD045D85D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FBC725D-D4D6-4309-A561-95BD045D85D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5044DAB4-42E8-4248-B602-19051A640D65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5044DAB4-42E8-4248-B602-19051A640D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5044DAB4-42E8-4248-B602-19051A640D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5044DAB4-42E8-4248-B602-19051A640D65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C04388A-A686-487E-902F-62DE30B4E099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C04388A-A686-487E-902F-62DE30B4E099}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C04388A-A686-487E-902F-62DE30B4E099}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C04388A-A686-487E-902F-62DE30B4E099}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5A9328F-4EDE-41AF-BC96-668DD2DFD73B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5A9328F-4EDE-41AF-BC96-668DD2DFD73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5A9328F-4EDE-41AF-BC96-668DD2DFD73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5A9328F-4EDE-41AF-BC96-668DD2DFD73B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C708437F-30E1-432C-8961-45733AEE661D} = {8A2211D1-CF4F-4CFF-8323-0E4CE8796D34}
+		{2C89B034-5D02-4E5D-A775-87B199935ACF} = {8A2211D1-CF4F-4CFF-8323-0E4CE8796D34}
+		{E8F1AB6D-F6A4-439F-8B46-E79AB794EC24} = {8A2211D1-CF4F-4CFF-8323-0E4CE8796D34}
+		{087872F6-514D-42FD-A7A8-56F24C25975C} = {8A2211D1-CF4F-4CFF-8323-0E4CE8796D34}
+		{C58A539A-F1A5-4115-A8BA-AA01069AFED0} = {8A2211D1-CF4F-4CFF-8323-0E4CE8796D34}
+		{5FBC725D-D4D6-4309-A561-95BD045D85D8} = {8A2211D1-CF4F-4CFF-8323-0E4CE8796D34}
+		{6C04388A-A686-487E-902F-62DE30B4E099} = {8A2211D1-CF4F-4CFF-8323-0E4CE8796D34}
+		{A5A9328F-4EDE-41AF-BC96-668DD2DFD73B} = {8A2211D1-CF4F-4CFF-8323-0E4CE8796D34}
+	EndGlobalSection
+EndGlobal
