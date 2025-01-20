@@ -14,6 +14,7 @@ public static class RegisteredTests
         new ScanForAccessPointsSoakTest(),
         new PingSoakTest(),
         new BluetoothTest(),
+        new BluetoothNumericTest(),
     };
 
     /// <summary>
