@@ -75,6 +75,9 @@ async def main(args: argparse.Namespace):
                             logger.error('    Iteration: {counter:,}')
                             logger.error('    [Write] %s, Error: %s', char, e)
                             break
+        terminator = 0
+        bytes = terminator.to_bytes(4, byteorder = 'little')
+        await client.write_gatt_char(char.uuid, bytes)
         logger.info('Disconnecting...')
     logger.info('Disconnected')
     logger.info('Completed write / read soak test.')
