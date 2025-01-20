@@ -88,7 +88,15 @@ public class MeadowApp : App<F7CoreComputeV2>
             _ => 0
         };
 
-        while (counter < _config.NumberOfCycles)
+        //
+        //  For a soak test we will run for a predetermined number of cycles as specified in the configuration file.
+        //  Other tests will run once and it will be up to the test how long this test runs.  An example of this is
+        //  is the Bluetooth test application that sends multiple values to the managed code and ends the test by
+        //  sending a value of 0.
+        //
+        int numberOfCycles = (_config.TestName.ToLower().EndsWith("soaktest")) ? _config.NumberOfCycles : 1;
+
+        while (counter < numberOfCycles)
         {
             counter++;
             if ((modulo == 0) || (counter % modulo == 0) || (counter < 10))
