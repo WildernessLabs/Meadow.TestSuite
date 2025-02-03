@@ -4,13 +4,13 @@ Lifecycle:
 
 Logging:
     LogLevel: 
-        Default: "Debug"
+        Default: "Information"
 
 SoakTest:
     #
     #   Name of the test to execute.
     #
-    TestName: "BluetoothTest"
+    TestName: "BluetoothNotifyTest"
     #
     #   What should we request?
     #
