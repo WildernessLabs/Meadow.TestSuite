@@ -16,6 +16,7 @@ public static class RegisteredTests
         new BluetoothTest(),
         new BluetoothNumericTest(),
         new BluetoothNotifyTest(),
+        new LargeFileTest(),
     };
 
     /// <summary>
