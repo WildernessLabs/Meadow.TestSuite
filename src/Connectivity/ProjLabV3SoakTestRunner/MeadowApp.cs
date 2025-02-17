@@ -41,6 +41,18 @@ public class MeadowApp : App<F7CoreComputeV2>
     /// </summary>
     ISoakTest _test;
 
+    /// <summary>
+    /// Display a message on the IL9341 display.
+    /// </summary>
+    /// <param name="message">Message to be displayed.</param>
+    public void LogToDisplay(string message)
+    {
+        _displayService.Log(message);
+    }
+
+    /// <summary>
+    /// Initialise the application.
+    /// </summary>
     public override Task Initialize()
     {
         Helpers.DeviceUnderTest = Device;
@@ -53,13 +65,14 @@ public class MeadowApp : App<F7CoreComputeV2>
         _onboardLed.SetColor(Color.White);
 
         _displayService = new DisplayController(_projectLab.Display);
+        Helpers.DisplayLogMessage = LogToDisplay;
 
         _test = RegisteredTests.GetTest(_config.TestName);
         if (_test == null)
         {
             _onboardLed.SetColor(Color.Red);
             _displayService.UpdateTitle("ERROR");
-            _displayService.Log($"{_config.TestName} not found", false);
+            LogToDisplay($"{_config.TestName} not found");
             Console.WriteLine($"Test '{_config.TestName}' not found.");
             while (true)
             {
@@ -68,7 +81,7 @@ public class MeadowApp : App<F7CoreComputeV2>
             
         }
         _displayService.UpdateTitle(_config.TestName);
-        _displayService.Log("Connecting to network...");
+        LogToDisplay("Connecting to network...");
 
         _test.Initialize(_config);
 
@@ -99,11 +112,15 @@ public class MeadowApp : App<F7CoreComputeV2>
         while (counter < numberOfCycles)
         {
             counter++;
-            if ((modulo == 0) || (counter % modulo == 0) || (counter < 10))
+            if ((numberOfCycles > 1) && ((modulo == 0) || (counter % modulo == 0) || (counter < 10)))
             {
-                _displayService.Log($"{counter:N0}");
+                LogToDisplay($"{counter:N0}");
+                Helpers.ConsoleLog($"Executing test {counter:N0}");
             }
-            Console.WriteLine($"{DateTime.Now:HH:mm:ss}: Executing test {counter:N0}");
+            else
+            {
+                _displayService.Log("Executing test");
+            }
             _test.Execute();
             if (_config.DelayBetweenCyclesMs > 0)
             {
@@ -122,8 +139,8 @@ public class MeadowApp : App<F7CoreComputeV2>
 
         _onboardLed.SetColor(Color.Green);
 
-        _displayService.Log("Done.");
-        Console.WriteLine("Done.");
+        LogToDisplay("Done.");
+        Helpers.ConsoleLog("Done.");
 
         Thread.Sleep(Timeout.Infinite);
 

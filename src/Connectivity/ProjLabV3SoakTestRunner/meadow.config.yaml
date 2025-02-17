@@ -77,7 +77,8 @@ CoProcessor:
     #
     #   Should we start the network using stored WiFi credentials.
     #
-    AutomaticallyStartNetwork: false
+    AutomaticallyStartNetwork: true
+    # SpiSpeedHz: 16000000
 #
 # Internal debug options.
 #
