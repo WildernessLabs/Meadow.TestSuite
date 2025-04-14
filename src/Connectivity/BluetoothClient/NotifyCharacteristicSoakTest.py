@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 
 '''
-The purpose of this script is to ...
+The purpose of this script is to test the notification properties in Meadow.Core.
+
+How to use this script:
+1 - Edit the app.config.yaml in the ProjLabV3SoakTestRunner project setting the TestName to "BluetoothNotifyTest"
+2 - Deploy the ProjLabV3SoakTestRunner application to the Meadow device.
+3 - On a Raspberry Pi board with Bleak installed, run this script.
 '''
 
 import argparse
