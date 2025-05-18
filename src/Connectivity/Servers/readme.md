@@ -35,3 +35,15 @@ Two scripts are provided to start and stop the MQTT server:
 
 * StartMQTTServer.sh
 * StopMQTTServer.sh
+
+## Email Server
+
+The Mailhog email container provides a simple SMTP server and a Web Mail interface.  The image exposes the following ports:
+
+* 1025 SMTP server
+* 8025 Web interface
+
+Two scripts are provided to start and stop the service:
+
+* StartEmailServer.sh
+* StopEmailServer.sh
