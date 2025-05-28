@@ -1,0 +1,50 @@
+- name: Install Samba
+  apt:
+    pkg:
+      - samba
+      - samba-common-bin
+      - cifs-utils
+    state: present
+    update_cache: true
+
+- name: Configure the share for the first / only NVMe drive
+  blockinfile:
+    path: /etc/samba/smb.conf
+    block: |
+      [nvme0n1]
+          path = /mnt/nvme0n1
+          read only = no
+          public = yes
+          writable = yes
+          force user = {{ ansible_user }}
+      [{{ ansible_user }}]
+          path = /home/{{ ansible_user}}
+          read only = no
+          public = yes
+          writable = yes
+          force user = {{ ansible_user }}
+  when: not nvme_duo
+
+- name: Configure the chare for the second drive on the NVMeBase Duo
+  blockinfile:
+    path: /etc/samba/smb.conf
+    block: |
+      [nvme0n1]
+          path = /mnt/nvme0n1
+          read only = no
+          public = yes
+          writable = yes
+          force user = {{ ansible_user }}
+      [nvme1n1]
+          path = /mnt/nvme1n1
+          read only = no
+          public = yes
+          writable = yes
+          force user = {{ ansible_user }}
+      [{{ ansible_user }}]
+          path = /home/{{ ansible_user}}
+          read only = no
+          public = yes
+          writable = yes
+          force user = {{ ansible_user }}
+  when: nvme_duo

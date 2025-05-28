@@ -1,0 +1,10 @@
+#sudo apt install libdbus-1-dev pkg-config
+ - name: Download the install script
+  get_url:
+    url: https://sh.rustup.rs
+    dest: /tmp/sh.rustup.rs
+    mode: '0755'
+    force: 'yes'
+
+- name: Install rust and cargo
+  shell: /tmp/sh.rustup.rs -y

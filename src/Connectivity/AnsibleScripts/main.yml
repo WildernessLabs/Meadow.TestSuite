@@ -1,0 +1,73 @@
+---
+- name: Configure Raspberry Pi
+  hosts: raspberrypi
+  become: true
+
+  tasks:
+    #
+    # Update the system software.
+    #
+    - include_tasks: tasks/Update.yml
+
+    #
+    # Install supporting software.
+    #
+    - include_tasks: tasks/InstallSupportingSoftware.yml
+
+    #
+    # Reboot to apply changes.
+    #
+    - include_tasks: tasks/Reboot.yml
+
+    #
+    # Configure the drive on the NVMeBase and the first drive on the NVMeBase Duo.
+    #
+    - include_tasks: tasks/ConfigureNVMeDrive.yml
+      vars:
+          nvmebase_device_name: nvme0n1
+      when: install_nvmebase == true
+
+    #
+    # Configure the second drive on the NVMeBase Duo.
+    #
+    - include_tasks: tasks/ConfigureNVMeDrive.yml
+      vars:
+          nvmebase_device_name: nvme1n1
+      when: (nvme_duo == true) and (install_nvmebase == true)
+
+    #
+    # Install Samba.
+    #
+    - include_tasks: tasks/InstallSamba.yml
+      when: install_samba == true
+
+    #
+    # Install ESP32 development tools.
+    #
+    - include_tasks: tasks/InstallESPIDF.yml
+      vars:
+        esp_idf_directory: "{{ esp_idf_installation_directory }}/esp-idf"
+      when: install_esp_idf == true
+
+    #
+    # Install Rust.
+    #
+    - include_tasks: tasks/InstallRust.yml
+      when: install_rust == true
+  
+    #
+    # Install Docker.
+    #
+    - include_tasks: tasks/InstallDocker.yml
+      vars:
+          packages: [ libffi-dev, libssl-dev, python3, python3-pip ]
+      when: install_docker == true
+
+    #
+    # Copy the server scripts directory to the home directory.
+    #
+    - include_tasks: tasks/CopyFiles.yml
+      vars:
+          source: ../../Servers
+          destination: /home/{{ ansible_user }}/
+      when: install_docker == true

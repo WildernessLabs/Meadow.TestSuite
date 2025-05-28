@@ -1,0 +1,6 @@
+- name: Reboot the Raspberry Pi
+  reboot:
+    msg: "Immediate reboot initiated by Ansible"
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 0

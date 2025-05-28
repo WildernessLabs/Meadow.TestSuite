@@ -51,18 +51,3 @@ check_command_status() {
   fi
 }
 
-#
-#   Start MailHog email server in a docker container.
-#       First build the image from the Dockerfile
-#       Set the name of the container to MailhogEmailServer
-#       Expose ports 1025 (inbound email) and 8025 (web mail)
-#       Run in detached mode
-#       Set the container to be removed when it is stopped
-#
-echo "Building MailHog Docker image..."
-docker build --platform linux/amd64 -t mailhog-local -f ./MailHog/Dockerfile ./MailHog
-check_command_status
-
-echo "Starting MailHog email server..."
-docker run --platform linux/amd64 -d -p 1025:1025 -p 8025:8025 --rm --name MailhogEmailServer mailhog-local
-check_command_status

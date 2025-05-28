@@ -1,0 +1,4 @@
+- name: Install supporting software.
+  apt:
+    name: "telnet"
+    update_cache: yes
