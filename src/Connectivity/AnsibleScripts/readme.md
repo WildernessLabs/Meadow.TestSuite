@@ -1,57 +1,86 @@
- AnsibleScripts   AddAnsibleScripts ● ? ⍟1  ssh tester@wl-test-server.local
- ✔  09:02:07
-The authenticity of host 'wl-test-server.local (fe80::64b:a060:3465:ff7b%en0)' can't be established.
-ED25519 key fingerprint is SHA256:6Xd+aj3wkkNlfJycLlDG5d6x2/j/lRjXCs9KQaF8vRQ.
-This key is not known by any other names.
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'wl-test-server.local' (ED25519) to the list of known hosts.
-tester@wl-test-server.local's password: 
+# Ansible Scripts
 
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
+[Ansible](https://docs.ansible.com/) provides a mechanism to run common tasks such as software installation and configuration across multiple machines.  This ensures a consistent configuration across a number of machines or the ability to create a new machine with a known good configuration.
 
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
+The scripts included in this repository provide a way of generating a consistent installation of a number of packages on a Raspberry Pi.  This allows the creations / regeneration of a consistent test environment for use with a number of the test suite applications.
 
-Wi-Fi is currently blocked by rfkill.
-Use raspi-config to set the country before use.
+## Security
 
-tester@wl-test-server:~ $ exit
-exit
-Connection to wl-test-server.local closed.
- AnsibleScripts   AddAnsibleScripts ● ? ⍟1  ssh-copy-id tester@wl-test-server.local
- ✔  11.62 Dur  09:02:23
-/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: ssh-add -L
-/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
-/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-tester@wl-test-server.local's password: 
+It should be stressed that little has been done about securing the systems on the Raspberry Pi.  The software is not intended to be used to provide services on the Internet, these services are fo local testing only.
 
-Number of key(s) added:        1
+## Installation
 
-Now try logging into the machine, with: "ssh 'tester@wl-test-server.local'"
-and check to make sure that only the key(s) you wanted were added
+In order to use Ansible a Raspberry Pi should have a default operating system installed and have had at least one ssh session opened.  Full instructions are provided on the [Raspberry Pi OS](RaspberryPiOS.md) page.
+
+Next it is necessary to install the Ansible tools on a local machine (not the Raspberry Pi) by following the [Ansible installation guide](https://docs.ansible.com/ansible/latest/installation_guide/index.html).
 
 
+## Ansible Configuration
 
-ssh tester@wl-test-server.local
- ✔  09:03:18
+Two configuration files may need to be changed depending upon the desired outcome:
 
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
+* _hosts.ini_
+* _group_vars/all.yml_
 
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
+### hosts.ini
 
-Wi-Fi is currently blocked by rfkill.
-Use raspi-config to set the country before use.
+This file lists the host(s) (in our case the Raspberry Pi) details, server name, user name and password that will be the target for Ansible.
 
+### group_vars/all.yml
 
+This file controls which of the various install tasks will be executed on the device.  The default configuration file is:
 
+```yaml
+---
+ansible_user: tester
+hostname: wl-test-server
+install_nvmebase: false
+nvme_duo: false
+format_nvmebase: false
+install_samba: false
+install_rpi_connect: false
+install_esp_idf: false
+esp_idf_installation_directory: ~/esp
+esp_idf_branch: release/v5.4
+install_rust: false
+install_docker: false
+```
 
-ansible-playbook main.yml
+Edit the configuration file changing the settings to deploy the required configuration to the Raspberry Pi.
 
+#### install_nvmebase, nvme_duo and format_nvmebase
+
+These three items install and configure the Pimironi NVME Base or NVME Base Duo.
+
+### install_samba
+
+Should Samba be installed and configured.
+
+#### install_rpi_connect
+
+Install [Raspberry Pi Connect](https://www.raspberrypi.com/software/connect/), this allows the Raspberry Pi to be accessed over the Internet.
+
+#### install_esp_idf, esp_idf_installation_directory and esp_idf_branch
+
+#### install_rust
+
+Install Rust on the Raspberry Pi.
+
+#### install_docker
+
+Install [docker](https://www.docker.com/) on the Raspberry Pi.  This will also copy a number of files, scripts and supporting files, for the servers that can be run using docker on the Raspberry Pi.
+
+## Running the Ansible Playbook
+
+The Ansible playbook is run using the command `ansible-playbook main.yml`.  By default this will always execute a number of standard tasks followed by the optionally configured tasks.  The standard tasks are:
+
+* Update the OS
+* Install any supporting software
+* Reboot the Raspberry Pi
+
+Running the command `ansible-playbook main.yml` with the default configuration should result in something like this:
+
+```
 PLAY [Configure Raspberry Pi] ************************************************************************************************************************
 
 TASK [Gathering Facts] *******************************************************************************************************************************
@@ -101,12 +130,11 @@ skipping: [wl-test-server.local]
 
 PLAY RECAP *******************************************************************************************************************************************
 wl-test-server.local       : ok=8    changed=4    unreachable=0    failed=0    skipped=7    rescued=0    ignored=0
+```
 
+Modifying the _group_vars/all.yml_ file and setting `install_samba: true` and `install_docker: true` will result in something like this:
 
-
-
-Modifying (add Samba and Docker) and re-running:
-
+```
 PLAY [Configure Raspberry Pi] ************************************************************************************************************************
 
 TASK [Gathering Facts] *******************************************************************************************************************************
@@ -185,4 +213,7 @@ TASK [Copy server support files.] **********************************************
 changed: [wl-test-server.local]
 
 PLAY RECAP *******************************************************************************************************************************************
-wl-test-server.local       : ok=20   changed=10   unreachable=0    failed=0    skipped=5    rescued=0    ignored=0  
+wl-test-server.local       : ok=20   changed=10   unreachable=0    failed=0    skipped=5    rescued=0    ignored=0
+```
+
+Note that the first `ansible-playbook main.yml` command did not install docker or Samba but the second invocation after the the file edits did indeed install both docker and Sambe.
