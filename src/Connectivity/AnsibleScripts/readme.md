@@ -44,6 +44,7 @@ esp_idf_installation_directory: ~/esp
 esp_idf_branch: release/v5.4
 install_rust: false
 install_docker: false
+install_bluetooth:false
 ```
 
 Edit the configuration file changing the settings to deploy the required configuration to the Raspberry Pi.
@@ -69,6 +70,12 @@ Install Rust on the Raspberry Pi.
 #### install_docker
 
 Install [docker](https://www.docker.com/) on the Raspberry Pi.  This will also copy a number of files, scripts and supporting files, for the servers that can be run using docker on the Raspberry Pi.
+
+#### install_bluetooth
+
+Install the `bleak` Python librart and any dependencies ino a Python virtual environment.  Add the virtual environment start up code to the `.bashrc` file.
+
+Finally, copy the Bluetooth test files into the `tester` home directory.
 
 ## Running the Ansible Playbook
 

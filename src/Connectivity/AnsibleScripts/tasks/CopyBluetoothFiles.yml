@@ -1,0 +1,7 @@
+- name: Copy Bluetooth client test script files.
+  copy:
+    src: "{{ source }}"
+    dest: "{{ destination }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'

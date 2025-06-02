@@ -1,0 +1,11 @@
+- name: Configure venv
+  shell: python3 -m venv .venv
+
+- name: Add venv start up to bashrc
+  shell: echo 'source $HOME/.venv/bin/activate' >> /home/{{ ansible_user }}/.bashrc
+
+- name: Install Bleak libraries
+  pip:
+    name: bleak
+    virtualenv: /home/{{ ansible_user }}/.venv
+    

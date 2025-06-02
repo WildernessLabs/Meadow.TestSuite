@@ -66,8 +66,25 @@
     #
     # Copy the server scripts directory to the home directory.
     #
-    - include_tasks: tasks/CopyFiles.yml
+    - include_tasks: tasks/CopyServerFiles.yml
       vars:
           source: ../../Servers
           destination: /home/{{ ansible_user }}/
       when: install_docker == true
+
+    #
+    # Install the Bleak Bluetooth Python library and dependencies.
+    #
+    - include_tasks: tasks/InstallBluetooth.yml
+      vars:
+          packages: [ bleak ]
+      when: install_bluetooth == true
+
+    #
+    # Copy the Bluetooth test scripts directory to the home directory.
+    #
+    - include_tasks: tasks/CopyBluetoothFiles.yml
+      vars:
+          source: ../../BluetoothClient
+          destination: /home/{{ ansible_user }}/
+      when: install_bluetooth == true
