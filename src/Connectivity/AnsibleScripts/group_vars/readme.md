@@ -26,7 +26,7 @@ Host name for the Raspberry Pi.  This is used by the `ChangeHostname.yml` script
 
 ## nvme_duo: false
 
-Set this to `true` if the scripts are bing run against against a NVMe Base Duo.  Doing this will configure the system to use both drives.
+Set this to `true` if the scripts are being run against a NVMe Base Duo.  Doing this will configure the system to use both drives.
 
 ## format_nvmebase: false
 
