@@ -44,7 +44,7 @@ esp_idf_installation_directory: ~/esp
 esp_idf_branch: release/v5.4
 install_rust: false
 install_docker: false
-install_bluetooth:false
+install_bluetooth: false
 ```
 
 Edit the configuration file changing the settings to deploy the required configuration to the Raspberry Pi.
