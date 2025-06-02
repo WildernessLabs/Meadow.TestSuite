@@ -25,7 +25,7 @@
           force user = {{ ansible_user }}
   when: not nvme_duo
 
-- name: Configure the chare for the second drive on the NVMeBase Duo
+- name: Configure the share for the second drive on the NVMeBase Duo
   blockinfile:
     path: /etc/samba/smb.conf
     block: |
