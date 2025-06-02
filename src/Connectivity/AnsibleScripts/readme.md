@@ -73,7 +73,7 @@ Install [docker](https://www.docker.com/) on the Raspberry Pi.  This will also c
 
 #### install_bluetooth
 
-Install the `bleak` Python librart and any dependencies ino a Python virtual environment.  Add the virtual environment start up code to the `.bashrc` file.
+Install the `bleak` Python library and any dependencies into a Python virtual environment.  Add the virtual environment start up code to the `.bashrc` file.
 
 Finally, copy the Bluetooth test files into the `tester` home directory.
 
