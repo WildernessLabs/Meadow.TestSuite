@@ -11,7 +11,7 @@
 - name: Get docker convenience script
   shell: curl -fsSL https://get.docker.com -o get-docker.sh
   args:
-    creates: /hom/{{ ansible_user }}/get-docker.sh
+    creates: /home/{{ ansible_user }}/get-docker.sh
 
 - name: Install docker
   shell: sh /home/{{ ansible_user }}/get-docker.sh
