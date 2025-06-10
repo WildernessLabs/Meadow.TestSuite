@@ -1,0 +1,16 @@
+#
+# Update the system software.
+#
+- name: Update apt caches and the distribution
+  apt:
+    update_cache: yes
+    upgrade: dist
+    cache_valid_time: 3600
+    autoclean: yes
+    autoremove: yes
+        
+#
+# Configure the system to use the latest boot ROM.
+#
+- name: Update the EEPROM
+  command: raspi-config nonint do_boot_rom E1 1

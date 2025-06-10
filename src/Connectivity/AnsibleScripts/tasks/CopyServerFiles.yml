@@ -1,0 +1,10 @@
+- name: Copy server support files.
+  copy:
+    src: "{{ source }}"
+    dest: "{{ destination }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Make script files executable.
+  shell: chmod +x {{ destination }}Servers/*.sh

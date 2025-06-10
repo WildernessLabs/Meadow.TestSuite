@@ -1,0 +1,27 @@
+- name: Install a list of packages
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+
+- name: Remove python-configparser package
+  apt:
+    name: python-configparser
+    state: absent
+
+- name: Get docker convenience script
+  shell: curl -fsSL https://get.docker.com -o get-docker.sh
+  args:
+    creates: /home/{{ ansible_user }}/get-docker.sh
+
+- name: Install docker
+  shell: sh /home/{{ ansible_user }}/get-docker.sh
+  args:
+    creates: /usr/bin/docker
+
+- name: Remove docker convenience script
+  file:
+    path: /home/{{ ansible_user }}/get-docker.sh
+    state: absent
+
+- name: Make {{ ansible_user }} user execute docker commands
+  shell: usermod -aG docker {{ ansible_user }}

@@ -1,0 +1,45 @@
+#
+# Enable PCIe gen3 for the NVMe drive on a Pimoroni NVMe Base.  We do not do this
+# on the NVMEBse Duo as it is not supported.
+#
+- name: Ensure pciex1_gen3 is enabled in /boot/firmware/config.txt
+  blockinfile:
+    path: /boot/firmware/config.txt
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      dtparam=pciex1_gen=3
+    insertafter: '^\[all\]$'
+    create: yes
+  when: (not nvme_duo) and (nvmebase_device_name == 'nvme0n1')
+
+- name: Format the NVMe drive {{ nvmebase_device_name }}
+  command: mkfs.ext4 /dev/{{ nvmebase_device_name }} -L Data
+  when: format_nvmebase | bool
+
+- name: Make the mount point for {{ nvmebase_device_name }}
+  command: mkdir /mnt/{{ nvmebase_device_name }}
+
+- name: Mount the newly formatted drive ({{ nvmebase_device_name }})
+  command: mount /dev/{{ nvmebase_device_name }} /mnt/{{ nvmebase_device_name }}
+
+- name: Make sure that {{ ansible_user }} can read and write to the mount point
+  command: chown -R {{ ansible_user }}:{{ ansible_user }} /mnt/{{ nvmebase_device_name }}
+
+- name: Get the UUID of {{ nvmebase_device_name }}
+  command: blkid /dev/{{ nvmebase_device_name }}
+  register: blkid_output
+
+- name: Extract UUID from blkid output
+  set_fact:
+    device_uuid: "{{ blkid_output.stdout | regex_search('UUID=\"([^\"]+)\"', '\\1') }}"
+
+- name: Clean the extracted UUID
+  set_fact:
+    clean_uuid: "{{ device_uuid | regex_replace('\\[', '') | regex_replace(']', '') |  regex_replace(\"'\" '') }}"
+
+- name: Add UUID entry for {{ nvmebase_device_name }} to /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    line: "UUID={{ clean_uuid }} /mnt/{{ nvmebase_device_name }} ext4 defaults,auto,users,rw,nofail,noatime 0 0"
+    state: present
+    create: yes
