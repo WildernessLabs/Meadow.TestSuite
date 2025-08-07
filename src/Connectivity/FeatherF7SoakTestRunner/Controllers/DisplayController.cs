@@ -79,7 +79,7 @@ internal class DisplayController
             Title = new Label(_rowMargin, 0, DisplayScreen.Width - (2 * _rowMargin), _titleHeight)
             {
                 Text = "",
-                BackColor = _foregroundColor,
+                BackgroundColor = _foregroundColor,
                 TextColor = _backgroundColor,
                 Font = _titleFont,
                 VerticalAlignment = VerticalAlignment.Center,

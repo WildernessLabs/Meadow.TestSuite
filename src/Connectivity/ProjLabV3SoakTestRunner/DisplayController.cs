@@ -44,7 +44,7 @@ internal class DisplayController
         {
             Text = "",
             TextColor = _backgroundColor,
-            BackColor = _foregroundColor,
+            BackgroundColor = _foregroundColor,
             Font = _titleFont,
             VerticalAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Center
@@ -55,7 +55,7 @@ internal class DisplayController
         {
             Text = "",
             TextColor = _backgroundColor,
-            BackColor = _foregroundColor,
+            BackgroundColor = _foregroundColor,
             Font = _titleFont,
             VerticalAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Center
