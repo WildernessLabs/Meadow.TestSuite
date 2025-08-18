@@ -55,9 +55,9 @@ async def main(args: argparse.Namespace):
     logger.info('Disconnected')
 
 if __name__ == '__main__':
-    # if sys.platform.startswith("darwin"):
-    #     logger.error('This script does not work correctly on MacOS')
-    #     sys.exit(1)
+    if sys.platform.startswith("darwin"):
+        logger.error('This script does not work correctly on MacOS')
+        sys.exit(1)
 
     parser = argparse.ArgumentParser()
 
