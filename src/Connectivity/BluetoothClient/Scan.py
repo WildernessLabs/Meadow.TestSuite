@@ -47,10 +47,17 @@ async def main(args: argparse.Namespace):
                 logger.info(f'     Characteristic: {characteristic.description} ({characteristic.uuid}), properties: {properties}, value: {characteristic_value}')
                 for descriptor in characteristic.descriptors:
                     descriptor_value = None
-                    try:
-                        descriptor_value = bytes(await client.read_gatt_descriptor(descriptor))
-                    except Exception as e:
-                        descriptor_value = None
+                    attempts = 0
+                    while attempts < 10:
+                        try:
+                            descriptor_value = await client.read_gatt_descriptor(descriptor)
+                            if descriptor_value:
+                                break
+                        except Exception as e:
+                            descriptor_value = None
+                        attempts += 1
+                    if descriptor_value is not None:
+                        descriptor_value = bytes(descriptor_value)
                     logger.info(f'        Descriptor: {descriptor.description} ({descriptor.uuid}), value: {descriptor_value}')
     logger.info('Disconnected')
 
