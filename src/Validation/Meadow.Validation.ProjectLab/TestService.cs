@@ -46,7 +46,7 @@ public class TestService
 
     private void Initialize()
     {
-        (_hardware.Display as Ili9341).InvertDisplay(false);
+        (_hardware.Display as Ili9341).InvertDisplayColor(false);
 
         _display = new DisplayService(
             new DisplayScreen(

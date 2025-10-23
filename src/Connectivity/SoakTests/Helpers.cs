@@ -29,6 +29,17 @@ public static class Helpers
     public static IMeadowDevice DeviceUnderTest { get; set; }
 
     /// <summary>
+    /// Delegate for displaying log messages on the display.
+    /// </summary>
+    /// <param name="message"></param>
+    public delegate void DisplayLogHandler(string message);
+
+    /// <summary>
+    /// Display log messages on the display.
+    /// </summary>
+    public static DisplayLogHandler DisplayLogMessage;
+
+    /// <summary>
     /// Get the specified resource from the network.
     /// </summary>
     /// <param name="uri">Network resource to request.</param>

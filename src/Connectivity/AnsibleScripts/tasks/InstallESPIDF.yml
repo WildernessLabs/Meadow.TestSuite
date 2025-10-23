@@ -1,0 +1,47 @@
+#
+# Install necessary software packages.
+#
+- name: Install necessary packages
+  apt:
+    name:
+      - git
+      - wget
+      - flex
+      - bison
+      - gperf
+      - python3-pip
+      - python3-venv
+      - cmake
+      - ninja-build
+      - ccache
+      - libffi-dev
+      - libssl-dev
+      - dfu-util
+      - libusb-1.0-0
+    state: latest
+  become: true
+
+#
+# Make the directory to hold ESP-IDF.
+#
+- name: Make the installation directory {{ esp_idf_directory }}
+  command: mkdir -p {{ esp_idf_directory }}
+
+- name: Clone ESP-IDF into {{ esp_idf_directory }}
+  git:
+    repo: https://github.com/espressif/esp-idf.git
+    dest: "{{ esp_idf_directory }}"
+    version: "{{ esp_idf_branch }}"
+    recursive: yes
+    clone: yes
+
+- name: Install the tools from ESP-IDF.
+  shell:
+      "{{ esp_idf_directory }}/install.sh all"
+  register: install_result
+
+# - debug:
+#     msg: "Result: {{ install_result }}"
+
+- name: Change the ownership of ESP-IDF directory {{ esp_idf_directory}}
+  command: chown -R {{ ansible_user }}:{{ ansible_user }} {{ esp_idf_directory }}

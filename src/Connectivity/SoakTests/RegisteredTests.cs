@@ -15,6 +15,8 @@ public static class RegisteredTests
         new PingSoakTest(),
         new BluetoothTest(),
         new BluetoothNumericTest(),
+        new BluetoothNotifyTest(),
+        new LargeFileTest(),
     };
 
     /// <summary>

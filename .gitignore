@@ -3,3 +3,5 @@ bin/
 obj/
 *.user
 src/Connectivity/BluetoothTestRunner/target/*
+mosquitto.log
+mosquitto.db

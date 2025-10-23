@@ -1,0 +1,14 @@
+---
+ansible_user: tester
+hostname: wl-test-server
+install_nvmebase: false
+nvme_duo: false
+format_nvmebase: false
+install_samba: false
+install_rpi_connect: false
+install_esp_idf: false
+esp_idf_installation_directory: ~/esp
+esp_idf_branch: release/v5.4
+install_rust: false
+install_docker: false
+install_bluetooth: true
