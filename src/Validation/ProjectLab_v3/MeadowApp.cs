@@ -76,11 +76,12 @@ public class MeadowApp : ValidationApp<F7CoreComputeV2>
         {
             return new ITest<ProjectLabTestDevice>[]
             {
+//                    new BluetoothTest<ProjectLabTestDevice>(),
 //                    new I2CBusTest<ProjectLabTestDevice>(),
-//                    new WiFiConnectionPositiveTest<ProjectLabTestDevice>(),
+                    new WiFiConnectionPositiveTest<ProjectLabTestDevice>(),
 //                    new SpiBusTest(),
 //                    new WiFiConnectionInvalidSsidTest<ProjectLabTestDevice>(),
-                new WiFiConnectionInvalidPasscodeTest<ProjectLabTestDevice>()
+//                    new WiFiConnectionInvalidPasscodeTest<ProjectLabTestDevice>()
             }
             .Cast<ITest<MeadowTestDevice>>();
         }
