@@ -7,10 +7,14 @@
       <LangVersion>10</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="app.build.yaml" />
     <None Remove="app.config.yaml" />
     <None Remove="meadow.config.yaml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app.build.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="meadow.config.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

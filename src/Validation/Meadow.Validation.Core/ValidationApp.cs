@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Meadow.Validation
 {
-    public abstract class ValidationApp<THardware> : App<THardware>
+    public abstract class ValidationApp<THardware, TDevice> : App<THardware>
         where THardware : class, IMeadowDevice
+        where TDevice : MeadowTestDevice
     {
-        public abstract IEnumerable<ITest<MeadowTestDevice>> TestsToRun { get; }
-        public abstract MeadowTestDevice DeviceUnderTest { get; }
+        public abstract IEnumerable<ITest<TDevice>> TestsToRun { get; }
+        public abstract TDevice DeviceUnderTest { get; }
 
         public abstract void DisplayTestsRunning();
         public abstract void DisplaySuccess();
@@ -29,6 +31,7 @@ namespace Meadow.Validation
             {
                 while (!complete)
                 {
+                    Resolver.Log.Info($"Starting execution heartbeat...");
                     OnExecutionHeartbeat();
 
                     Thread.Sleep(1000);
@@ -40,16 +43,23 @@ namespace Meadow.Validation
             {
                 foreach (var test in TestsToRun)
                 {
-                    Resolver.Log.Info($"Running {test.GetType().Name}...");
-
-                    var result = await test.RunTest(DeviceUnderTest);
-
-                    if (!result)
+                    try
                     {
-                        failed.Add(test.GetType().Name);
-                    }
+                        Resolver.Log.Info($"Running {test.GetType().Name}...");
 
-                    success &= result;
+                        var result = await test.RunTest(DeviceUnderTest);
+
+                        if (!result)
+                        {
+                            failed.Add(test.GetType().Name);
+                        }
+
+                        success &= result;
+                    }
+                    catch (Exception ex)
+                    {
+                        Resolver.Log.Info($"Error in {test.GetType().Name}: {ex.Message}");
+                    }
                 }
 
                 Resolver.Log.Info($"Tests complete.");

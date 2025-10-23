@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Meadow.Validation;
 
-public class MeadowApp : ValidationApp<F7FeatherV2>
+public class MeadowApp : ValidationApp<F7FeatherV2, ProjectLabTestDevice>
 {
     private IDigitalOutputPort _red;
     private IDigitalOutputPort _green;
@@ -34,7 +34,7 @@ public class MeadowApp : ValidationApp<F7FeatherV2>
         return base.Initialize();
     }
 
-    public override MeadowTestDevice DeviceUnderTest => _testDevice;
+    public override ProjectLabTestDevice DeviceUnderTest => _testDevice;
 
     public override void DisplayTestsRunning()
     {
@@ -72,7 +72,7 @@ public class MeadowApp : ValidationApp<F7FeatherV2>
         base.OnExecutionHeartbeat();
     }
 
-    public override IEnumerable<ITest<MeadowTestDevice>> TestsToRun
+    public override IEnumerable<ITest<ProjectLabTestDevice>> TestsToRun
     {
         get
         {
@@ -83,8 +83,7 @@ public class MeadowApp : ValidationApp<F7FeatherV2>
 //                    new SpiBusTest(),
 //                    new WiFiConnectionInvalidSsidTest<ProjectLabTestDevice>(),
                 new WiFiConnectionInvalidPasscodeTest<ProjectLabTestDevice>()
-            }
-            .Cast<ITest<MeadowTestDevice>>();
+            };
         }
     }
 }

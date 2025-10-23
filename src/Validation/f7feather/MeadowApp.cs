@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Meadow.Validation
 {
-    public class MeadowApp : ValidationApp<F7FeatherV2>
+    public class MeadowApp : ValidationApp<F7FeatherV2, MeadowTestDevice>
     {
         private IDigitalOutputPort _red;
         private IDigitalOutputPort _green;

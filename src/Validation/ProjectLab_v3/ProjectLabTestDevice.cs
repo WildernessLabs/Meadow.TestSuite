@@ -7,7 +7,7 @@ namespace Meadow.Validation
         public IProjectLabHardware ProjectLab { get; }
 
         public ProjectLabTestDevice(IMeadowDevice device, IProjectLabHardware projectLab)
-        : base(device)
+            : base(device)
         {
             ProjectLab = projectLab;
         }

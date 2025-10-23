@@ -3,12 +3,11 @@ using Meadow.Foundation.Graphics;
 using Meadow.Peripherals.Displays;
 using Meadow.Peripherals.Leds;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Meadow.Validation;
 
-public class MeadowApp : ValidationApp<F7CoreComputeV2>
+public class MeadowApp : ValidationApp<F7CoreComputeV2, ProjectLabTestDevice>
 {
     private IRgbPwmLed _led;
 
@@ -25,13 +24,13 @@ public class MeadowApp : ValidationApp<F7CoreComputeV2>
 
         // create a display - just doing this verifies SPI
         _graphics = new MicroGraphics(_testDevice.ProjectLab.Display);
-        _graphics.Rotation = RotationType._90Degrees;
+        _graphics.Rotation = RotationType._270Degrees;
         _graphics.CurrentFont = new Font12x20();
 
         return base.Initialize();
     }
 
-    public override MeadowTestDevice DeviceUnderTest => _testDevice;
+    public override ProjectLabTestDevice DeviceUnderTest => _testDevice;
 
     public override void DisplayTestsRunning()
     {
@@ -60,20 +59,27 @@ public class MeadowApp : ValidationApp<F7CoreComputeV2>
 
     public override void OnExecutionHeartbeat()
     {
+        Resolver.Log.Info($"+heartbeat");
+
         _heartBeat = !_heartBeat;
 
         if (_heartBeat)
+        {
             _led.SetColor(Color.Blue);
+        }
         else
+        {
             _led.SetColor(Color.Cyan);
-
-        base.OnExecutionHeartbeat();
+        }
     }
 
-    public override IEnumerable<ITest<MeadowTestDevice>> TestsToRun
+    public override IEnumerable<ITest<ProjectLabTestDevice>> TestsToRun
     {
         get
         {
+            Resolver.Log.Info($"Building test list...");
+            Resolver.Log.Info($"Returning test list...");
+
             return new ITest<ProjectLabTestDevice>[]
             {
 //                    new BluetoothTest<ProjectLabTestDevice>(),
@@ -82,8 +88,7 @@ public class MeadowApp : ValidationApp<F7CoreComputeV2>
 //                    new SpiBusTest(),
 //                    new WiFiConnectionInvalidSsidTest<ProjectLabTestDevice>(),
 //                    new WiFiConnectionInvalidPasscodeTest<ProjectLabTestDevice>()
-            }
-            .Cast<ITest<MeadowTestDevice>>();
+            };
         }
     }
 }
