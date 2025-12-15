@@ -79,6 +79,26 @@ CoProcessor:
     #
     AutomaticallyStartNetwork: true
     # SpiSpeedHz: 16000000
+    #
+    #   Log destination.
+    #
+    LogDestination: UART
+    #
+    #   Which components should we log?
+    #
+    LogComponents: Bluetooth
+    #
+    #   UDP port to use when UDP logging is enabled.
+    #
+    LogUdpPort: 20000
+    #
+    # Maximum number of times the ESP should retry connections etc.
+    #
+    MaximumRetryCount: 7
+    #
+    #   Should we retrieve any ESP core dump information?
+    #
+    # RetrieveCoreDump: true
 #
 # Internal debug options.
 #
