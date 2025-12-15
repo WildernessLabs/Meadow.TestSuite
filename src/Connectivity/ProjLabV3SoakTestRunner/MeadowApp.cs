@@ -119,7 +119,11 @@ public class MeadowApp : App<F7CoreComputeV2>
             }
             else
             {
-                _displayService.Log("Executing test");
+                if (numberOfCycles == 1)
+                {
+                    LogToDisplay("Executing test");
+                    Helpers.ConsoleLog("Executing test");
+                }
             }
             _test.Execute();
             if (_config.DelayBetweenCyclesMs > 0)
