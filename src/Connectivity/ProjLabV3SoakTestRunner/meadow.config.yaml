@@ -43,6 +43,10 @@ Network:
     #
     DefaultInterface: WiFi
     #
+    #   WiFi country code (channels 12 and 13 need a country that allows them).
+    #
+    CountryCode: GB
+    #
     #    Automatically attempt to get the time at startup?
     #
     GetNetworkTimeAtStartup: 1
@@ -86,7 +90,7 @@ CoProcessor:
     #
     #   Which components should we log?
     #
-    LogComponents: Bluetooth
+    LogComponents: WiFi;Messages
     #
     #   UDP port to use when UDP logging is enabled.
     #

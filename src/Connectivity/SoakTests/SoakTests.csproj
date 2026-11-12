@@ -1,12 +1,17 @@
 <Project Sdk="Meadow.Sdk/1.1.0">
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <OutputType>Library</OutputType>
     <AssemblyName>SoakTests</AssemblyName>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <!-- Meadow 3.0 managed code comes from the meadow-3.0 branch checkouts of Meadow.Core, Meadow.Foundation, etc.: MEADOW_3_DIR, or the folder that holds Meadow.TestSuite. -->
+    <Meadow3Dir Condition="'$(MEADOW_3_DIR)' != ''">$(MEADOW_3_DIR)</Meadow3Dir>
+    <Meadow3Dir Condition="'$(Meadow3Dir)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../../..'))</Meadow3Dir>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow.F7" Version="*" />
+    <ProjectReference Include="$(Meadow3Dir)/Meadow.Core/Source/implementations/f7/Meadow.F7/Meadow.F7.csproj" />
   </ItemGroup>
 </Project>

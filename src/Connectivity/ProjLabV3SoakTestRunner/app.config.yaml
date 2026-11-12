@@ -10,16 +10,16 @@ SoakTest:
     #
     #   Name of the test to execute.
     #
-    TestName: "LargeFileTest"
+    TestName: "SocketSoakTest"
     #
     #   What should we request?
     #
-    RequestUri: "http://192.168.1.119/LargeFile1.html"
-    # RequestUri: "https://postman-echo.com/get?foo1=bar1&foo2=bar2"
+    # RequestUri: "http://192.168.1.119/LargeFile1.html"
+    RequestUri: "http://192.168.1.65/"
     #
     #   Number of test cycles.
     #
-    NumberOfCycles: 10000
+    NumberOfCycles: 1000
     #
     #   Number of milliseconds between cycles.
     #
